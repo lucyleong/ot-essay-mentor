@@ -10,41 +10,75 @@ type ConfirmationData = {
   meetingType:      string
   meetLink:         string | null
   confirmationCode: string
+  essayUploadUrl:   string
 }
 
 export function studentConfirmationEmail(d: ConfirmationData) {
-  const date    = format(parseISO(d.startTime), 'EEEE, MMMM d, yyyy')
-  const start   = format(parseISO(d.startTime), 'h:mm a')
-  const end     = format(parseISO(d.endTime),   'h:mm a')
-  const typeLabel =
-    d.meetingType === 'in_person' ? 'In person' :
-    d.meetingType === 'phone'     ? 'Phone call' :
-    'Virtual (Google Meet)'
+  const date  = format(parseISO(d.startTime), 'EEEE, MMMM d, yyyy')
+  const start = format(parseISO(d.startTime), 'h:mm a')
+  const end   = format(parseISO(d.endTime),   'h:mm a')
 
   const content = `
-    <h1 style="margin:0 0 8px;font-size:22px;font-weight:500;color:#2C2C2A;">
-      You're booked!
+    <h1 style="margin:0 0 20px;font-size:22px;font-weight:500;color:#2C2C2A;">
+      Thank you for signing up!
     </h1>
-    <p style="margin:0 0 24px;font-size:15px;color:#5F5E5A;line-height:1.6;">
-      Hi ${d.studentName}, your appointment with ${d.mentorName} is confirmed.
+
+    <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      Dear ${d.studentName},
+    </p>
+
+    <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      Thank you for signing up for an appointment with an OT College Essay Mentor!
+      We're excited to work with you! Here are your appointment details:
     </p>
 
     <div style="background:#f5f4f0;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
       <table width="100%" cellpadding="0" cellspacing="0">
-        ${detailRow('Mentor',       d.mentorName)}
-        ${detailRow('Date',         date)}
-        ${detailRow('Time',         `${start} – ${end}`)}
-        ${detailRow('Format',       typeLabel)}
-        ${d.meetLink ? detailRow('Meeting link', `<a href="${d.meetLink}" style="color:#534AB7;">${d.meetLink}</a>`) : ''}
-        ${detailRow('Confirmation', `<code style="font-size:13px;background:#EEEDFE;color:#3C3489;padding:2px 8px;border-radius:4px;">${d.confirmationCode}</code>`)}
+        ${detailRow('Date',    date)}
+        ${detailRow('Time',    `${start} – ${end}`)}
+        ${detailRow('Mentor',  d.mentorName)}
+        ${d.meetLink
+          ? detailRow('Meeting link', `<a href="${d.meetLink}" style="color:#534AB7;">${d.meetLink}</a>`)
+          : detailRow('Meeting link', 'A Google Meet link will be added to your calendar invitation once your appointment is confirmed.')}
       </table>
     </div>
 
     ${divider()}
 
-    <p style="font-size:13px;color:#888780;line-height:1.6;margin:0;">
-      You will receive a reminder text message 2 days before your appointment.
-      To cancel or reschedule, contact your program coordinator with your confirmation code.
+    <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
+      Before your appointment:
+    </p>
+
+    <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      The day before your appointment, please share your college essay Google Doc —
+      even if you think they already have it — by uploading the link or document
+      <a href="${d.essayUploadUrl}" style="color:#534AB7;font-weight:500;">here</a>.
+      If there are multiple essays on your document, please indicate which essay you
+      plan to discuss during your meeting (1 long essay or up to 3 PIQs).
+    </p>
+
+    ${divider()}
+
+    <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
+      Cancellation policy:
+    </p>
+
+    <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      If, for any reason, you must cancel your appointment, please go back to your
+      Google Calendar invitation and change your availability from YES to NO to indicate
+      your cancellation <strong>AT LEAST 24 HOURS IN ADVANCE</strong>. Please try to avoid
+      last-minute cancellations, as we are unable to assign your spot to someone else
+      without significant advance notice.
+    </p>
+
+    ${divider()}
+
+    <p style="margin:0 0 4px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      Thank you! We look forward to working with you!
+    </p>
+
+    <p style="margin:0;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      — The College Essay Mentors
     </p>`
 
   return {

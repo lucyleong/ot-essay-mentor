@@ -17,7 +17,32 @@ export async function POST(request: NextRequest) {
   }
 
   // Check the slot is still available
-  const { data: slot, error: slotError } = await supabase
+  // Check if student already has an upcoming booking
+  const { data: existingBooking } = await supabase
+    .from('student_bookings')
+    .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
+    .eq('student_email', body.studentEmail.toLowerCase().trim())
+    .is('cancelled_at', null)
+    .gte('appointment_slots.start_time', new Date().toISOString())
+    .limit(1)
+    .maybeSingle()
+
+  if (existingBooking) {
+    const slot        = existingBooking.appointment_slots as any
+    const mentorName  = slot?.mentor_profiles?.full_name ?? 'your mentor'
+    const apptDate    = slot?.start_time
+      ? new Date(slot.start_time).toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric',
+        })
+      : 'a future date'
+
+    return NextResponse.json(
+      {
+        error: `You already have an upcoming appointment with ${mentorName} on ${apptDate}. One appointment per student at a time only. Please complete your current appointment before booking a new one.`,
+      },
+      { status: 409 }
+    )
+  }const { data: slot, error: slotError } = await supabase
     .from('appointment_slots')
     .select('id, is_booked, is_cancelled, mentor_id, start_time, end_time, meeting_type, google_meet_link, mentor_profiles(full_name, email)')
     .eq('id', body.slotId)
@@ -98,15 +123,16 @@ export async function POST(request: NextRequest) {
   // Send student confirmation email
   try {
     const { subject, html } = studentConfirmationEmail({
-      studentName:      `${body.firstName} ${body.lastName}`,
-      mentorName:       (slot.mentor_profiles as any).full_name,
-      mentorDepartment: (slot.mentor_profiles as any).department ?? '',
-      startTime:        slot.start_time,
-      endTime:          slot.end_time,
-      meetingType:      slot.meeting_type,
-      meetLink:         slot.google_meet_link,
-      confirmationCode: booking.confirmation_code,
-    })
+  studentName:      `${body.firstName} ${body.lastName}`,
+  mentorName:       (slot.mentor_profiles as any).full_name,
+  mentorDepartment: (slot.mentor_profiles as any).department ?? '',
+  startTime:        slot.start_time,
+  endTime:          slot.end_time,
+  meetingType:      slot.meeting_type,
+  meetLink:         slot.google_meet_link,
+  confirmationCode: booking.confirmation_code,
+  essayUploadUrl:   `${process.env.NEXT_PUBLIC_APP_URL}/book/${booking.id}/essays`,
+})
 
     await sendEmail({
       to:               body.studentEmail.toLowerCase().trim(),

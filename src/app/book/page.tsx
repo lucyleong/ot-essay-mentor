@@ -46,6 +46,7 @@ export default function BookPage() {
   const [answers,      setAnswers]      = useState<Record<string, any>>({})
   const [showMentor,   setShowMentor]   = useState(false)
   const formRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const params = typeFilter ? `?type=${typeFilter}` : ''
@@ -136,12 +137,15 @@ export default function BookPage() {
 
     if (!res.ok) {
       setError(data.error ?? 'Something went wrong. Please try again.')
-      if (res.status === 409) {
+      if (res.status === 409 && data.error?.includes('slot was just booked')) {
         fetch('/api/slots/available')
           .then(r => r.json())
           .then(d => { setSlots(d.slots ?? {}); setTotal(d.total ?? 0) })
         setSelectedSlot(null)
       }
+      setTimeout(() => {
+        errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
       return
     }
 
@@ -193,13 +197,36 @@ export default function BookPage() {
     <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
 
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px' }}>
-          Book a mentor appointment
-        </h1>
-        <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
-          OT College Essay Mentor Program · {total} open slot{total !== 1 ? 's' : ''} in the next 7 days
-        </p>
-      </div>
+  <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 12px' }}>
+    Fall 2026 College Essay Mentor Sign-Up
+  </h1>
+  <div style={{
+    background: '#ffffff',
+    border: '0.5px solid #e8e6de',
+    borderRadius: 12,
+    padding: '1.25rem',
+    marginBottom: 16,
+    fontSize: 15,
+    color: '#2C2C2A',
+    lineHeight: 1.7,
+  }}>
+    <p style={{ margin: '0 0 12px', fontWeight: 500 }}>
+      Oakland Tech Seniors, let's get these essays done!
+    </p>
+    <p style={{ margin: '0 0 12px' }}>
+      Use this form to sign up for a FREE appointment with a College Essay Mentor
+      to work on your essays! We will confirm your appointment via
+      email, including a Google Meet link, 
+      appointment time, and a request for access to the PIQ / essay if you have one!
+    </p>
+    <p style={{ margin: '0 0 12px' }}>
+      One appointment per student at a time only. Please complete your appointment before booking a new one.
+    </p>
+    <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>
+      {total} open slot{total !== 1 ? 's' : ''} available in the next 7 days
+    </p>
+  </div>
+</div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         {[
@@ -524,8 +551,8 @@ const isOptional = !q.is_required
               })}
 
             {error && (
-              <div style={{
-                background: '#FCEBEB',
+  <div ref={errorRef} style={{
+    background: '#FCEBEB',
                 border: '0.5px solid #F09595',
                 borderRadius: 8,
                 padding: '10px 14px',
