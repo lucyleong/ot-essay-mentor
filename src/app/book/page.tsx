@@ -1,0 +1,560 @@
+'use client'
+import { useEffect, useState, useRef } from 'react'
+import { format, parseISO } from 'date-fns'
+
+type Slot = {
+  id: string
+  start_time: string
+  end_time: string
+  duration_minutes: number
+  meeting_type: string
+  mentor_profiles: {
+    full_name: string
+    department: string
+  }
+}
+
+type Question = {
+  id: string
+  question_text: string
+  question_type: string
+  options: string[] | null
+  is_required: boolean
+  sort_order: number
+}
+
+const OPTIONAL_START = 11
+
+export default function BookPage() {
+  const [slots,        setSlots]        = useState<Record<string, Slot[]>>({})
+  const [total,        setTotal]        = useState(0)
+  const [questions,    setQuestions]    = useState<Question[]>([])
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null)
+  const [typeFilter,   setTypeFilter]   = useState<string | null>(null)
+  const [loading,      setLoading]      = useState(true)
+  const [submitting,   setSubmitting]   = useState(false)
+  const [submitted,    setSubmitted]    = useState(false)
+  const [confirmCode,  setConfirmCode]  = useState('')
+  const [error,        setError]        = useState('')
+  const [firstName,    setFirstName]    = useState('')
+  const [lastName,     setLastName]     = useState('')
+  const [email,        setEmail]        = useState('')
+  const [emailError,   setEmailError]   = useState('')
+  const [phoneError,   setPhoneError]   = useState('')
+  const [phone,        setPhone]        = useState('')
+  const [smsConsent,   setSmsConsent]   = useState(false)
+  const [answers,      setAnswers]      = useState<Record<string, any>>({})
+  const [showMentor,   setShowMentor]   = useState(false)
+  const formRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const params = typeFilter ? `?type=${typeFilter}` : ''
+    fetch(`/api/slots/available${params}`)
+      .then(r => r.json())
+      .then(data => {
+        setSlots(data.slots ?? {})
+        setTotal(data.total ?? 0)
+        setLoading(false)
+      })
+    fetch('/api/bookings/questions')
+      .then(r => r.json())
+      .then(setQuestions)
+  }, [typeFilter])
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() + i)
+    return d.toISOString().slice(0, 10)
+  })
+
+  function selectSlot(slot: Slot) {
+    setSelectedSlot(slot)
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
+
+  function validateEmail(v: string) {
+    if (!v) { setEmailError(''); return }
+    if (!/^[^\s@]+@gmail\.com$/i.test(v)) {
+      setEmailError('Please use a Gmail address (@gmail.com)')
+    } else {
+      setEmailError('')
+    }
+  }
+
+  function handleAnswerChange(questionId: string, value: any) {
+    setAnswers(prev => ({ ...prev, [questionId]: value }))
+    const mentorPrevQuestion = questions.find(q => q.sort_order === 8)
+    if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
+      setShowMentor(value === 'Yes')
+    }
+  }
+
+  function handleMultiSelect(questionId: string, option: string) {
+    const current = answers[questionId] ?? []
+    const updated = current.includes(option)
+      ? current.filter((o: string) => o !== option)
+      : [...current, option]
+    handleAnswerChange(questionId, updated)
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!selectedSlot) return
+    if (emailError) return
+    setSubmitting(true)
+    setError('')
+
+    const formattedAnswers = questions
+      .filter(q => {
+        if (q.sort_order <= 4) return false
+        if (q.sort_order === 9 && !showMentor) return false
+        return true
+      })
+      .map(q => ({
+        questionId: q.id,
+        answer: answers[q.id] ?? '',
+      }))
+
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slotId:       selectedSlot.id,
+        firstName,
+        lastName,
+        studentEmail: email,
+        studentPhone: phone,
+        smsConsent,
+        answers:      formattedAnswers,
+      }),
+    })
+
+    const data = await res.json()
+    setSubmitting(false)
+
+    if (!res.ok) {
+      setError(data.error ?? 'Something went wrong. Please try again.')
+      if (res.status === 409) {
+        fetch('/api/slots/available')
+          .then(r => r.json())
+          .then(d => { setSlots(d.slots ?? {}); setTotal(d.total ?? 0) })
+        setSelectedSlot(null)
+      }
+      return
+    }
+
+    setConfirmCode(data.confirmationCode)
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <main style={{ maxWidth: 560, margin: '0 auto', padding: '2rem 1rem' }}>
+        <div style={{
+          background: '#E1F5EE',
+          border: '0.5px solid #5DCAA5',
+          borderRadius: 12,
+          padding: '2rem',
+          textAlign: 'center',
+        }}>
+          <p style={{ fontSize: 22, fontWeight: 500, margin: '0 0 8px', color: '#085041' }}>
+            You're booked!
+          </p>
+          <p style={{ fontSize: 14, color: '#0F6E56', margin: '0 0 16px' }}>
+            Your appointment with {selectedSlot?.mentor_profiles.full_name} is confirmed.
+          </p>
+          <p style={{ fontSize: 14, color: '#0F6E56', margin: '0 0 8px' }}>
+            {selectedSlot && format(parseISO(selectedSlot.start_time), 'EEEE, MMMM d')} at{' '}
+            {selectedSlot && format(parseISO(selectedSlot.start_time), 'h:mm a')}
+          </p>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: 8,
+            padding: '10px 16px',
+            display: 'inline-block',
+            margin: '8px 0',
+          }}>
+            <p style={{ fontSize: 12, color: '#888780', margin: '0 0 2px' }}>Confirmation code</p>
+            <p style={{ fontSize: 18, fontWeight: 500, margin: 0, color: '#085041' }}>
+              {confirmCode}
+            </p>
+          </div>
+          <p style={{ fontSize: 13, color: '#0F6E56', margin: '12px 0 0' }}>
+            A confirmation email has been sent to {email}
+          </p>
+        </div>
+      </main>
+    )
+  }
+
+  return (
+    <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
+
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px' }}>
+          Book a mentor appointment
+        </h1>
+        <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+          OT College Essay Mentor Program · {total} open slot{total !== 1 ? 's' : ''} in the next 7 days
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+        {[
+          { label: 'Virtual', value: 'virtual' },
+          { label: 'In person', value: 'in_person' },
+        ].map(f => (
+          <button
+            key={f.label}
+            onClick={() => setTypeFilter(f.value)}
+            style={{
+              fontSize: 12,
+              padding: '4px 14px',
+              borderRadius: 20,
+              borderColor: typeFilter === f.value ? '#534AB7' : '#D3D1C7',
+              background:  typeFilter === f.value ? '#EEEDFE' : '#ffffff',
+              color:       typeFilter === f.value ? '#3C3489' : '#5F5E5A',
+            }}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <p style={{ color: '#888780', fontSize: 13 }}>Loading available slots...</p>
+      ) : total === 0 ? (
+        <div style={{
+          background: '#F1EFE8',
+          borderRadius: 12,
+          padding: '2rem',
+          textAlign: 'center',
+        }}>
+          <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
+            No appointments available in the next 7 days. Please check back soon.
+          </p>
+        </div>
+      ) : (
+        days.map(dateKey => (
+          <div key={dateKey} style={{ marginBottom: 20 }}>
+            <p style={{
+              fontSize: 11, fontWeight: 500, letterSpacing: '.06em',
+              textTransform: 'uppercase', color: '#888780',
+              borderBottom: '0.5px solid #e8e6de',
+              paddingBottom: 6, marginBottom: 8,
+            }}>
+              {format(parseISO(dateKey), 'EEEE, MMM d')}
+            </p>
+
+            {(slots[dateKey] ?? []).length === 0 ? (
+              <p style={{ fontSize: 13, color: '#B4B2A9' }}>No open slots this day</p>
+            ) : (
+              (slots[dateKey] ?? []).map(slot => (
+                <div
+                  key={slot.id}
+                  onClick={() => selectSlot(slot)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '10px 12px', marginBottom: 6, cursor: 'pointer',
+                    border: `0.5px solid ${selectedSlot?.id === slot.id ? '#534AB7' : '#e8e6de'}`,
+                    background: selectedSlot?.id === slot.id ? '#EEEDFE' : '#ffffff',
+                    borderRadius: 10,
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>
+                      {slot.mentor_profiles.full_name}
+                    </p>
+                    <p style={{ margin: 0, fontSize: 12, color: '#888780' }}>
+                      {format(parseISO(slot.start_time), 'h:mm a')} –{' '}
+                      {format(parseISO(slot.end_time), 'h:mm a')}
+                      {slot.mentor_profiles.department ? ` · ${slot.mentor_profiles.department}` : ''}
+                    </p>
+                  </div>
+                  <span style={{
+                    fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                    background: '#F1EFE8', color: '#5F5E5A',
+                  }}>
+                    {slot.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
+                  </span>
+                  <button
+                    onClick={e => { e.stopPropagation(); selectSlot(slot) }}
+                    style={{ fontSize: 12, padding: '5px 14px' }}
+                  >
+                    Book
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        ))
+      )}
+
+      {selectedSlot && (
+        <div ref={formRef} style={{
+          marginTop: 24,
+          border: '0.5px solid #534AB7',
+          borderRadius: 12,
+          padding: '1.25rem',
+          background: '#ffffff',
+        }}>
+          <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>
+            Booking with {selectedSlot.mentor_profiles.full_name}
+          </p>
+          <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+            {format(parseISO(selectedSlot.start_time), 'EEEE, MMMM d')} at{' '}
+            {format(parseISO(selectedSlot.start_time), 'h:mm a')} –{' '}
+            {format(parseISO(selectedSlot.end_time), 'h:mm a')}
+          </p>
+
+          <div style={{
+            background: '#F1EFE8',
+            borderRadius: 8,
+            padding: '12px 14px',
+            marginBottom: 20,
+            fontSize: 13,
+            color: '#5F5E5A',
+            lineHeight: 1.6,
+          }}>
+            Please fill out all required fields to complete your booking.
+            Your information will only be used for program purposes.
+          </div>
+
+          <form onSubmit={handleSubmit}>
+
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                Email Address <span style={{ color: '#E24B4A' }}>*</span>
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => { setEmail(e.target.value); validateEmail(e.target.value) }}
+                placeholder="you@gmail.com"
+                required
+                style={{ borderColor: emailError ? '#E24B4A' : undefined }}
+              />
+              {emailError && (
+                <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>{emailError}</p>
+              )}
+              <p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0' }}>
+                A Gmail address is required
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                  First Name <span style={{ color: '#E24B4A' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                  placeholder="First name"
+                  required
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                  Last Name <span style={{ color: '#E24B4A' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
+                  placeholder="Last name"
+                  required
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                Cell Phone with Area Code <span style={{ color: '#E24B4A' }}>*</span>
+              </label>
+              <input
+  type="tel"
+  value={phone}
+  onChange={e => {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+    setPhone(digits)
+    if (digits.length > 0 && digits.length < 10) {
+      setPhoneError('Please enter a 10-digit phone number')
+    } else {
+      setPhoneError('')
+    }
+  }}
+  placeholder="5105550100"
+  required
+  style={{ borderColor: phoneError ? '#E24B4A' : undefined }}
+/>
+{phoneError && (
+  <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>
+    {phoneError}
+  </p>
+)}
+              {phone && (
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: '#5F5E5A', marginTop: 8, cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={smsConsent}
+                    onChange={e => setSmsConsent(e.target.checked)}
+                    style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
+                  />
+                  I agree to receive a reminder text message about this appointment.
+                  Message and data rates may apply. Reply STOP to unsubscribe.
+                </label>
+              )}
+            </div>
+
+            {questions
+              .filter(q => {
+                if (q.sort_order <= 4) return false
+                if (q.sort_order === 9 && !showMentor) return false
+                return true
+              })
+              .map(q => {
+const isOptional = !q.is_required
+                const showOptionalHeader = q.sort_order === OPTIONAL_START
+
+                return (
+                  <div key={q.id}>
+                    {showOptionalHeader && (
+                      <div style={{
+                        background: '#F1EFE8',
+                        borderRadius: 8,
+                        padding: '10px 14px',
+                        marginBottom: 16,
+                        marginTop: 8,
+                        fontSize: 13,
+                        color: '#5F5E5A',
+                        lineHeight: 1.6,
+                      }}>
+                        These <em>optional</em> questions help us compile statistics about who we are helping.
+                        Your personal information will not be shared.
+                      </div>
+                    )}
+
+                    <div style={{ marginBottom: 14 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                        {q.question_text}
+                        {q.is_required && !isOptional && <span style={{ color: '#E24B4A' }}> *</span>}
+                        {isOptional && <span style={{ color: '#B4B2A9', fontWeight: 400 }}> (optional)</span>}
+                      </label>
+
+                      {q.question_type === 'text' && (
+                        <input
+                          type="text"
+                          value={answers[q.id] ?? ''}
+                          onChange={e => handleAnswerChange(q.id, e.target.value)}
+                          required={q.is_required && !isOptional}
+                        />
+                      )}
+
+                      {q.question_type === 'textarea' && (
+                        <textarea
+                          value={answers[q.id] ?? ''}
+                          onChange={e => handleAnswerChange(q.id, e.target.value)}
+                          rows={3}
+                          required={q.is_required && !isOptional}
+                          style={{ resize: 'vertical' }}
+                        />
+                      )}
+
+                      {q.question_type === 'select' && q.options && (
+                        <select
+                          value={answers[q.id] ?? ''}
+                          onChange={e => handleAnswerChange(q.id, e.target.value)}
+                          required={q.is_required && !isOptional}
+                        >
+                          <option value="">Select an option</option>
+                          {q.options.map((opt: string) => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      )}
+
+                      {q.question_type === 'multiselect' && q.options && (
+                        <div style={{
+                          border: '0.5px solid #D3D1C7',
+                          borderRadius: 8,
+                          padding: '8px 12px',
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 8,
+                        }}>
+                          {q.options.map((opt: string) => {
+                            const selected = (answers[q.id] ?? []).includes(opt)
+                            return (
+                              <label
+                                key={opt}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 6,
+                                  fontSize: 13,
+                                  cursor: 'pointer',
+                                  padding: '4px 10px',
+                                  borderRadius: 20,
+                                  background: selected ? '#EEEDFE' : '#F1EFE8',
+                                  border: `0.5px solid ${selected ? '#534AB7' : '#D3D1C7'}`,
+                                  color: selected ? '#3C3489' : '#5F5E5A',
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selected}
+                                  onChange={() => handleMultiSelect(q.id, opt)}
+                                  style={{ width: 'auto', margin: 0 }}
+                                />
+                                {opt}
+                              </label>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+
+            {error && (
+              <div style={{
+                background: '#FCEBEB',
+                border: '0.5px solid #F09595',
+                borderRadius: 8,
+                padding: '10px 14px',
+                marginBottom: 16,
+                fontSize: 13,
+                color: '#791F1F',
+              }}>
+                {error}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <button
+                type="submit"
+                disabled={submitting || !!emailError || !!phoneError || !email || !firstName || !lastName || !phone}
+                style={{ flex: 1 }}
+              >
+                {submitting ? 'Booking...' : 'Confirm booking'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedSlot(null)}
+                style={{ padding: '0 16px' }}
+              >
+                Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+      )}
+    </main>
+  )
+}

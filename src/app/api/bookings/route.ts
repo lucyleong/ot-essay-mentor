@@ -1,0 +1,101 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { assertGmail } from '@/lib/validators'
+
+export async function POST(request: NextRequest) {
+  const supabase = await createServerSupabaseClient()
+  const body     = await request.json()
+
+  // Validate Gmail address
+  try {
+    assertGmail(body.studentEmail)
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 422 })
+  }
+
+  // Check the slot is still available
+  const { data: slot, error: slotError } = await supabase
+    .from('appointment_slots')
+    .select('id, is_booked, is_cancelled, mentor_id, start_time, end_time, meeting_type, google_meet_link, mentor_profiles(full_name, email)')
+    .eq('id', body.slotId)
+    .single()
+
+  if (slotError || !slot) {
+    return NextResponse.json(
+      { error: 'Slot not found.' },
+      { status: 404 }
+    )
+  }
+
+  if (slot.is_booked || slot.is_cancelled) {
+    return NextResponse.json(
+      { error: 'Sorry, this slot was just booked by someone else. Please choose another time.' },
+      { status: 409 }
+    )
+  }
+
+  // Generate confirmation code
+  const confirmationCode = Math.random()
+    .toString(36)
+    .substring(2, 8)
+    .toUpperCase()
+
+  // Create the booking
+  const { data: booking, error: bookingError } = await supabase
+    .from('student_bookings')
+    .insert({
+      slot_id:           body.slotId,
+      student_name:      `${body.firstName} ${body.lastName}`,
+      student_email:     body.studentEmail.toLowerCase().trim(),
+      student_phone:     body.smsConsent ? body.studentPhone : null,
+      confirmation_code: confirmationCode,
+    })
+    .select()
+    .single()
+
+  if (bookingError) {
+    return NextResponse.json(
+      { error: bookingError.message },
+      { status: 500 }
+    )
+  }
+
+  // Mark the slot as booked
+  await supabase
+    .from('appointment_slots')
+    .update({ is_booked: true })
+    .eq('id', body.slotId)
+
+  // Save intake question answers
+  if (body.answers && body.answers.length > 0) {
+    const answersToInsert = body.answers
+      .filter((a: any) => a.answer && a.answer.toString().trim() !== '')
+      .map((a: any) => ({
+        booking_id:  booking.id,
+        question_id: a.questionId,
+        answer_text: Array.isArray(a.answer)
+          ? a.answer.join(', ')
+          : a.answer.toString(),
+      }))
+
+    if (answersToInsert.length > 0) {
+      await supabase
+        .from('booking_question_answers')
+        .insert(answersToInsert)
+    }
+  }
+
+  // Trigger immediate SMS if within 72 hours
+  const hoursUntil = (new Date(slot.start_time).getTime() - Date.now()) / 3600_000
+  if (hoursUntil <= 72 && body.studentPhone && body.smsConsent) {
+    // SMS will be handled in Phase 8
+    console.log('SMS should be sent — will be wired in Phase 8')
+  }
+
+  return NextResponse.json({
+    success:          true,
+    bookingId:        booking.id,
+    confirmationCode: booking.confirmation_code,
+    meetLink:         slot.google_meet_link,
+  })
+}
