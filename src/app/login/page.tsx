@@ -4,11 +4,14 @@ import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
-  const router  = useRouter()
+  const [email,       setEmail]       = useState('')
+  const [password,    setPassword]    = useState('')
+  const [showPass,    setShowPass]    = useState(false)
+  const [error,       setError]       = useState('')
+  const [loading,     setLoading]     = useState(false)
+  const [resetSent,   setResetSent]   = useState(false)
+  const [resetMode,   setResetMode]   = useState(false)
+  const router   = useRouter()
   const supabase = createClient()
 
   async function handleLogin(e: React.FormEvent) {
@@ -27,7 +30,6 @@ export default function LoginPage() {
       return
     }
 
-    // Check if admin or mentor and redirect accordingly
     const { data: mentor } = await supabase
       .from('mentor_profiles')
       .select('id')
@@ -44,48 +46,60 @@ export default function LoginPage() {
     }
   }
 
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email) {
+      setError('Please enter your email address first.')
+      return
+    }
+    setLoading(true)
+    setError('')
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+
+    setLoading(false)
+    if (error) {
+      setError(error.message)
+      return
+    }
+    setResetSent(true)
+  }
+
+  if (resetSent) {
+    return (
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4f0', padding: '1rem' }}>
+        <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400, textAlign: 'center' }}>
+          <p style={{ fontSize: 16, fontWeight: 500, color: '#085041', margin: '0 0 8px' }}>Check your email</p>
+          <p style={{ fontSize: 14, color: '#0F6E56', margin: '0 0 16px', lineHeight: 1.6 }}>
+            We sent a password reset link to <strong>{email}</strong>.
+            Click the link in the email to set a new password.
+          </p>
+          <button onClick={() => { setResetSent(false); setResetMode(false) }} style={{ fontSize: 13 }}>
+            Back to sign in
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   return (
-    <main style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f5f4f0',
-      padding: '1rem',
-    }}>
-      <div style={{
-        background: '#ffffff',
-        border: '0.5px solid #e8e6de',
-        borderRadius: 12,
-        padding: '2rem',
-        width: '100%',
-        maxWidth: 400,
-      }}>
-        {/* Header */}
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4f0', padding: '1rem' }}>
+      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400 }}>
+
         <div style={{ marginBottom: 24, textAlign: 'center' }}>
-          <h1 style={{
-            fontSize: 22,
-            fontWeight: 500,
-            margin: '0 0 6px',
-            color: '#2C2C2A',
-          }}>
+          <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
             OT College Essay Mentor Program
           </h1>
           <p style={{ fontSize: 14, color: '#888780', margin: 0 }}>
-            Sign in to your account
+            {resetMode ? 'Reset your password' : 'Sign in to your account'}
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleLogin}>
+        <form onSubmit={resetMode ? handleForgotPassword : handleLogin}>
           <div style={{ marginBottom: 14 }}>
-            <label style={{
-              display: 'block',
-              fontSize: 12,
-              fontWeight: 500,
-              color: '#5F5E5A',
-              marginBottom: 4,
-            }}>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
               Email address
             </label>
             <input
@@ -98,58 +112,74 @@ export default function LoginPage() {
             />
           </div>
 
-          <div style={{ marginBottom: 20 }}>
-            <label style={{
-              display: 'block',
-              fontSize: 12,
-              fontWeight: 500,
-              color: '#5F5E5A',
-              marginBottom: 4,
-            }}>
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Your password"
-              required
-              style={{ width: '100%', boxSizing: 'border-box' }}
-            />
-          </div>
+          {!resetMode && (
+            <div style={{ marginBottom: 8 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Your password"
+                  required
+                  style={{ width: '100%', boxSizing: 'border-box', paddingRight: 40 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: '#888780', fontSize: 13, padding: 0,
+                  }}
+                >
+                  {showPass ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!resetMode && (
+            <div style={{ textAlign: 'right', marginBottom: 16 }}>
+              <button
+                type="button"
+                onClick={() => { setResetMode(true); setError('') }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#534AB7', padding: 0 }}
+              >
+                Forgot your password?
+              </button>
+            </div>
+          )}
 
           {error && (
-            <div style={{
-              background: '#FCEBEB',
-              border: '0.5px solid #F09595',
-              borderRadius: 8,
-              padding: '10px 14px',
-              marginBottom: 16,
-              fontSize: 13,
-              color: '#791F1F',
-            }}>
+            <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#791F1F' }}>
               {error}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%' }}
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
+          <button type="submit" disabled={loading} style={{ width: '100%' }}>
+            {loading ? (resetMode ? 'Sending...' : 'Signing in...') : (resetMode ? 'Send reset link' : 'Sign in')}
           </button>
+
+          {resetMode && (
+            <button
+              type="button"
+              onClick={() => { setResetMode(false); setError('') }}
+              style={{ width: '100%', marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#888780' }}
+            >
+              Back to sign in
+            </button>
+          )}
         </form>
 
-        <p style={{
-          fontSize: 12,
-          color: '#888780',
-          textAlign: 'center',
-          marginTop: 16,
-          lineHeight: 1.6,
-        }}>
-          Don't have an account? Contact your program coordinator to get access.
-        </p>
+        {!resetMode && (
+          <p style={{ fontSize: 12, color: '#888780', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
+            Don't have an account? Contact your program coordinator to get access.
+          </p>
+        )}
       </div>
     </main>
   )
