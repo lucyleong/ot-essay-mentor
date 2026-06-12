@@ -32,11 +32,11 @@ type MentorProfile = {
 }
 
 export default function MentorDashboardPage() {
-  const [activePanel,  setActivePanel]  = useState('today')
-  const [bookings,     setBookings]     = useState<Booking[]>([])
-  const [mentor,       setMentor]       = useState<MentorProfile | null>(null)
-  const [loading,      setLoading]      = useState(true)
-  const router  = useRouter()
+  const [activePanel, setActivePanel] = useState('today')
+  const [bookings,    setBookings]    = useState<Booking[]>([])
+  const [mentor,      setMentor]      = useState<MentorProfile | null>(null)
+  const [loading,     setLoading]     = useState(true)
+  const router   = useRouter()
   const supabase = createClient()
 
   useEffect(() => {
@@ -47,7 +47,6 @@ export default function MentorDashboardPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
 
-    // Get mentor profile
     const { data: mentorData } = await supabase
       .from('mentor_profiles')
       .select('id, full_name, email')
@@ -57,27 +56,12 @@ export default function MentorDashboardPage() {
     if (!mentorData) { router.push('/login'); return }
     setMentor(mentorData)
 
-    // Get all bookings for this mentor
-    const { data: bookingData } = await supabase
-      .from('student_bookings')
-      .select(`
-        id, student_name, student_email, student_phone,
-        student_major, year_in_school, first_gen_student,
-        sms_confirmed_at, sms_confirm_sent, cancelled_at,
-        appointment_slots (
-          id, start_time, end_time, meeting_type, google_meet_link
-        ),
-        student_essays ( id )
-      `)
-      .is('cancelled_at', null)
-      .order('appointment_slots.start_time', { ascending: true })
-
-    // Filter to only this mentor's bookings
-    const filtered = (bookingData ?? []).filter((b: any) => {
+    const bookingsRes = await fetch('/api/mentor/bookings')
+    const bookingsData = await bookingsRes.json()
+    const filtered = (bookingsData.bookings ?? []).filter((b: any) => {
       const slot = b.appointment_slots
       return slot && isFuture(parseISO(slot.start_time))
     })
-
     setBookings(filtered)
     setLoading(false)
   }
@@ -92,11 +76,23 @@ export default function MentorDashboardPage() {
 
   function statusBadge(booking: Booking) {
     if (booking.sms_confirmed_at) {
-      return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>Confirmed</span>
+      return (
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+          Confirmed
+        </span>
+      )
     } else if (booking.sms_confirm_sent) {
-      return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#633806' }}>No reply</span>
+      return (
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#633806' }}>
+          No reply
+        </span>
+      )
     } else {
-      return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>No SMS sent</span>
+      return (
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+          No SMS sent
+        </span>
+      )
     }
   }
 
@@ -112,13 +108,14 @@ export default function MentorDashboardPage() {
 
       {/* Sidebar */}
       <div style={{
-        width: 200, flexShrink: 0,
+        width: 200,
+        flexShrink: 0,
         background: '#ffffff',
         borderRight: '0.5px solid #e8e6de',
-        display: 'flex', flexDirection: 'column',
+        display: 'flex',
+        flexDirection: 'column',
         padding: '16px 0',
       }}>
-        {/* Mentor info */}
         <div style={{ padding: '12px 16px 16px', borderBottom: '0.5px solid #e8e6de', marginBottom: 8 }}>
           <div style={{
             width: 36, height: 36, borderRadius: '50%',
@@ -132,7 +129,6 @@ export default function MentorDashboardPage() {
           <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>Mentor</p>
         </div>
 
-        {/* Navigation */}
         {navItems.map(item => (
           <button
             key={item.key}
@@ -150,7 +146,6 @@ export default function MentorDashboardPage() {
           </button>
         ))}
 
-        {/* Sign out */}
         <div style={{ marginTop: 'auto', padding: '12px 16px', borderTop: '0.5px solid #e8e6de' }}>
           <button
             onClick={handleSignOut}
@@ -185,12 +180,17 @@ export default function MentorDashboardPage() {
                 ) : (
                   todayBookings.map(booking => (
                     <div key={booking.id} style={{
-                      background: '#ffffff', border: '0.5px solid #e8e6de',
-                      borderRadius: 12, padding: '16px 20px', marginBottom: 10,
+                      background: '#ffffff',
+                      border: '0.5px solid #e8e6de',
+                      borderRadius: 12,
+                      padding: '16px 20px',
+                      marginBottom: 10,
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                         <div>
-                          <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>{booking.student_name}</p>
+                          <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                            {booking.student_name}
+                          </p>
                           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                             {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
                             {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
@@ -210,7 +210,8 @@ export default function MentorDashboardPage() {
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {booking.appointment_slots.google_meet_link && (
                           
-                            href={booking.appointment_slots.google_meet_link}
+                        <a
+                          href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{
@@ -250,12 +251,19 @@ export default function MentorDashboardPage() {
                 ) : (
                   upcomingBookings.map(booking => (
                     <div key={booking.id} style={{
-                      background: '#ffffff', border: '0.5px solid #e8e6de',
-                      borderRadius: 12, padding: '16px 20px', marginBottom: 10,
-                      display: 'flex', alignItems: 'center', gap: 12,
+                      background: '#ffffff',
+                      border: '0.5px solid #e8e6de',
+                      borderRadius: 12,
+                      padding: '16px 20px',
+                      marginBottom: 10,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
                     }}>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>{booking.student_name}</p>
+                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                          {booking.student_name}
+                        </p>
                         <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                           {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')} –{' '}
                           {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')}
@@ -292,12 +300,16 @@ export default function MentorDashboardPage() {
                     <p style={{ color: '#888780', margin: 0 }}>No students yet.</p>
                   </div>
                 ) : (
-                  // Deduplicate by email
                   Array.from(new Map(bookings.map(b => [b.student_email, b])).values()).map(booking => (
                     <div key={booking.student_email} style={{
-                      background: '#ffffff', border: '0.5px solid #e8e6de',
-                      borderRadius: 12, padding: '14px 20px', marginBottom: 8,
-                      display: 'flex', alignItems: 'center', gap: 12,
+                      background: '#ffffff',
+                      border: '0.5px solid #e8e6de',
+                      borderRadius: 12,
+                      padding: '14px 20px',
+                      marginBottom: 8,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
                     }}>
                       <div style={{
                         width: 36, height: 36, borderRadius: '50%',
@@ -308,7 +320,9 @@ export default function MentorDashboardPage() {
                         {booking.student_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>{booking.student_name}</p>
+                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                          {booking.student_name}
+                        </p>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {booking.student_email}
                           {booking.student_major ? ` · ${booking.student_major}` : ''}
