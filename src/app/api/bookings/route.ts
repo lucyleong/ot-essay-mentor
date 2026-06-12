@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { assertGmail } from '@/lib/validators'
+import { sendEmail } from '@/lib/email'
+import { studentConfirmationEmail } from '@/lib/email-templates/student-confirmation'
+import { format, parseISO } from 'date-fns'
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -90,6 +93,32 @@ export async function POST(request: NextRequest) {
   if (hoursUntil <= 72 && body.studentPhone && body.smsConsent) {
     // SMS will be handled in Phase 8
     console.log('SMS should be sent — will be wired in Phase 8')
+  }
+
+  // Send student confirmation email
+  try {
+    const { subject, html } = studentConfirmationEmail({
+      studentName:      `${body.firstName} ${body.lastName}`,
+      mentorName:       (slot.mentor_profiles as any).full_name,
+      mentorDepartment: (slot.mentor_profiles as any).department ?? '',
+      startTime:        slot.start_time,
+      endTime:          slot.end_time,
+      meetingType:      slot.meeting_type,
+      meetLink:         slot.google_meet_link,
+      confirmationCode: booking.confirmation_code,
+    })
+
+    await sendEmail({
+      to:               body.studentEmail.toLowerCase().trim(),
+      subject,
+      html,
+      bookingId:        booking.id,
+      notificationType: 'booking_confirmation',
+      recipientType:    'student',
+    })
+  } catch (emailErr) {
+    console.error('Confirmation email failed:', emailErr)
+    // Don't fail the booking if email fails
   }
 
   return NextResponse.json({
