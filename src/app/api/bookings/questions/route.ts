@@ -14,19 +14,22 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  // For the mentor multiselect question, fetch current mentor names
-  const mentorQuestion = data?.find(q => q.sort_order === 9)
-  if (mentorQuestion) {
-    const { data: mentors } = await supabase
-      .from('mentor_profiles')
-      .select('full_name')
-      .eq('is_active', true)
-      .order('full_name', { ascending: true })
+  // Fetch mentor first names for the mentor multiselect question
+  const { data: mentors } = await supabase
+    .from('mentor_profiles')
+    .select('full_name')
+    .eq('is_active', true)
+    .order('full_name', { ascending: true })
 
-    if (mentors && mentors.length > 0) {
-      mentorQuestion.options = mentors.map(m => m.full_name)
+  const mentorNames = (mentors ?? []).map(m => m.full_name.split(' ')[0])
+
+  // Build the final questions array with mentor names injected
+  const questions = (data ?? []).map(q => {
+    if (q.sort_order === 9 && mentorNames.length > 0) {
+      return { ...q, options: mentorNames }
     }
-  }
+    return q
+  })
 
-  return NextResponse.json(data ?? [])
+  return NextResponse.json(questions)
 }

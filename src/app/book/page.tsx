@@ -292,12 +292,12 @@ export default function BookPage() {
                 >
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>
-                      {slot.mentor_profiles.full_name}
+{slot.mentor_profiles?.full_name ?? 'Mentor'}
                     </p>
                     <p style={{ margin: 0, fontSize: 12, color: '#888780' }}>
                       {format(parseISO(slot.start_time), 'h:mm a')} –{' '}
                       {format(parseISO(slot.end_time), 'h:mm a')}
-                      {slot.mentor_profiles.department ? ` · ${slot.mentor_profiles.department}` : ''}
+                      {slot.mentor_profiles?.department ? ` · ${slot.mentor_profiles.department}` : ''}
                     </p>
                   </div>
                   <span style={{
@@ -328,7 +328,8 @@ export default function BookPage() {
           background: '#ffffff',
         }}>
           <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>
-            Booking with {selectedSlot.mentor_profiles.full_name}
+            Booking with {selectedSlot.mentor_profiles?.full_name ?? 'Mentor'}
+
           </p>
           <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
             {format(parseISO(selectedSlot.start_time), 'EEEE, MMMM d')} at{' '}

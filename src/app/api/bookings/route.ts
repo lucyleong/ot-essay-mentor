@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
   try {
     const { subject, html } = studentConfirmationEmail({
   studentName:      `${body.firstName} ${body.lastName}`,
-  mentorName:       (slot.mentor_profiles as any).full_name,
+mentorName: (slot.mentor_profiles as any).full_name.split(' ')[0],
   mentorDepartment: (slot.mentor_profiles as any).department ?? '',
   startTime:        slot.start_time,
   endTime:          slot.end_time,
