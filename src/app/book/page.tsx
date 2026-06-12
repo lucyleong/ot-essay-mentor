@@ -441,7 +441,6 @@ export default function BookPage() {
               .filter(q => {
                 if (q.sort_order <= 4) return false
                 if (q.sort_order === 9 && !showMentor) return false
-                  if (q.sort_order > 9 && showMentor) return false
 
                 return true
               })
