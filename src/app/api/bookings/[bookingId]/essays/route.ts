@@ -3,14 +3,15 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { bookingId: string } }
+  context: { params: Promise<{ bookingId: string }> }
 ) {
+  const { bookingId } = await context.params
   const supabase = await createServerSupabaseClient()
 
   const { data, error } = await supabase
     .from('student_essays')
     .select('*')
-    .eq('booking_id', params.bookingId)
+    .eq('booking_id', bookingId)
     .order('uploaded_at', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -31,8 +32,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { bookingId: string } }
+  context: { params: Promise<{ bookingId: string }> }
 ) {
+  const { bookingId } = await context.params
   const supabase    = await createServerSupabaseClient()
   const contentType = request.headers.get('content-type') ?? ''
 
@@ -50,7 +52,7 @@ export async function POST(
     const { data, error } = await supabase
       .from('student_essays')
       .insert({
-        booking_id:     params.bookingId,
+        booking_id:     bookingId,
         essay_type:     'google_doc',
         google_doc_url: body.googleDocUrl,
         note_to_mentor: body.noteToMentor ?? null,
@@ -95,7 +97,7 @@ export async function POST(
 
     const ext      = file.name.split('.').pop()?.toLowerCase() ?? 'bin'
     const safeName = `${Date.now()}.${ext}`
-    const path     = `essays/${params.bookingId}/${safeName}`
+    const path     = `essays/${bookingId}/${safeName}`
 
     const arrayBuffer = await file.arrayBuffer()
 
@@ -113,7 +115,7 @@ export async function POST(
     const { data, error } = await supabase
       .from('student_essays')
       .insert({
-        booking_id:      params.bookingId,
+        booking_id:      bookingId,
         essay_type:      'file_upload',
         file_path:       path,
         file_name:       file.name,
