@@ -4,6 +4,7 @@ import { assertGmail } from '@/lib/validators'
 import { sendEmail } from '@/lib/email'
 import { studentConfirmationEmail } from '@/lib/email-templates/student-confirmation'
 import { format, parseISO } from 'date-fns'
+import { addStudentToCalendarEvent } from '@/lib/calendar'
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -112,6 +113,19 @@ export async function POST(request: NextRequest) {
         .insert(answersToInsert)
     }
   }
+// Add student to Google Calendar event
+try {
+  const { meetLink } = await addStudentToCalendarEvent(booking.id)
+  if (meetLink) {
+    await supabase
+      .from('appointment_slots')
+      .update({ google_meet_link: meetLink })
+      .eq('id', body.slotId)
+  }
+} catch (calErr) {
+  console.error('Calendar update failed:', calErr)
+  // Don't fail the booking if calendar update fails
+}
 
   // Trigger immediate SMS if within 72 hours
   const hoursUntil = (new Date(slot.start_time).getTime() - Date.now()) / 3600_000
