@@ -114,17 +114,19 @@ export async function POST(request: NextRequest) {
     }
   }
 // Add student to Google Calendar event
+let meetLink = slot.google_meet_link
+
 try {
-  const { meetLink } = await addStudentToCalendarEvent(booking.id)
-  if (meetLink) {
+  const calResult = await addStudentToCalendarEvent(booking.id)
+  if (calResult.meetLink) {
+    meetLink = calResult.meetLink
     await supabase
       .from('appointment_slots')
-      .update({ google_meet_link: meetLink })
+      .update({ google_meet_link: calResult.meetLink })
       .eq('id', body.slotId)
   }
 } catch (calErr) {
   console.error('Calendar update failed:', calErr)
-  // Don't fail the booking if calendar update fails
 }
 
   // Trigger immediate SMS if within 72 hours
