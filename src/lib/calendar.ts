@@ -117,6 +117,10 @@ export async function addStudentToCalendarEvent(bookingId: string) {
             email:       booking.student_email,
             displayName: booking.student_name,
           },
+          {
+            email:       mentor.email,
+            displayName: mentor.full_name,
+          },
         ],
         description: `Student: ${booking.student_name}\nEmail: ${booking.student_email}\n\nJoin with Google Meet: ${slot.google_meet_link}`,
       }),
