@@ -19,13 +19,7 @@ type Booking = {
   booked_at: string
   cancelled_at: string | null
   confirmation_code: string
-  appointment_slots: {
-    start_time: string
-    meeting_type: string
-    mentor_profiles: {
-      full_name: string
-    }
-  }
+  appointment_slots: any
 }
 
 export default function AdminPage() {
