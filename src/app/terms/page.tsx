@@ -1,0 +1,74 @@
+export default function TermsPage() {
+  return (
+    <main style={{ maxWidth: 700, margin: '0 auto', padding: '3rem 2rem' }}>
+      <h1 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px' }}>Terms, Conditions & Privacy Policy</h1>
+      <p style={{ fontSize: 13, color: '#888780', margin: '0 0 40px' }}>
+        Oakland Tech College Essay Mentor Program · Last updated: June 2026
+      </p>
+
+      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Terms & Conditions</h2>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Program eligibility</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        The OT College Essay Mentor Program is available to all current Oakland Tech seniors who are preparing college applications. One appointment per student is available on a first-come, first-served basis.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Appointments</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        Appointments are free of charge. By booking an appointment you agree to attend at the scheduled time. If you need to cancel, please do so at least 24 hours in advance by updating your Google Calendar invitation. Last-minute cancellations prevent other students from using the slot.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Gmail requirement</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        A Gmail address is required to book an appointment. This allows mentors to share Google Docs and Google Meet links with you directly.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. Message and data rates may apply. Reply STOP to unsubscribe at any time.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Mentor conduct</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        Our mentors are volunteers who donate their time to support Oakland Tech students. Please treat them with respect. Mentors reserve the right to end appointments that are disrespectful or unproductive.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
+        The OT College Essay Mentor Program is a volunteer program operated by Oakland Technical High School. We make no guarantees regarding college admission outcomes. Mentors provide writing and editing support only.
+      </p>
+
+      <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 40px' }} />
+
+      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Privacy Policy</h2>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Information we collect</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>How we use your information</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        We use your information to schedule and confirm appointments, send appointment reminders, and compile anonymous statistics about who we are helping. Your personal information is never sold or shared with third parties.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text messages</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. You can reply STOP at any time to unsubscribe. Message and data rates may apply.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Data retention</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
+        Your information is retained for the duration of the program year and archived at the end of each semester. Essays you share are deleted at the end of each program session.
+      </p>
+
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: 0 }}>
+        Questions? Contact us at{' '}
+        <a href="mailto:otessaymentors@gmail.com" style={{ color: '#534AB7' }}>
+          otessaymentors@gmail.com
+        </a>
+      </p>
+    </main>
+  )
+}
