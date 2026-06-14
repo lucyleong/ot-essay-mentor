@@ -38,7 +38,33 @@ export default function MentorDashboardPage() {
   const [loading,     setLoading]     = useState(true)
   const router   = useRouter()
   const supabase = createClient()
+  const [slots,          setSlots]          = useState<any[]>([])
+const [showSlotForm,   setShowSlotForm]   = useState(false)
+const [slotDate,       setSlotDate]       = useState('')
+const [slotStart,      setSlotStart]      = useState('')
+const [slotEnd,        setSlotEnd]        = useState('')
+const [slotBreak, setSlotBreak] = useState('10')
+const [slotType,       setSlotType]       = useState('virtual')
+const [slotRecurrence, setSlotRecurrence] = useState('none')
+const [slotUntil, setSlotUntil] = useState('')
+const [addingSlot,     setAddingSlot]     = useState(false)
+const [slotSuccess,    setSlotSuccess]    = useState('')
+const [slotError,      setSlotError]      = useState('')
 
+function generateTimeOptions() {
+  const options = []
+  for (let hour = 7; hour <= 21; hour++) {
+    for (let min = 0; min < 60; min += 5) {
+      const h    = hour % 12 || 12
+      const ampm = hour < 12 ? 'AM' : 'PM'
+      const m    = String(min).padStart(2, '0')
+      const val  = `${String(hour).padStart(2, '0')}:${m}`
+      options.push({ value: val, label: `${h}:${m} ${ampm}` })
+    }
+  }
+  return options
+}
+const timeOptions = generateTimeOptions()
   useEffect(() => {
     loadData()
   }, [])
@@ -63,6 +89,10 @@ export default function MentorDashboardPage() {
       return slot && isFuture(parseISO(slot.start_time))
     })
     setBookings(filtered)
+    // Load mentor's slots
+    const slotsRes = await fetch('/api/slots')
+    const slotsData = await slotsRes.json()
+    setSlots(Array.isArray(slotsData) ? slotsData : [])
     setLoading(false)
   }
 
@@ -342,18 +372,255 @@ export default function MentorDashboardPage() {
               </div>
             )}
 
-            {/* MY AVAILABILITY */}
             {activePanel === 'slots' && (
               <div>
-                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>My availability</h1>
-                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
-                  Manage your appointment slots
-                </p>
-                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
-                  <p style={{ color: '#888780', margin: 0 }}>
-                    Slot management coming in Phase 6 when Google Calendar is connected.
-                  </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+                  <div>
+                    <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>My availability</h1>
+                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+                      Add appointment slots for students to book
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+  <button
+    onClick={async () => {
+      setSlotSuccess('')
+      setSlotError('')
+      const res = await fetch('/api/slots/sync-calendar', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setSlotSuccess(`${data.synced} slot${data.synced !== 1 ? 's' : ''} synced with Google Calendar!`)
+        const slotsRes  = await fetch('/api/slots')
+        const slotsData = await slotsRes.json()
+        setSlots(Array.isArray(slotsData) ? slotsData : [])
+      } else {
+        setSlotError('Calendar sync failed. Please try again.')
+      }
+    }}
+    style={{ fontSize: 12 }}
+  >
+    Sync calendar
+  </button>
+  <button
+    onClick={() => { setShowSlotForm(!showSlotForm); setSlotError(''); setSlotSuccess('') }}
+    style={{ fontSize: 12 }}
+  >
+    {showSlotForm ? 'Cancel' : '+ Add slot'}
+  </button>
+</div>
                 </div>
+
+                {slotSuccess && (
+                  <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#085041' }}>
+                    {slotSuccess}
+                  </div>
+                )}
+
+                {slotError && (
+                  <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#791F1F' }}>
+                    {slotError}
+                  </div>
+                )}
+
+                {showSlotForm && (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
+                        <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Meeting type</label>
+                        <select value={slotType} onChange={e => setSlotType(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                          <option value="virtual">Virtual</option>
+                          <option value="in_person">In person</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
+<select value={slotStart} onChange={e => setSlotStart(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+  <option value="">Select time</option>
+  {timeOptions.map(t => (
+    <option key={t.value} value={t.value}>{t.label}</option>
+  ))}
+</select>                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available until</label>
+<select value={slotEnd} onChange={e => setSlotEnd(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+  <option value="">Select time</option>
+  {timeOptions.map(t => (
+    <option key={t.value} value={t.value}>{t.label}</option>
+  ))}
+</select>                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Break between</label>
+                        <select value={slotBreak} onChange={e => setSlotBreak(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                          <option value="10">10 minutes</option>
+                          <option value="5">5 minutes</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
+                      <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                        <option value="none">No repeat — one time only</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="biweekly">Every 2 weeks</option>
+                        <option value="monthly">Monthly</option>
+                      </select>
+                    </div>
+
+                    {slotRecurrence !== 'none' && (
+                      <div style={{ marginBottom: 12 }}>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                          Repeat until
+                        </label>
+                        <input
+                          type="date"
+                          value={slotUntil}
+                          onChange={e => setSlotUntil(e.target.value)}
+                          style={{ width: '100%', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                    )}
+
+                    <div style={{ background: '#f5f4f0', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
+                      Each appointment is <strong>20 minutes</strong>. A Google Meet link will be created automatically.
+                    </div>
+
+                    <button
+                      onClick={async () => {
+                        if (!slotDate || !slotStart || !slotEnd) {
+                          setSlotError('Please fill in the date, start time, and end time.')
+                          return
+                        }
+                        setAddingSlot(true)
+                        setSlotError('')
+                        setSlotSuccess('')
+
+                        const breakMinutes = parseInt(slotBreak)
+                        const slotDuration = 20
+                        const intervalMins = slotDuration + breakMinutes
+
+                        const windowStart = new Date(`${slotDate}T${slotStart}:00`)
+                        const windowEnd   = new Date(`${slotDate}T${slotEnd}:00`)
+
+                        const slotTimes: { startTime: string; endTime: string }[] = []
+                        let current = new Date(windowStart)
+
+                        while (true) {
+                          const slotEndTime = new Date(current.getTime() + slotDuration * 60_000)
+                          if (slotEndTime > windowEnd) break
+                          slotTimes.push({
+                            startTime: current.toISOString(),
+                            endTime:   slotEndTime.toISOString(),
+                          })
+                          current = new Date(current.getTime() + intervalMins * 60_000)
+                        }
+
+                        if (slotTimes.length === 0) {
+                          setSlotError('No slots fit in that time window. Please check your times.')
+                          setAddingSlot(false)
+                          return
+                        }
+
+                        const res = await fetch('/api/slots', {
+                          method:  'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body:    JSON.stringify({
+                            slotTimes,
+                            durationMinutes: 20,
+                            meetingType:     slotType,
+                            recurrenceRule:  slotRecurrence === 'none' ? null : slotRecurrence,
+                            recurrenceUntil: slotRecurrence === 'none' ? null : slotUntil,
+                          }),
+                        })
+
+                        let data: any = {}
+try {
+  data = await res.json()
+} catch {
+  setSlotError('Server error. Please try again.')
+  setAddingSlot(false)
+  return
+}
+
+setAddingSlot(false)
+
+if (!res.ok) {
+  setSlotError(data.error ?? 'Something went wrong.')
+  return
+}
+
+                        setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added with Google Meet links!`)
+                        setShowSlotForm(false)
+                        setSlotDate('')
+                        setSlotStart('')
+                        setSlotEnd('')
+                        setSlotRecurrence('none')
+                        setSlotUntil('')
+
+                        const slotsRes  = await fetch('/api/slots')
+                        const slotsData = await slotsRes.json()
+                        setSlots(Array.isArray(slotsData) ? slotsData : [])
+                      }}
+                      disabled={addingSlot}
+                      style={{ width: '100%' }}
+                    >
+                      {addingSlot ? 'Adding...' : 'Add slot(s)'}
+                    </button>
+                  </div>
+                )}
+
+                {slots.length === 0 ? (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', margin: 0 }}>No upcoming slots. Click "+ Add slot" to add availability.</p>
+                  </div>
+                ) : (
+                  slots.map(slot => (
+                    <div key={slot.id} style={{
+                      background: '#ffffff', border: '0.5px solid #e8e6de',
+                      borderRadius: 12, padding: '14px 20px', marginBottom: 8,
+                      display: 'flex', alignItems: 'center', gap: 12,
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                          {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' })}
+                          {' · '}
+                          {new Date(slot.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })}
+                        </p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          20 min · {slot.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
+                          {slot.google_meet_link ? ' · Meet link ready' : ''}
+                        </p>
+                      </div>
+                      <span style={{
+                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                        background: slot.is_booked ? '#FAEEDA' : '#E1F5EE',
+                        color: slot.is_booked ? '#633806' : '#085041',
+                      }}>
+                        {slot.is_booked ? 'Booked' : 'Open'}
+                      </span>
+                      {!slot.is_booked && (
+                        <button
+                          onClick={async () => {
+                            await fetch(`/api/slots/${slot.id}`, { method: 'DELETE' })
+                            setSlots(prev => prev.filter(s => s.id !== slot.id))
+                          }}
+                          style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </>

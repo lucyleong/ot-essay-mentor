@@ -1,0 +1,106 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { addWeeks, addMonths } from 'date-fns'
+
+export async function GET() {
+  const supabase = await createServerSupabaseClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { data: mentor } = await supabase
+    .from('mentor_profiles')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
+
+  const { data: slots } = await supabase
+    .from('appointment_slots')
+    .select('*')
+    .eq('mentor_id', mentor.id)
+    .eq('is_cancelled', false)
+    .gte('start_time', new Date().toISOString())
+    .order('start_time', { ascending: true })
+
+  return NextResponse.json(slots ?? [])
+}
+
+export async function POST(request: NextRequest) {
+  const supabase = await createServerSupabaseClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { data: mentor } = await supabase
+    .from('mentor_profiles')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
+
+  const body = await request.json()
+
+  // Build base slots from time window
+  let baseDaySlots: { start_time: string; end_time: string }[] = []
+
+  if (body.slotTimes && Array.isArray(body.slotTimes)) {
+    baseDaySlots = body.slotTimes.map((t: any) => ({
+      start_time: t.startTime,
+      end_time:   t.endTime,
+    }))
+  } else {
+    baseDaySlots = [{ start_time: body.startTime, end_time: body.endTime }]
+  }
+
+  // Expand for recurrence
+  const slotsToInsert: any[] = []
+  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : null
+
+  console.log('baseDaySlots:', JSON.stringify(baseDaySlots))
+  for (const baseSlot of baseDaySlots) {
+    let current = {
+      start: new Date(baseSlot.start_time),
+      end:   new Date(baseSlot.end_time),
+    }
+
+    let count = 0
+    while (count < 52) {
+      if (untilDate && current.start > untilDate) break
+
+      slotsToInsert.push({
+        mentor_id:        mentor.id,
+        start_time:       current.start.toISOString(),
+        end_time:         current.end.toISOString(),
+        duration_minutes: body.durationMinutes ?? 20,
+        meeting_type:     body.meetingType ?? 'virtual',
+        recurrence_rule:  body.recurrenceRule ?? null,
+      })
+
+      if (!body.recurrenceRule) break
+
+      if (body.recurrenceRule === 'weekly') {
+        current = { start: addWeeks(current.start, 1), end: addWeeks(current.end, 1) }
+      } else if (body.recurrenceRule === 'biweekly') {
+        current = { start: addWeeks(current.start, 2), end: addWeeks(current.end, 2) }
+      } else if (body.recurrenceRule === 'monthly') {
+        current = { start: addMonths(current.start, 1), end: addMonths(current.end, 1) }
+      } else {
+        break
+      }
+
+      count++
+    }
+  }
+
+  const { data: inserted, error } = await supabase
+    .from('appointment_slots')
+    .insert(slotsToInsert)
+    .select()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  return NextResponse.json({ slotsCreated: inserted?.length ?? 0 })
+}
