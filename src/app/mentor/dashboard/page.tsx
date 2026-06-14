@@ -567,16 +567,29 @@ const timeOptions = generateTimeOptions()
                       }
 
                       setAddingSlot(false)
-                      setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! Click "Sync calendar" to generate Meet links.`)
-                      setSlotDate('')
-                      setSlotStart('')
-                      setSlotEnd('')
-                      setSlotRecurrence('none')
-                      setSlotUntil('')
+                      setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! Generating Google Meet links...`)
+setSlotDate('')
+setSlotStart('')
+setSlotEnd('')
+setSlotRecurrence('none')
+setSlotUntil('')
 
-                      const slotsRes  = await fetch('/api/slots')
-                      const slotsData = await slotsRes.json()
-                      setSlots(Array.isArray(slotsData) ? slotsData : [])
+// Refresh slot list immediately
+const slotsRes  = await fetch('/api/slots')
+const slotsData = await slotsRes.json()
+setSlots(Array.isArray(slotsData) ? slotsData : [])
+
+// Auto-sync calendar after 3 seconds
+setTimeout(async () => {
+  const syncRes  = await fetch('/api/slots/sync-calendar', { method: 'POST' })
+  const syncData = await syncRes.json()
+  if (syncRes.ok) {
+    setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added with Google Meet links!`)
+    const refreshRes  = await fetch('/api/slots')
+    const refreshData = await refreshRes.json()
+    setSlots(Array.isArray(refreshData) ? refreshData : [])
+  }
+}, 3000)
                     }}
                     disabled={addingSlot}
                     style={{ width: '100%' }}

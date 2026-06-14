@@ -25,14 +25,21 @@ export async function POST() {
     .is('google_calendar_event_id', null)
     .gte('start_time', new Date().toISOString())
 
+  const allSlots = slots ?? []
   let synced = 0
-  for (const slot of slots ?? []) {
-    try {
-      await createSlotOnCalendar(slot.id)
-      synced++
-    } catch (err: any) {
-      console.error('Calendar sync failed for slot:', slot.id, err.message)
-    }
+
+  // Process in batches of 5 to avoid timeouts
+  const batchSize = 5
+  for (let i = 0; i < allSlots.length; i += batchSize) {
+    const batch = allSlots.slice(i, i + batchSize)
+    await Promise.all(batch.map(async slot => {
+      try {
+        await createSlotOnCalendar(slot.id)
+        synced++
+      } catch (err: any) {
+        console.error('Calendar sync failed for slot:', slot.id, err.message)
+      }
+    }))
   }
 
   return NextResponse.json({ synced })
