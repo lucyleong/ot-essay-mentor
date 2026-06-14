@@ -51,19 +51,21 @@ const [addingSlot,     setAddingSlot]     = useState(false)
 const [slotSuccess,    setSlotSuccess]    = useState('')
 const [slotError,      setSlotError]      = useState('')
 
-function generateTimeOptions() {
+function generateTimeOptions(startAfter?: string) {
   const options = []
-  for (let hour = 7; hour <= 21; hour++) {
-    for (let min = 0; min < 60; min += 5) {
+  for (let hour = 9; hour <= 21; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const val  = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`
+      if (startAfter && val <= startAfter) continue
       const h    = hour % 12 || 12
       const ampm = hour < 12 ? 'AM' : 'PM'
       const m    = String(min).padStart(2, '0')
-      const val  = `${String(hour).padStart(2, '0')}:${m}`
       options.push({ value: val, label: `${h}:${m} ${ampm}` })
     }
   }
   return options
 }
+
 const timeOptions = generateTimeOptions()
   useEffect(() => {
     loadData()
@@ -381,33 +383,25 @@ const timeOptions = generateTimeOptions()
                       Add appointment slots for students to book
                     </p>
                   </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-  <button
-    onClick={async () => {
-      setSlotSuccess('')
-      setSlotError('')
-      const res = await fetch('/api/slots/sync-calendar', { method: 'POST' })
-      const data = await res.json()
-      if (res.ok) {
-        setSlotSuccess(`${data.synced} slot${data.synced !== 1 ? 's' : ''} synced with Google Calendar!`)
-        const slotsRes  = await fetch('/api/slots')
-        const slotsData = await slotsRes.json()
-        setSlots(Array.isArray(slotsData) ? slotsData : [])
-      } else {
-        setSlotError('Calendar sync failed. Please try again.')
-      }
-    }}
-    style={{ fontSize: 12 }}
-  >
-    Sync calendar
-  </button>
-  <button
-    onClick={() => { setShowSlotForm(!showSlotForm); setSlotError(''); setSlotSuccess('') }}
-    style={{ fontSize: 12 }}
-  >
-    {showSlotForm ? 'Cancel' : '+ Add slot'}
-  </button>
-</div>
+                  <button
+                    onClick={async () => {
+                      setSlotSuccess('')
+                      setSlotError('')
+                      const res = await fetch('/api/slots/sync-calendar', { method: 'POST' })
+                      const data = await res.json()
+                      if (res.ok) {
+                        setSlotSuccess(`${data.synced} slot${data.synced !== 1 ? 's' : ''} synced with Google Calendar!`)
+                        const slotsRes  = await fetch('/api/slots')
+                        const slotsData = await slotsRes.json()
+                        setSlots(Array.isArray(slotsData) ? slotsData : [])
+                      } else {
+                        setSlotError('Calendar sync failed. Please try again.')
+                      }
+                    }}
+                    style={{ fontSize: 12 }}
+                  >
+                    Sync calendar
+                  </button>
                 </div>
 
                 {slotSuccess && (
@@ -422,114 +416,133 @@ const timeOptions = generateTimeOptions()
                   </div>
                 )}
 
-                {showSlotForm && (
-                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
-                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+                  <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
-                        <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Meeting type</label>
-                        <select value={slotType} onChange={e => setSlotType(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                          <option value="virtual">Virtual</option>
-                          <option value="in_person">In person</option>
-                        </select>
-                      </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
+                      <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
                     </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
-<select value={slotStart} onChange={e => setSlotStart(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-  <option value="">Select time</option>
-  {timeOptions.map(t => (
-    <option key={t.value} value={t.value}>{t.label}</option>
-  ))}
-</select>                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available until</label>
-<select value={slotEnd} onChange={e => setSlotEnd(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-  <option value="">Select time</option>
-  {timeOptions.map(t => (
-    <option key={t.value} value={t.value}>{t.label}</option>
-  ))}
-</select>                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Break between</label>
-                        <select value={slotBreak} onChange={e => setSlotBreak(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                          <option value="10">10 minutes</option>
-                          <option value="5">5 minutes</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: 12 }}>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
-                      <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                        <option value="none">No repeat — one time only</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="biweekly">Every 2 weeks</option>
-                        <option value="monthly">Monthly</option>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Meeting type</label>
+                      <select value={slotType} onChange={e => setSlotType(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                        <option value="virtual">Virtual</option>
+                        <option value="in_person">In person</option>
                       </select>
                     </div>
+                  </div>
 
-                    {slotRecurrence !== 'none' && (
-                      <div style={{ marginBottom: 12 }}>
-                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
-                          Repeat until
-                        </label>
-                        <input
-                          type="date"
-                          value={slotUntil}
-                          onChange={e => setSlotUntil(e.target.value)}
-                          style={{ width: '100%', boxSizing: 'border-box' }}
-                        />
-                      </div>
-                    )}
-
-                    <div style={{ background: '#f5f4f0', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
-                      Each appointment is <strong>20 minutes</strong>. A Google Meet link will be created automatically.
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
+                      <input
+                        type="time"
+                        value={slotStart}
+                        onChange={e => setSlotStart(e.target.value)}
+                        list="start-times"
+                        min="09:00"
+                        max="21:00"
+                        style={{ width: '100%', boxSizing: 'border-box' }}
+                      />
+                      <datalist id="start-times">
+                        {timeOptions.map(t => (
+                          <option key={t.value} value={t.value} />
+                        ))}
+                      </datalist>
                     </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available until</label>
+                      <input
+                        type="time"
+                        value={slotEnd}
+                        onChange={e => setSlotEnd(e.target.value)}
+                        list="end-times"
+                        min={slotStart || "09:00"}
+                        max="21:00"
+                        style={{ width: '100%', boxSizing: 'border-box' }}
+                      />
+                      <datalist id="end-times">
+                        {generateTimeOptions(slotStart).map(t => (
+                          <option key={t.value} value={t.value} />
+                        ))}
+                      </datalist>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Break between</label>
+                      <select value={slotBreak} onChange={e => setSlotBreak(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                        <option value="10">10 minutes</option>
+                        <option value="5">5 minutes</option>
+                      </select>
+                    </div>
+                  </div>
 
-                    <button
-                      onClick={async () => {
-                        if (!slotDate || !slotStart || !slotEnd) {
-                          setSlotError('Please fill in the date, start time, and end time.')
-                          return
-                        }
-                        setAddingSlot(true)
-                        setSlotError('')
-                        setSlotSuccess('')
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
+                    <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                      <option value="none">No repeat — one time only</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="biweekly">Every 2 weeks</option>
+                      <option value="monthly">Monthly</option>
+                    </select>
+                  </div>
 
-                        const breakMinutes = parseInt(slotBreak)
-                        const slotDuration = 20
-                        const intervalMins = slotDuration + breakMinutes
+                  {slotRecurrence !== 'none' && (
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                        Repeat until
+                      </label>
+                      <input
+                        type="date"
+                        value={slotUntil}
+                        onChange={e => setSlotUntil(e.target.value)}
+                        style={{ width: '100%', boxSizing: 'border-box' }}
+                      />
+                    </div>
+                  )}
 
-                        const windowStart = new Date(`${slotDate}T${slotStart}:00`)
-                        const windowEnd   = new Date(`${slotDate}T${slotEnd}:00`)
+                  <div style={{ background: '#f5f4f0', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
+                    Each appointment is <strong>20 minutes</strong>. A Google Meet link will be created after clicking Sync calendar.
+                  </div>
 
-                        const slotTimes: { startTime: string; endTime: string }[] = []
-                        let current = new Date(windowStart)
+                  <button
+                    onClick={async () => {
+                      if (!slotDate || !slotStart || !slotEnd) {
+                        setSlotError('Please fill in the date, start time, and end time.')
+                        return
+                      }
+                      setAddingSlot(true)
+                      setSlotError('')
+                      setSlotSuccess('')
 
-                        while (true) {
-                          const slotEndTime = new Date(current.getTime() + slotDuration * 60_000)
-                          if (slotEndTime > windowEnd) break
-                          slotTimes.push({
-                            startTime: current.toISOString(),
-                            endTime:   slotEndTime.toISOString(),
-                          })
-                          current = new Date(current.getTime() + intervalMins * 60_000)
-                        }
+                      const breakMinutes = parseInt(slotBreak)
+                      const slotDuration = 20
+                      const intervalMins = slotDuration + breakMinutes
 
-                        if (slotTimes.length === 0) {
-                          setSlotError('No slots fit in that time window. Please check your times.')
-                          setAddingSlot(false)
-                          return
-                        }
+                      const windowStart = new Date(`${slotDate}T${slotStart}:00`)
+                      const windowEnd   = new Date(`${slotDate}T${slotEnd}:00`)
 
+                      const slotTimes: { startTime: string; endTime: string }[] = []
+                      let current = new Date(windowStart)
+
+                      while (true) {
+                        const slotEndTime = new Date(current.getTime() + slotDuration * 60_000)
+                        if (slotEndTime > windowEnd) break
+                        slotTimes.push({
+                          startTime: current.toISOString(),
+                          endTime:   slotEndTime.toISOString(),
+                        })
+                        current = new Date(current.getTime() + intervalMins * 60_000)
+                      }
+
+                      if (slotTimes.length === 0) {
+                        setSlotError('No slots fit in that time window. Please check your times.')
+                        setAddingSlot(false)
+                        return
+                      }
+
+                      let data: any = {}
+                      try {
                         const res = await fetch('/api/slots', {
                           method:  'POST',
                           headers: { 'Content-Type': 'application/json' },
@@ -541,46 +554,40 @@ const timeOptions = generateTimeOptions()
                             recurrenceUntil: slotRecurrence === 'none' ? null : slotUntil,
                           }),
                         })
+                        data = await res.json()
+                        if (!res.ok) {
+                          setSlotError(data.error ?? 'Something went wrong.')
+                          setAddingSlot(false)
+                          return
+                        }
+                      } catch {
+                        setSlotError('Server error. Please try again.')
+                        setAddingSlot(false)
+                        return
+                      }
 
-                        let data: any = {}
-try {
-  data = await res.json()
-} catch {
-  setSlotError('Server error. Please try again.')
-  setAddingSlot(false)
-  return
-}
+                      setAddingSlot(false)
+                      setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! Click "Sync calendar" to generate Meet links.`)
+                      setSlotDate('')
+                      setSlotStart('')
+                      setSlotEnd('')
+                      setSlotRecurrence('none')
+                      setSlotUntil('')
 
-setAddingSlot(false)
-
-if (!res.ok) {
-  setSlotError(data.error ?? 'Something went wrong.')
-  return
-}
-
-                        setSlotSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added with Google Meet links!`)
-                        setShowSlotForm(false)
-                        setSlotDate('')
-                        setSlotStart('')
-                        setSlotEnd('')
-                        setSlotRecurrence('none')
-                        setSlotUntil('')
-
-                        const slotsRes  = await fetch('/api/slots')
-                        const slotsData = await slotsRes.json()
-                        setSlots(Array.isArray(slotsData) ? slotsData : [])
-                      }}
-                      disabled={addingSlot}
-                      style={{ width: '100%' }}
-                    >
-                      {addingSlot ? 'Adding...' : 'Add slot(s)'}
-                    </button>
-                  </div>
-                )}
+                      const slotsRes  = await fetch('/api/slots')
+                      const slotsData = await slotsRes.json()
+                      setSlots(Array.isArray(slotsData) ? slotsData : [])
+                    }}
+                    disabled={addingSlot}
+                    style={{ width: '100%' }}
+                  >
+                    {addingSlot ? 'Saving...' : 'Save schedule'}
+                  </button>
+                </div>
 
                 {slots.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
-                    <p style={{ color: '#888780', margin: 0 }}>No upcoming slots. Click "+ Add slot" to add availability.</p>
+                    <p style={{ color: '#888780', margin: 0 }}>No upcoming slots yet.</p>
                   </div>
                 ) : (
                   slots.map(slot => (
@@ -597,7 +604,7 @@ if (!res.ok) {
                         </p>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           20 min · {slot.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
-                          {slot.google_meet_link ? ' · Meet link ready' : ''}
+                          {slot.google_meet_link ? ' · Meet link ready' : ' · No Meet link yet'}
                         </p>
                       </div>
                       <span style={{
@@ -623,7 +630,7 @@ if (!res.ok) {
                 )}
               </div>
             )}
-          </>
+            </>
         )}
       </div>
     </div>
