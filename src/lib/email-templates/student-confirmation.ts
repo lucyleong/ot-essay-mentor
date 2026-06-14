@@ -21,16 +21,16 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
 
   const content = `
     <h1 style="margin:0 0 20px;font-size:22px;font-weight:500;color:#2C2C2A;">
-      Thank you for signing up!
+      Your appointment is confirmed!
     </h1>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      Dear ${d.studentName},
+      Dear ${d.studentName.split(' ')[0]},
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      Thank you for signing up for an appointment with an OT College Essay Mentor!
-      We're excited to work with you! Here are your appointment details:
+      Thank you for signing up for an appointment with an OT College Essay Mentor.
+      Here are your appointment details:
     </p>
 
     <div style="background:#f5f4f0;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
@@ -51,11 +51,10 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      The day before your appointment, please share your college essay Google Doc —
-      even if you think they already have it — by uploading the link or document
+      The day before your appointment, please share your college essay via a Google Docs link or by uploading the document
       <a href="${d.essayUploadUrl}" style="color:#534AB7;font-weight:500;">here</a>.
-      If there are multiple essays on your document, please indicate which essay you
-      plan to discuss during your meeting (1 long essay or up to 3 PIQs).
+      If there are multiple essays in your document, please indicate which essay you
+      plan to discuss during your meeting: 1 long essay or up to 3 PIQs.
     </p>
 
     ${divider()}
@@ -65,11 +64,9 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      If, for any reason, you must cancel your appointment, please go back to your
-      Google Calendar invitation and change your availability from YES to NO to indicate
-      your cancellation <strong>AT LEAST 24 HOURS IN ADVANCE</strong>. Please try to avoid
-      last-minute cancellations, as we are unable to assign your spot to someone else
-      without significant advance notice.
+      If for any reason you must cancel your appointment, please go to your
+      Google Calendar invitation and change your availability from "Yes" to "No". Your 
+      cancellation must be made <strong>AT LEAST 24 HOURS</strong> in advance.
     </p>
 
     ${divider()}

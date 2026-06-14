@@ -167,8 +167,7 @@ export default function BookPage() {
             You're booked!
           </p>
           <p style={{ fontSize: 14, color: '#0F6E56', margin: '0 0 16px' }}>
-            Your appointment with {selectedSlot?.mentor_profiles.full_name} is confirmed.
-          </p>
+Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} is confirmed.          </p>
           <p style={{ fontSize: 14, color: '#0F6E56', margin: '0 0 8px' }}>
             {selectedSlot && format(parseISO(selectedSlot.start_time), 'EEEE, MMMM d')} at{' '}
             {selectedSlot && format(parseISO(selectedSlot.start_time), 'h:mm a')}
@@ -292,7 +291,7 @@ export default function BookPage() {
                 >
                   <div style={{ flex: 1 }}>
                     <p style={{ margin: 0, fontWeight: 500, fontSize: 13 }}>
-{slot.mentor_profiles?.full_name ?? 'Mentor'}
+{slot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
                     </p>
                     <p style={{ margin: 0, fontSize: 12, color: '#888780' }}>
                       {format(parseISO(slot.start_time), 'h:mm a')} –{' '}
@@ -328,7 +327,7 @@ export default function BookPage() {
           background: '#ffffff',
         }}>
           <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>
-            Booking with {selectedSlot.mentor_profiles?.full_name ?? 'Mentor'}
+Booking with {selectedSlot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
 
           </p>
           <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
