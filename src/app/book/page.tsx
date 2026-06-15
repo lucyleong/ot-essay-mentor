@@ -403,15 +403,26 @@ Booking with {selectedSlot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'
   type="tel"
   value={phone}
   onChange={e => {
-    const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
-    setPhone(digits)
-    if (digits.length > 0 && digits.length < 10) {
-      setPhoneError('Please enter a 10-digit phone number')
-    } else {
-      setPhoneError('')
-    }
-  }}
-  placeholder="5105550100"
+  const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+  
+  // Format as (xxx)xxx-xxxx
+  let formatted = ''
+  if (digits.length <= 3) {
+    formatted = digits.length ? `(${digits}` : ''
+  } else if (digits.length <= 6) {
+    formatted = `(${digits.slice(0, 3)})${digits.slice(3)}`
+  } else {
+    formatted = `(${digits.slice(0, 3)})${digits.slice(3, 6)}-${digits.slice(6)}`
+  }
+  
+  setPhone(formatted)
+  if (digits.length > 0 && digits.length < 10) {
+    setPhoneError('Please enter a 10-digit phone number')
+  } else {
+    setPhoneError('')
+  }
+}}
+placeholder="(510)555-0100"
   required
   style={{ borderColor: phoneError ? '#E24B4A' : undefined }}
 />
