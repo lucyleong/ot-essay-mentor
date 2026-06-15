@@ -28,6 +28,8 @@ export default function AdminPage() {
   const [bookings,    setBookings]    = useState<Booking[]>([])
   const [loading,     setLoading]     = useState(true)
   const [connected,   setConnected]   = useState(false)
+  const [reports,     setReports]     = useState<any>(null)
+const [reportsLoading, setReportsLoading] = useState(false)
   const [error,       setError]       = useState<string | null>(null)
 
   // Add mentor form
@@ -111,10 +113,19 @@ export default function AdminPage() {
     loadData()
   }
 
+  async function loadReports() {
+    setReportsLoading(true)
+    const res  = await fetch('/api/admin/reports')
+    const data = await res.json()
+    setReports(data)
+    setReportsLoading(false)
+  }
+
   const navItems = [
-    { key: 'mentors',  label: 'Mentors' },
-    { key: 'bookings', label: 'All bookings' },
-    { key: 'calendar', label: 'Google Calendar' },
+    { key: 'mentors',   label: 'Mentors' },
+    { key: 'bookings',  label: 'All bookings' },
+    { key: 'reports',   label: 'Reports' },
+    { key: 'calendar',  label: 'Google Calendar' },
   ]
 
   return (
@@ -280,6 +291,133 @@ export default function AdminPage() {
               </div>
             )}
 
+{/* REPORTS */}
+            {activePanel === 'reports' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                  <div>
+                    <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
+                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
+                  </div>
+                  <button onClick={loadReports} disabled={reportsLoading} style={{ fontSize: 12 }}>
+                    {reportsLoading ? 'Loading...' : 'Load reports'}
+                  </button>
+                </div>
+
+                {!reports && !reportsLoading && (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', margin: 0 }}>Click "Load reports" to view program statistics.</p>
+                  </div>
+                )}
+
+                {reports && (
+                  <div>
+                    {/* Booking stats */}
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5 , 1fr)', gap: 8, marginBottom: 20 }}>
+                      {[
+                        { label: 'Total',     value: reports.bookings.total },
+                        { label: 'Active',    value: reports.bookings.active },
+                        { label: 'Cancelled', value: reports.bookings.cancelled },
+                        { label: 'No shows',  value: reports.bookings.noShows },
+                        { label: 'Meet issues', value: reports.bookings.meetIssues },
+                      ].map(stat => (
+                        <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{stat.value}</p>
+                          <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Survey stats */}
+                    {reports.surveys.avgRating && (
+                      <>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 20 }}>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                            <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.avgRating}/5</p>
+                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Avg rating</p>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                            <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.totalResponses}</p>
+                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Responses</p>
+                          </div>
+                          {reports.surveys.recommend.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Would recommend: {label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    {/* Mentor activity */}
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor activity</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.mentorActivity.map(([name, count]: [string, number]) => (
+                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13, fontWeight: 500 }}>{name}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${(count / reports.mentorActivity[0][1]) * 100}%`,
+                              background: '#534AB7', height: '100%', borderRadius: 4,
+                            }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Demographics */}
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First generation college students</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
+                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                        <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.demographics.firstGen.yes}</p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>First gen</p>
+                      </div>
+                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                        <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.demographics.firstGen.no}</p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Not first gen</p>
+                      </div>
+                    </div>
+
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.demographics.helpWith.map(([label, count]: [string, number]) => (
+                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${(count / reports.demographics.helpWith[0][1]) * 100}%`,
+                              background: '#534AB7', height: '100%', borderRadius: 4,
+                            }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Teacher distribution</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.demographics.teachers.map(([label, count]: [string, number]) => (
+                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${(count / reports.demographics.teachers[0][1]) * 100}%`,
+                              background: '#534AB7', height: '100%', borderRadius: 4,
+                            }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                )}
+              </div>
+            )}
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
               <div>

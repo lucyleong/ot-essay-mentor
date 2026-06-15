@@ -89,8 +89,8 @@ export async function POST(request: NextRequest) {
           startTime:    slot.start_time,
           endTime:      slot.end_time,
           meetLink:     slot.google_meet_link ?? null,
-          smsStatus:    b.sms_confirmed_at ? 'confirmed' :
-                        b.sms_confirm_sent  ? 'no_reply'  : 'no_sms',
+          smsStatus:    (b.sms_confirmed_at ? 'confirmed' :
+              b.sms_confirm_sent  ? 'no_reply'  : 'no_sms') as 'confirmed' | 'no_reply' | 'no_sms',
         }
       })
 
