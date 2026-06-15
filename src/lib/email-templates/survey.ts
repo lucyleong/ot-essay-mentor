@@ -30,7 +30,7 @@ export function surveyEmail(d: SurveyEmailData) {
       Hi ${d.recipientName},
       ${isStudent
         ? ` thanks for meeting with ${d.otherPartyName} on ${date} at ${time}.`
-        : ` please fill out this report only if ${d.otherPartyName} was a no-show or had issues connecting on Google Meet. Appointment on ${date} at ${time}.`
+        : ` please fill out this report if ${d.otherPartyName} was a no-show or had issues connecting on Google Meet on ${date} at ${time}.`
       }
     </p>
 
