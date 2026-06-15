@@ -1,11 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useState, use } from 'react'
 
 export default function EssayUploadPage({
   params,
 }: {
-  params: { bookingId: string }
+  params: Promise<{ bookingId: string }>
 }) {
+  const { bookingId } = use(params)
   const [gdocUrl,    setGdocUrl]    = useState('')
   const [gdocNote,   setGdocNote]   = useState('')
   const [gdocError,  setGdocError]  = useState('')
@@ -23,7 +24,7 @@ export default function EssayUploadPage({
     setGdocError('')
     setSubmitting(true)
 
-    const res = await fetch(`/api/bookings/${params.bookingId}/essays`, {
+   const res = await fetch(`/api/bookings/${bookingId}/essays`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -52,8 +53,8 @@ export default function EssayUploadPage({
     form.append('file', file)
     form.append('noteToMentor', fileNote)
 
-    const res = await fetch(`/api/bookings/${params.bookingId}/essays`, {
-      method: 'POST',
+const res = await fetch(`/api/bookings/${bookingId}/essays`, {
+        method: 'POST',
       body:   form,
     })
 

@@ -33,7 +33,7 @@ export async function GET(
         intake_questions ( question_text, sort_order )
       ),
       student_essays (
-        id, essay_type, google_doc_url, file_name,
+        id, essay_type, google_doc_url, file_name, file_path,
         note_to_mentor, uploaded_at
       )
     `)
@@ -47,9 +47,23 @@ export async function GET(
     .eq('student_email', studentEmail)
     .order('created_at', { ascending: false })
 
+  // Generate signed URLs for file uploads
+  const bookingsWithUrls = await Promise.all((bookings ?? []).map(async (booking: any) => {
+    const essaysWithUrls = await Promise.all((booking.student_essays ?? []).map(async (essay: any) => {
+      if (essay.essay_type === 'file_upload' && essay.file_path) {
+        const { data: signed } = await supabase.storage
+          .from('essays')
+          .createSignedUrl(essay.file_path, 60 * 60)
+        return { ...essay, signed_url: signed?.signedUrl ?? null }
+      }
+      return essay
+    }))
+    return { ...booking, student_essays: essaysWithUrls }
+  }))
+
   return NextResponse.json({
-    bookings: bookings ?? [],
-    notes: notes ?? [],
+    bookings: bookingsWithUrls,
+    notes:    notes ?? [],
     mentorId: mentor.id,
   })
 }

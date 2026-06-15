@@ -205,17 +205,19 @@ const email = decodeURIComponent(emailParam)
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>
                       {essay.essay_type === 'google_doc' ? 'Google Doc' : essay.file_name}
+                      <span style={{ fontSize: 11, color: '#888780', fontWeight: 400, marginLeft: 8 }}>
+                        Uploaded {new Date(essay.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
                     </p>
                     {essay.note_to_mentor && (
-                      <p style={{ fontSize: 12, color: '#888780', fontStyle: 'italic', margin: 0 }}>
+                      <p style={{ fontSize: 12, color: '#888780', fontStyle: 'italic', margin: '2px 0 0' }}>
                         "{essay.note_to_mentor}"
                       </p>
                     )}
                   </div>
-                  {essay.essay_type === 'google_doc' && essay.google_doc_url && (
-                    
-                    <a
-                    href={essay.google_doc_url}
+                  {(essay.essay_type === 'google_doc' ? essay.google_doc_url : essay.signed_url) && (
+                      <a                    
+                      href={essay.essay_type === 'google_doc' ? essay.google_doc_url : essay.signed_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ fontSize: 12, color: '#534AB7', textDecoration: 'none' }}
