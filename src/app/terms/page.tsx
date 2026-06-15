@@ -35,7 +35,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
-        The OT College Essay Mentor Program is a volunteer program operated by Oakland Technical High School. We make no guarantees regarding college admission outcomes. Mentors provide writing and editing support only.
+        The OT College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide writing and editing support only.
       </p>
 
       <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 40px' }} />
