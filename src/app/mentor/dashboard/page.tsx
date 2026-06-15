@@ -383,25 +383,7 @@ const timeOptions = generateTimeOptions()
                       Add appointment slots for students to book
                     </p>
                   </div>
-                  <button
-                    onClick={async () => {
-                      setSlotSuccess('')
-                      setSlotError('')
-                      const res = await fetch('/api/slots/sync-calendar', { method: 'POST' })
-                      const data = await res.json()
-                      if (res.ok) {
-                        setSlotSuccess(`${data.synced} slot${data.synced !== 1 ? 's' : ''} synced with Google Calendar!`)
-                        const slotsRes  = await fetch('/api/slots')
-                        const slotsData = await slotsRes.json()
-                        setSlots(Array.isArray(slotsData) ? slotsData : [])
-                      } else {
-                        setSlotError('Calendar sync failed. Please try again.')
-                      }
-                    }}
-                    style={{ fontSize: 12 }}
-                  >
-                    Sync calendar
-                  </button>
+                  
                 </div>
 
                 {slotSuccess && (
