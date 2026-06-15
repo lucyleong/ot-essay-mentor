@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { format, parseISO } from 'date-fns'
+import Link from 'next/link'
 
 type Slot = {
   id: string
@@ -194,21 +195,18 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
 
   return (
     <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
+      <Link href="/" style={{ 
+        fontSize: 13, color: '#888780', textDecoration: 'none', 
+        display: 'block', marginBottom: 20 
+      }}>
+        ← Back to home
+      </Link>
 
       <div style={{ marginBottom: 24 }}>
   <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 12px' }}>
     Fall 2026 College Essay Mentor Sign-Up
   </h1>
-  <div style={{
-    background: '#ffffff',
-    border: '0.5px solid #e8e6de',
-    borderRadius: 12,
-    padding: '1.25rem',
-    marginBottom: 16,
-    fontSize: 15,
-    color: '#2C2C2A',
-    lineHeight: 1.7,
-  }}>
+  
     <p style={{ margin: '0 0 12px', fontWeight: 500 }}>
       Oakland Tech Seniors, let's get these essays done!
     </p>
@@ -225,7 +223,6 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
       {total} open slot{total !== 1 ? 's' : ''} available in the next 7 days
     </p>
   </div>
-</div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         {[
