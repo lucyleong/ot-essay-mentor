@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
   // Find appointments that ended in the last 10 minutes
   // and haven't had surveys sent yet
-  const tenMinutesAgo = new Date(now.getTime() - 30 * 60_000).toISOString()
+  const tenMinutesAgo = new Date(now.getTime() - 10 * 60_000).toISOString()
 
   const { data: bookings } = await supabase
     .from('student_bookings')

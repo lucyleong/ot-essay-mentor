@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { addWeeks, addMonths } from 'date-fns'
+import { addDays, addWeeks } from 'date-fns'
 
 export async function GET() {
   const supabase = await createServerSupabaseClient()
@@ -81,15 +81,15 @@ export async function POST(request: NextRequest) {
 
       if (!body.recurrenceRule) break
 
-      if (body.recurrenceRule === 'weekly') {
-        current = { start: addWeeks(current.start, 1), end: addWeeks(current.end, 1) }
-      } else if (body.recurrenceRule === 'biweekly') {
-        current = { start: addWeeks(current.start, 2), end: addWeeks(current.end, 2) }
-      } else if (body.recurrenceRule === 'monthly') {
-        current = { start: addMonths(current.start, 1), end: addMonths(current.end, 1) }
-      } else {
-        break
-      }
+      if (body.recurrenceRule === 'daily') {
+  current = { start: addDays(current.start, 1), end: addDays(current.end, 1) }
+} else if (body.recurrenceRule === 'weekly') {
+  current = { start: addWeeks(current.start, 1), end: addWeeks(current.end, 1) }
+} else if (body.recurrenceRule === 'biweekly') {
+  current = { start: addWeeks(current.start, 2), end: addWeeks(current.end, 2) }
+} else {
+  break
+}
 
       count++
     }

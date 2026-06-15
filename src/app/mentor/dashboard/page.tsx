@@ -465,10 +465,10 @@ const timeOptions = generateTimeOptions()
                   <div style={{ marginBottom: 12 }}>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
                     <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                      <option value="none">No repeat — one time only</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="biweekly">Every 2 weeks</option>
-                      <option value="monthly">Monthly</option>
+                     <option value="none">One time only</option>
+<option value="daily">Every day</option>
+<option value="weekly">Every week</option>
+<option value="biweekly">Every 2 weeks</option>
                     </select>
                   </div>
 
