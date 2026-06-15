@@ -68,7 +68,7 @@ export default function StudentSurveyPage({
         <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 12, padding: '2rem' }}>
           <p style={{ fontSize: 20, fontWeight: 500, color: '#085041', margin: '0 0 8px' }}>Thank you!</p>
           <p style={{ fontSize: 14, color: '#0F6E56', margin: 0 }}>
-            Your feedback helps us improve the program for all Oakland Tech seniors.
+            Your feedback helps us improve the program.
           </p>
         </div>
       </main>

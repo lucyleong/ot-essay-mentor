@@ -38,7 +38,7 @@ export function surveyEmail(d: SurveyEmailData) {
 
     <p style="margin:0 0 20px;font-size:15px;color:#2C2C2A;line-height:1.6;">
       ${isStudent
-        ? 'Your feedback helps us improve the program for all Oakland Tech seniors. It only takes 30 seconds!'
+        ? 'Your feedback helps us improve the program. It only takes 30 seconds!'
         : 'This report helps us track technical issues and attendance.'
       }
     </p>

@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ bookingId: string }> }
 ) {
-  const supabase = await createServerSupabaseClient()
   const { bookingId } = await context.params
 
   const { data: booking } = await supabase
@@ -14,7 +18,7 @@ export async function GET(
       id, student_name, student_email,
       appointment_slots (
         start_time, end_time, meeting_type,
-        mentor_profiles ( full_name )
+        mentor_profiles ( full_name, email )
       )
     `)
     .eq('id', bookingId)
@@ -28,11 +32,11 @@ export async function GET(
   const mentor = slot?.mentor_profiles
 
   return NextResponse.json({
-    student_name: booking.student_name,
+    student_name:  booking.student_name,
     student_email: booking.student_email,
-    mentor_name:  mentor?.full_name ?? 'Mentor',
-    start_time:   slot?.start_time,
-    end_time:     slot?.end_time,
-    meeting_type: slot?.meeting_type,
+    mentor_name:   mentor?.full_name ?? 'Mentor',
+    start_time:    slot?.start_time,
+    end_time:      slot?.end_time,
+    meeting_type:  slot?.meeting_type,
   })
 }
