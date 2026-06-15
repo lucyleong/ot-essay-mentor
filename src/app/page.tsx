@@ -39,11 +39,11 @@ export default function HomePage() {
         padding: '48px 32px',
         textAlign: 'center',
       }}>
-        <h2 style={{ fontSize: 28, fontWeight: 500, margin: '0 0 16px', color: '#2C2C2A', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+        <h2 style={{ fontSize: 28, fontWeight: 500, margin: '0 0 16px', color: '#2C2C2A', whiteSpace: 'nowrap' }}>
           Free College Essay Support for Oakland Tech Seniors
         </h2>
         <p style={{ fontSize: 16, color: '#5F5E5A', lineHeight: 1.7, maxWidth: 600, margin: '0 auto 28px' }}>
-          Appointments are free, available first-come first-served, and open nearly every day of the week through the end of the semester.
+          Appointments are free, available first-come first-served, and nearly every day of the week through the end of the year.
         </p>
         <Link href="/book" style={{
           display: 'inline-block',
@@ -67,7 +67,7 @@ export default function HomePage() {
             About the program
           </h3>
           <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
-            Oakland Tech's own College Essay Mentors are here with no-cost support to our seniors as they prepare their college applications! Now at the end of our first decade, OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their Common App Essays and UC PIQs.
+            The Oakland Tech College Essay Mentor Program provides no-cost support to our seniors as they prepare their college applications. Helping Oakland Tech seniors for almost a decade, Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their Common App Essays and UC PIQs.
           </p>
           <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
             We work with students from their earliest brainstorming sessions to the final polishing of their work for submission.
@@ -120,11 +120,11 @@ export default function HomePage() {
           </h3>
           <ul style={{ margin: 0, padding: '0 0 0 18px', fontSize: 15, color: '#5F5E5A', lineHeight: 2 }}>
             <li>Appointments are <strong>free</strong> for all Oakland Tech seniors</li>
-            <li>Available <strong>first-come, first-served</strong> every week through end of semester</li>
+            <li>Available <strong>first-come, first-served</strong> through the end of the year</li>
             <li>Virtual appointments available nearly every day of the week</li>
             <li>In-person appointments at the <strong>College and Career Center</strong> on Friday afternoons</li>
             <li>Additional hours available — visit the CCC for information</li>
-            <li>One appointment per student — start early and make it count!</li>
+            <li>One active appointment at a time — start early and make it count!</li>
             <li>Skills learned here will support you in college and beyond</li>
           </ul>
         </div>
