@@ -21,22 +21,13 @@ export default function HomePage() {
           </h1>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-  
   <Link href="/login" style={{
     background: 'transparent', color: '#EEEDFE',
     textDecoration: 'none', fontSize: 13,
     padding: '8px 18px', borderRadius: 8,
     border: '0.5px solid #EEEDFE',
   }}>
-    Mentors
-  </Link>
-  <Link href="/admin" style={{
-    background: 'transparent', color: '#EEEDFE',
-    textDecoration: 'none', fontSize: 13,
-    padding: '8px 18px', borderRadius: 8,
-    border: '0.5px solid #EEEDFE',
-  }}>
-    Admin
+    Login
   </Link>
 </div>
       </div>
