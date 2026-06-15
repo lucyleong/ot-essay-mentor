@@ -28,8 +28,10 @@ type BookingWithAnswers = {
     essay_type: string
     google_doc_url: string | null
     file_name: string | null
+    file_path: string | null
     note_to_mentor: string | null
     uploaded_at: string
+    signed_url?: string | null
   }[]
 }
 
