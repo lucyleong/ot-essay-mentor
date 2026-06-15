@@ -173,6 +173,10 @@ export default function HomePage() {
         <a href="mailto:otessaymentors@gmail.com" style={{ color: '#534AB7' }}>
           otessaymentors@gmail.com
         </a>
+        {' · '}
+        <a href="/terms" style={{ color: '#534AB7' }}>
+          Terms & Privacy Policy
+        </a>
       </div>
 
     </main>
