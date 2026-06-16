@@ -71,14 +71,15 @@ export async function GET() {
     .select(`
       answer_text,
       intake_questions ( question_text, sort_order ),
-      student_bookings ( student_email, booked_at )
+      booking_id,
+      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at )
     `)
-    .order('student_bookings.booked_at', { ascending: false })
 
   // Flatten with student email
   const answersWithEmail = (intakeAnswers ?? []).map((a: any) => ({
-    answer_text:     a.answer_text,
-    student_email:   a.student_bookings?.student_email,
+    answer_text:      a.answer_text,
+    student_email:    a.student_bookings?.student_email,
+    booked_at:        a.student_bookings?.booked_at,
     intake_questions: a.intake_questions,
   }))
 

@@ -145,7 +145,10 @@ const [reportsLoading, setReportsLoading] = useState(false)
         {navItems.map(item => (
           <button
             key={item.key}
-            onClick={() => setActivePanel(item.key)}
+onClick={() => {
+  setActivePanel(item.key)
+  if (item.key === 'reports') loadReports()
+}}
             style={{
               display: 'flex', alignItems: 'center',
               padding: '9px 16px', fontSize: 13, cursor: 'pointer',
@@ -370,90 +373,107 @@ const [reportsLoading, setReportsLoading] = useState(false)
                     </div>
 
                     {/* Demographics */}
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First generation college students</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                        <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.demographics.firstGen.yes}</p>
-                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>First gen</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                      
+                      {/* First gen */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First generation</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                            <p style={{ margin: 0, fontSize: 13 }}>Yes</p>
+                            <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{reports.demographics.firstGen.yes}</p>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                            <p style={{ margin: 0, fontSize: 13 }}>No</p>
+                            <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{reports.demographics.firstGen.no}</p>
+                          </div>
+                        </div>
                       </div>
-                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                        <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.demographics.firstGen.no}</p>
-                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Not first gen</p>
+
+                      {/* Private counselor */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Private counselor</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.privateCounselor.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.demographics.helpWith.map(([label, count]: [string, number]) => (
-                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{
-                              width: `${(count / reports.demographics.helpWith[0][1]) * 100}%`,
-                              background: '#534AB7', height: '100%', borderRadius: 4,
-                            }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                      {/* LGBTQ */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>LGBTQIAA+ / Gender nonconforming</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.lgbtq.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Teacher distribution</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.demographics.teachers.map(([label, count]: [string, number]) => (
-                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{ width: `${(count / reports.demographics.teachers[0][1]) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                      {/* Immigrants */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrants</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.immigrants.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 12 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Working with a private counselor</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.demographics.privateCounselor.map(([label, count]: [string, number]) => (
-                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{ width: `${(count / (reports.demographics.privateCounselor[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                      {/* What they want help with */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.helpWith.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrants</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.demographics.immigrants.map(([label, count]: [string, number]) => (
-                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{ width: `${(count / (reports.demographics.immigrants[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                      {/* Teacher distribution */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Teacher distribution</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.teachers.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>LGBTQIAA+ / Gender nonconforming</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.demographics.lgbtq.map(([label, count]: [string, number]) => (
-                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{ width: `${(count / (reports.demographics.lgbtq[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                      {/* Ethnicity - full width */}
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Ethnicity</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.demographics.ethnicity.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
 
+                   </div>
                   </div>
                 )}
               </div>
             )}
+
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
               <div>
