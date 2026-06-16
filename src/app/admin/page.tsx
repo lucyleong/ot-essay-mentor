@@ -355,25 +355,22 @@ onClick={() => {
                       </>
                     )}
 
-                    {/* Mentor activity */}
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor activity</p>
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
-                      {reports.mentorActivity.map(([name, count]: [string, number]) => (
-                        <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                          <p style={{ flex: 1, margin: 0, fontSize: 13, fontWeight: 500 }}>{name}</p>
-                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{
-                              width: `${(count / reports.mentorActivity[0][1]) * 100}%`,
-                              background: '#534AB7', height: '100%', borderRadius: 4,
-                            }} />
-                          </div>
-                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
-                        </div>
-                      ))}
-                    </div>
-
+                    
                     {/* Demographics */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+
+                      {/* Mentor activity */}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor activity</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          {reports.mentorActivity.map(([name, count]: [string, number]) => (
+                            <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{name}</p>
+                              <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>{count}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                       
                       {/* First gen */}
                       <div>
@@ -456,8 +453,8 @@ onClick={() => {
                       </div>
 
                       {/* Ethnicity - full width */}
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Ethnicity</p>
+<div>
+                          <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Ethnicity</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.demographics.ethnicity.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
