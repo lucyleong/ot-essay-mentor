@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   // Group slots by date
   const grouped: Record<string, typeof data> = {}
   for (const slot of data ?? []) {
-    const dateKey = slot.start_time.slice(0, 10)
+    const dateKey = new Date(slot.start_time).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
     if (!grouped[dateKey]) grouped[dateKey] = []
     grouped[dateKey].push(slot)
   }

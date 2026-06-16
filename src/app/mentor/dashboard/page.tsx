@@ -462,35 +462,16 @@ const timeOptions = generateTimeOptions()
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: 12 }}>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
-                    <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                     <option value="none">One time only</option>
-<option value="daily">Every day</option>
-<option value="weekly">Every week</option>
-<option value="biweekly">Every 2 weeks</option>
-                    </select>
-                  </div>
-
-                  {slotRecurrence !== 'none' && (
-                    <div style={{ marginBottom: 12 }}>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
-                        Repeat until
-                      </label>
-                      <input
-                        type="date"
-                        value={slotUntil}
-                        onChange={e => setSlotUntil(e.target.value)}
-                        style={{ width: '100%', boxSizing: 'border-box' }}
-                      />
-                    </div>
-                  )}
-
-                  <div style={{ background: '#f5f4f0', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
-                    Each appointment is <strong>20 minutes</strong>. A Google Meet link will be created after clicking Sync calendar.
-                  </div>
-
-                  <button
+<div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
+                        <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                          <option value="none">One time only</option>
+                          <option value="daily">Every day</option>
+                          <option value="weekly">Every week</option>
+                          <option value="biweekly">Every 2 weeks</option>
+                        </select>
+                      </div>
+                      <button
                     onClick={async () => {
                       if (!slotDate || !slotStart || !slotEnd) {
                         setSlotError('Please fill in the date, start time, and end time.')
@@ -577,11 +558,18 @@ setTimeout(async () => {
 }, 3000)
                     }}
                     disabled={addingSlot}
-                    style={{ width: '100%' }}
-                  >
-                    {addingSlot ? 'Saving...' : 'Save schedule'}
+style={{ 
+  background: '#534AB7', 
+  color: '#ffffff',
+  padding: '8px 20px',
+  whiteSpace: 'nowrap',
+  fontSize: 13,
+  fontWeight: 500,
+}}                  >
+                   {addingSlot ? 'Saving...' : 'Save schedule'}
                   </button>
                 </div>
+              </div>
 
                 {slots.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>

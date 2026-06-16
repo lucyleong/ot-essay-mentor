@@ -205,12 +205,7 @@ const [howHeard,      setHowHeard]      = useState('')
           style={{ width: '100%', boxSizing: 'border-box', fontSize: 13, padding: '8px', borderRadius: 6, border: '0.5px solid #D3D1C7', resize: 'vertical' }}
         />
       </div>
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
+            
 
       <button
         onClick={handleSubmit}

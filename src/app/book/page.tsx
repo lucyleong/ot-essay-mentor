@@ -66,7 +66,7 @@ export default function BookPage() {
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() + i)
-    return d.toISOString().slice(0, 10)
+    return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
   })
 
   function selectSlot(slot: Slot) {
@@ -291,8 +291,8 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
 {slot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
                     </p>
                     <p style={{ margin: 0, fontSize: 12, color: '#888780' }}>
-                      {format(parseISO(slot.start_time), 'h:mm a')} –{' '}
-                      {format(parseISO(slot.end_time), 'h:mm a')}
+                   {format(new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')} –{' '}
+                      {format(new Date(new Date(slot.end_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')}
                       {slot.mentor_profiles?.department ? ` · ${slot.mentor_profiles.department}` : ''}
                     </p>
                   </div>
