@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
+import Script from 'next/script'
 
 type Slot = {
   id: string
@@ -48,6 +49,7 @@ export default function BookPage() {
   const [showMentor,   setShowMentor]   = useState(false)
   const formRef = useRef<HTMLDivElement>(null)
   const errorRef = useRef<HTMLDivElement>(null)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
     const params = typeFilter ? `?type=${typeFilter}` : ''
@@ -123,13 +125,14 @@ export default function BookPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        slotId:       selectedSlot.id,
+        slotId:         selectedSlot.id,
         firstName,
         lastName,
-        studentEmail: email,
-        studentPhone: phone,
+        studentEmail:   email,
+        studentPhone:   phone,
         smsConsent,
-        answers:      formattedAnswers,
+        answers:        formattedAnswers,
+        turnstileToken,
       }),
     })
 

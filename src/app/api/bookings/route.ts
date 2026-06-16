@@ -13,7 +13,19 @@ export async function POST(request: NextRequest) {
   
   )
   const body = await request.json()
-
+// Verify Turnstile token
+  const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      secret:   process.env.TURNSTILE_SECRET_KEY!,
+      response: body.turnstileToken ?? '',
+    }),
+  })
+  const turnstileData = await turnstileRes.json()
+  if (!turnstileData.success) {
+    return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400 })
+  }
   // Validate Gmail address
   try {
     assertGmail(body.studentEmail)
