@@ -72,16 +72,18 @@ export async function GET() {
       answer_text,
       intake_questions ( question_text, sort_order ),
       booking_id,
-      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at )
+      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at, cancelled_at )
     `)
 
   // Flatten with student email
-  const answersWithEmail = (intakeAnswers ?? []).map((a: any) => ({
-    answer_text:      a.answer_text,
-    student_email:    a.student_bookings?.student_email,
-    booked_at:        a.student_bookings?.booked_at,
-    intake_questions: a.intake_questions,
-  }))
+  const answersWithEmail = (intakeAnswers ?? [])
+    .filter((a: any) => !a.student_bookings?.cancelled_at)
+    .map((a: any) => ({
+      answer_text:      a.answer_text,
+      student_email:    a.student_bookings?.student_email,
+      booked_at:        a.student_bookings?.booked_at,
+      intake_questions: a.intake_questions,
+    }))
 
   // First gen (sort_order 15)
   const firstGenEntries = countUnique(answersWithEmail, 15)
