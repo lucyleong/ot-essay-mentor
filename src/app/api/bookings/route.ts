@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
 import { assertGmail } from '@/lib/validators'
 import { sendEmail } from '@/lib/email'
 import { studentConfirmationEmail } from '@/lib/email-templates/student-confirmation'
@@ -7,8 +7,12 @@ import { format, parseISO } from 'date-fns'
 import { addStudentToCalendarEvent } from '@/lib/calendar'
 
 export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabaseClient()
-  const body     = await request.json()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  
+  )
+  const body = await request.json()
 
   // Validate Gmail address
   try {
@@ -16,7 +20,7 @@ export async function POST(request: NextRequest) {
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 422 })
   }
-
+console.log('Booking attempt:', body.studentEmail, body.slotId)
   // Check the slot is still available
   // Check if student already has an upcoming booking
   const { data: existingBooking } = await supabase
@@ -81,7 +85,13 @@ export async function POST(request: NextRequest) {
     })
     .select()
     .single()
-
+if (bookingError) {
+    console.error('Booking insert error:', bookingError)
+    return NextResponse.json(
+      { error: bookingError.message },
+      { status: 500 }
+    )
+  }
   if (bookingError) {
     return NextResponse.json(
       { error: bookingError.message },
@@ -145,7 +155,7 @@ mentorName: (slot.mentor_profiles as any).full_name.split(' ')[0],
   startTime:        slot.start_time,
   endTime:          slot.end_time,
   meetingType:      slot.meeting_type,
-  meetLink:         slot.google_meet_link,
+  meetLink:         meetLink,
   confirmationCode: booking.confirmation_code,
   essayUploadUrl:   `${process.env.NEXT_PUBLIC_APP_URL}/book/${booking.id}/essays`,
 })
