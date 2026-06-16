@@ -297,14 +297,23 @@ onClick={() => {
 {/* REPORTS */}
             {activePanel === 'reports' && (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <div>
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
                     <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
                   </div>
-                  <button onClick={loadReports} disabled={reportsLoading} style={{ fontSize: 12 }}>
-                    {reportsLoading ? 'Loading...' : 'Load reports'}
-                  </button>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {reports && (
+                      <button
+                        onClick={() => {
+                          window.location.href = '/api/admin/reports/export'
+                        }}
+                        style={{ fontSize: 12 }}
+                      >
+                        Export CSV
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {!reports && !reportsLoading && (
