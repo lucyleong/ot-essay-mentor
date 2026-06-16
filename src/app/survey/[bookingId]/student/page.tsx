@@ -14,9 +14,11 @@ export default function StudentSurveyPage({
   const [error,     setError]     = useState('')
 
   // Answers
-  const [meetEase,    setMeetEase]    = useState<number | null>(null)
-  const [helpfulness, setHelpfulness] = useState<number | null>(null)
-  const [recommend,   setRecommend]   = useState<string | null>(null)
+  const [sessionEase,   setSessionEase]   = useState<number | null>(null)
+const [mentorOnTime,  setMentorOnTime]  = useState<string | null>(null)
+const [nextSteps,     setNextSteps]     = useState<string | null>(null)
+const [workAgain,     setWorkAgain]     = useState<string | null>(null)
+const [howHeard,      setHowHeard]      = useState('')
 
   useEffect(() => {
     async function init() {
@@ -36,8 +38,8 @@ export default function StudentSurveyPage({
   }, [])
 
   async function handleSubmit() {
-    if (!meetEase || !helpfulness || !recommend) {
-      setError('Please answer all questions before submitting.')
+   if (!sessionEase || !mentorOnTime || !nextSteps || !workAgain) {
+      setError('Please answer all required questions before submitting.')
       return
     }
 
@@ -45,10 +47,13 @@ export default function StudentSurveyPage({
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
-        rating_overall:    helpfulness,
+        rating_overall:     sessionEase,
         additional_answers: {
-          meet_ease:  meetEase,
-          recommend,
+          session_ease:  sessionEase,
+          mentor_on_time: mentorOnTime,
+          next_steps:    nextSteps,
+          work_again:    workAgain,
+          how_heard:     howHeard,
         },
       }),
     })
@@ -123,39 +128,83 @@ export default function StudentSurveyPage({
       {/* Q1 */}
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>
-          How easy was it to connect on Google Meet?
+          Were you able to get into your session easily?
         </p>
         <p style={{ fontSize: 12, color: '#888780', margin: '0 0 4px' }}>1 = Very difficult · 5 = Very easy</p>
-        <RatingButtons value={meetEase} onChange={setMeetEase} />
+        <RatingButtons value={sessionEase} onChange={setSessionEase} />
       </div>
 
       {/* Q2 */}
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
-        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>
-          How helpful was {mentorFirstName}?
+        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>
+          Was your mentor on time?
         </p>
-        <p style={{ fontSize: 12, color: '#888780', margin: '0 0 4px' }}>1 = Not helpful · 5 = Extremely helpful</p>
-        <RatingButtons value={helpfulness} onChange={setHelpfulness} />
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['Yes', 'No'].map(opt => (
+            <button key={opt} onClick={() => setMentorOnTime(opt)} style={{
+              flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
+              fontWeight: mentorOnTime === opt ? 600 : 400,
+              background: mentorOnTime === opt ? '#534AB7' : '#ffffff',
+              color: mentorOnTime === opt ? '#ffffff' : '#2C2C2A',
+              border: `0.5px solid ${mentorOnTime === opt ? '#534AB7' : '#D3D1C7'}`,
+              cursor: 'pointer',
+            }}>{opt}</button>
+          ))}
+        </div>
       </div>
 
       {/* Q3 */}
-      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 20 }}>
+      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>
-          Would you recommend this program to other Oakland Tech seniors?
+          Did your mentor give you direction about next steps for your essay(s)?
         </p>
         <div style={{ display: 'flex', gap: 8 }}>
-          {['Yes', 'Maybe', 'No'].map(opt => (
-            <button
-              key={opt}
-              onClick={() => setRecommend(opt)}
-              style={{
-                flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
-                fontWeight: recommend === opt ? 600 : 400,
-                background: recommend === opt ? '#534AB7' : '#ffffff',
-                color:      recommend === opt ? '#ffffff' : '#2C2C2A',
-                border:     `0.5px solid ${recommend === opt ? '#534AB7' : '#D3D1C7'}`,
-                cursor: 'pointer',
-              }}
+          {['Yes', 'No', 'Not sure'].map(opt => (
+            <button key={opt} onClick={() => setNextSteps(opt)} style={{
+              flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
+              fontWeight: nextSteps === opt ? 600 : 400,
+              background: nextSteps === opt ? '#534AB7' : '#ffffff',
+              color: nextSteps === opt ? '#ffffff' : '#2C2C2A',
+              border: `0.5px solid ${nextSteps === opt ? '#534AB7' : '#D3D1C7'}`,
+              cursor: 'pointer',
+            }}>{opt}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Q4 */}
+      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
+        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>
+          Would you work with this mentor again?
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['Yes', 'No', 'Not sure'].map(opt => (
+            <button key={opt} onClick={() => setWorkAgain(opt)} style={{
+              flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
+              fontWeight: workAgain === opt ? 600 : 400,
+              background: workAgain === opt ? '#534AB7' : '#ffffff',
+              color: workAgain === opt ? '#ffffff' : '#2C2C2A',
+              border: `0.5px solid ${workAgain === opt ? '#534AB7' : '#D3D1C7'}`,
+              cursor: 'pointer',
+            }}>{opt}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Q5 */}
+      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 20 }}>
+        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 8px' }}>
+          How did you hear about this program? Any other comments?
+        </p>
+        <p style={{ fontSize: 12, color: '#888780', margin: '0 0 8px' }}>Optional</p>
+        <textarea
+          value={howHeard}
+          onChange={e => setHowHeard(e.target.value)}
+          placeholder="e.g. My teacher told me, I saw a flyer..."
+          rows={3}
+          style={{ width: '100%', boxSizing: 'border-box', fontSize: 13, padding: '8px', borderRadius: 6, border: '0.5px solid #D3D1C7', resize: 'vertical' }}
+        />
+      </div>
             >
               {opt}
             </button>
@@ -165,7 +214,7 @@ export default function StudentSurveyPage({
 
       <button
         onClick={handleSubmit}
-        disabled={!meetEase || !helpfulness || !recommend}
+disabled={!sessionEase || !mentorOnTime || !nextSteps || !workAgain}
         style={{ width: '100%', fontSize: 14 }}
       >
         Submit feedback
