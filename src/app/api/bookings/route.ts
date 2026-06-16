@@ -92,9 +92,9 @@ if (bookingError) {
       { status: 500 }
     )
   }
-  if (bookingError) {
+ if (bookingError) {
     return NextResponse.json(
-      { error: bookingError.message },
+      { error: (bookingError as any).message },
       { status: 500 }
     )
   }
