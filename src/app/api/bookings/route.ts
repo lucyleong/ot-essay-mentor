@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 422 })
   }
-console.log('Booking attempt:', body.studentEmail, body.slotId)
+
   // Check the slot is still available
   // Check if student already has an upcoming booking
   const { data: existingBooking } = await supabase
