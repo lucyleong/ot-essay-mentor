@@ -404,10 +404,46 @@ const [reportsLoading, setReportsLoading] = useState(false)
                         <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
                           <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
                           <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                            <div style={{
-                              width: `${(count / reports.demographics.teachers[0][1]) * 100}%`,
-                              background: '#534AB7', height: '100%', borderRadius: 4,
-                            }} />
+                            <div style={{ width: `${(count / reports.demographics.teachers[0][1]) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Working with a private counselor</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.demographics.privateCounselor.map(([label, count]: [string, number]) => (
+                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{ width: `${(count / (reports.demographics.privateCounselor[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrants</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.demographics.immigrants.map(([label, count]: [string, number]) => (
+                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{ width: `${(count / (reports.demographics.immigrants[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
+                          </div>
+                          <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>LGBTQIAA+ / Gender nonconforming</p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 20 }}>
+                      {reports.demographics.lgbtq.map(([label, count]: [string, number]) => (
+                        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
+                          <div style={{ width: 120, background: '#f5f4f0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                            <div style={{ width: `${(count / (reports.demographics.lgbtq[0]?.[1] || 1)) * 100}%`, background: '#534AB7', height: '100%', borderRadius: 4 }} />
                           </div>
                           <p style={{ margin: 0, fontSize: 13, color: '#888780', width: 30, textAlign: 'right' }}>{count}</p>
                         </div>
