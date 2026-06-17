@@ -361,7 +361,7 @@ onClick={() => {
 
                       {/* Mentor activity */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor activity</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor appointments</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.mentorActivity.map(([name, count]: [string, number]) => (
                             <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
@@ -374,7 +374,7 @@ onClick={() => {
                       
                       {/* First gen */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First generation</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
                             <p style={{ margin: 0, fontSize: 13 }}>Yes</p>
@@ -389,7 +389,7 @@ onClick={() => {
 
                       {/* Private counselor */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Private counselor</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Using private counselor</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.demographics.privateCounselor.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
@@ -441,7 +441,7 @@ onClick={() => {
 
                       {/* Teacher distribution */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Teacher distribution</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English/Advisory teacher</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.demographics.teachers.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
