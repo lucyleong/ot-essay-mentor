@@ -52,6 +52,13 @@ export default function BookPage() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
+    (window as any).onTurnstileSuccess = (token: string) => {
+      console.log('Turnstile token received:', token ? 'yes' : 'no')
+      setTurnstileToken(token)
+    }
+  }, [])
+
+  useEffect(() => {
     const params = typeFilter ? `?type=${typeFilter}` : ''
     fetch(`/api/slots/available${params}`)
       .then(r => r.json())
@@ -64,6 +71,13 @@ export default function BookPage() {
       .then(r => r.json())
       .then(setQuestions)
   }, [typeFilter])
+
+  useEffect(() => {
+    (window as any).onTurnstileSuccess = (token: string) => {
+      console.log('Turnstile token received:', token ? 'yes' : 'no')
+      setTurnstileToken(token)
+    }
+  }, [])
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
@@ -109,6 +123,12 @@ export default function BookPage() {
     if (emailError) return
     setSubmitting(true)
     setError('')
+
+    if (!turnstileToken) {
+      setError('Please wait for the security check to complete.')
+      setSubmitting(false)
+      return
+    }
 
     const formattedAnswers = questions
       .filter(q => {
@@ -573,6 +593,12 @@ const isOptional = !q.is_required
                 {error}
               </div>
             )}
+<div
+              className="cf-turnstile"
+              data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              data-callback="onTurnstileSuccess"
+              style={{ marginBottom: 12 }}
+            />
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <button
@@ -590,7 +616,7 @@ const isOptional = !q.is_required
                 Cancel
               </button>
             </div>
-
+<Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async />
           </form>
         </div>
       )}
