@@ -23,7 +23,7 @@ type Booking = {
 }
 
 export default function AdminPage() {
-  const [activePanel, setActivePanel] = useState('mentors')
+  const [activePanel, setActivePanel] = useState('reports')
   const [mentors,     setMentors]     = useState<Mentor[]>([])
   const [bookings,    setBookings]    = useState<Booking[]>([])
   const [loading,     setLoading]     = useState(true)
@@ -47,6 +47,7 @@ const [reportsLoading, setReportsLoading] = useState(false)
     if (params.get('connected') === 'google') setConnected(true)
     if (params.get('error')) setError(params.get('error'))
     loadData()
+    loadReports()
   }, [])
 
   async function loadData() {
@@ -58,18 +59,8 @@ const [reportsLoading, setReportsLoading] = useState(false)
 
     setMentors(mentorData ?? [])
 
-    const { data: bookingData } = await supabase
-      .from('student_bookings')
-      .select(`
-        id, student_name, student_email, booked_at, cancelled_at, confirmation_code,
-        appointment_slots (
-          start_time, meeting_type,
-          mentor_profiles ( full_name )
-        )
-      `)
-      .order('booked_at', { ascending: false })
-      .limit(100)
-
+    const bookingRes  = await fetch('/api/admin/bookings')
+    const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
     setLoading(false)
   }
@@ -122,9 +113,9 @@ const [reportsLoading, setReportsLoading] = useState(false)
   }
 
   const navItems = [
-    { key: 'mentors',   label: 'Mentors' },
-    { key: 'bookings',  label: 'All bookings' },
     { key: 'reports',   label: 'Reports' },
+    { key: 'bookings',  label: 'All bookings' },
+    { key: 'mentors',   label: 'Mentors' },
     { key: 'calendar',  label: 'Google Calendar' },
   ]
 

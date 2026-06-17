@@ -169,7 +169,7 @@ mentorName: (slot.mentor_profiles as any).full_name.split(' ')[0],
   meetingType:      slot.meeting_type,
   meetLink:         meetLink,
   confirmationCode: booking.confirmation_code,
-  essayUploadUrl:   `${process.env.NEXT_PUBLIC_APP_URL}/book/${booking.id}/essays`,
+ essayUploadUrl :   `${process.env.NEXT_PUBLIC_APP_URL}/book/${booking.id}/essays`,
 })
 
     await sendEmail({
