@@ -50,6 +50,7 @@ const [slotUntil, setSlotUntil] = useState('')
 const [addingSlot,     setAddingSlot]     = useState(false)
 const [slotSuccess,    setSlotSuccess]    = useState('')
 const [slotError,      setSlotError]      = useState('')
+const [allBookings, setAllBookings] = useState<any[]>([])
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -86,11 +87,13 @@ const timeOptions = generateTimeOptions()
 
     const bookingsRes = await fetch('/api/mentor/bookings')
     const bookingsData = await bookingsRes.json()
-    const filtered = (bookingsData.bookings ?? []).filter((b: any) => {
+    const allBookings = bookingsData.bookings ?? []
+    const filtered = allBookings.filter((b: any) => {
       const slot = b.appointment_slots
       return slot && isFuture(parseISO(slot.start_time))
     })
     setBookings(filtered)
+    setAllBookings(allBookings)
     // Load mentor's slots
     const slotsRes = await fetch('/api/slots')
     const slotsData = await slotsRes.json()
@@ -330,12 +333,14 @@ const timeOptions = generateTimeOptions()
                   Everyone who has booked with you
                 </p>
 
-                {bookings.length === 0 ? (
+                {allBookings.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
                     <p style={{ color: '#888780', margin: 0 }}>No students yet.</p>
                   </div>
                 ) : (
-                  Array.from(new Map(bookings.map(b => [b.student_email, b])).values()).map(booking => (
+Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
+                  .sort((a, b) => a.student_name.split(' ')[0].localeCompare(b.student_name.split(' ')[0]))
+                  .map(booking => (
                     <div key={booking.student_email} style={{
                       background: '#ffffff',
                       border: '0.5px solid #e8e6de',
