@@ -334,10 +334,9 @@ onClick={() => {
 
                     {/* Survey stats */}
                     {reports.surveys.totalResponses > 0 && (
-                      <>
+                      <div style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 12, padding: '1rem', marginBottom: 20 }}>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys ({reports.surveys.totalResponses} responses)</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
-                          
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
                           {/* Avg ease of connecting */}
                           <div>
                             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
@@ -384,13 +383,14 @@ onClick={() => {
                               ))}
                             </div>
                           </div>
+                      </div>
 
                         </div>
-                      </>
                     )}
 
                     
-                    {/* Demographics */}
+                  {/* Demographics */}
+                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Intake form responses</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
                       {/* Mentor activity */}
