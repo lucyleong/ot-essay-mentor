@@ -113,10 +113,18 @@ export async function GET() {
     ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
     : null
 
-  const recommendMap: Record<string, number> = { Yes: 0, Maybe: 0, No: 0 }
+  const mentorOnTimeMap: Record<string, number> = { Yes: 0, No: 0 }
+  const nextStepsMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
+  const workAgainMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
+
   ;(studentSurveys ?? []).forEach(s => {
-    const rec = s.additional_answers?.recommend
-    if (rec && recommendMap[rec] !== undefined) recommendMap[rec]++
+    const onTime    = s.additional_answers?.mentor_on_time
+    const nextSteps = s.additional_answers?.next_steps
+    const workAgain = s.additional_answers?.work_again
+
+    if (onTime    && mentorOnTimeMap[onTime]    !== undefined) mentorOnTimeMap[onTime]++
+    if (nextSteps && nextStepsMap[nextSteps]     !== undefined) nextStepsMap[nextSteps]++
+    if (workAgain && workAgainMap[workAgain]     !== undefined) workAgainMap[workAgain]++
   })
 
   return NextResponse.json({
@@ -140,7 +148,9 @@ export async function GET() {
     surveys: {
       avgRating,
       totalResponses: ratings.length,
-      recommend:      Object.entries(recommendMap),
+      mentorOnTime:   Object.entries(mentorOnTimeMap),
+      nextSteps:      Object.entries(nextStepsMap),
+      workAgain:      Object.entries(workAgainMap),
     },
   })
 }

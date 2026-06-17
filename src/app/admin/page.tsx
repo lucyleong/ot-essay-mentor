@@ -333,22 +333,34 @@ onClick={() => {
                     </div>
 
                     {/* Survey stats */}
-                    {reports.surveys.avgRating && (
+                    {reports.surveys.totalResponses > 0 && (
                       <>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 20 }}>
                           <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                             <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.avgRating}/5</p>
-                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Avg rating</p>
+                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Avg ease of connecting</p>
                           </div>
                           <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                             <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.totalResponses}</p>
-                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Responses</p>
+                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Total responses</p>
                           </div>
-                          {reports.surveys.recommend.map(([label, count]: [string, number]) => (
+                          {reports.surveys.mentorOnTime.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                               <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
-                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Would recommend: {label}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Mentor on time: {label}</p>
+                            </div>
+                          ))}
+                          {reports.surveys.nextSteps.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Next steps given: {label}</p>
+                            </div>
+                          ))}
+                          {reports.surveys.workAgain.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Work with mentor again: {label}</p>
                             </div>
                           ))}
                         </div>
