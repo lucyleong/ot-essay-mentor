@@ -203,10 +203,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
             display: 'inline-block',
             margin: '8px 0',
           }}>
-            <p style={{ fontSize: 12, color: '#888780', margin: '0 0 2px' }}>Confirmation code</p>
-            <p style={{ fontSize: 18, fontWeight: 500, margin: 0, color: '#085041' }}>
-              {confirmCode}
-            </p>
+           
           </div>
           <p style={{ fontSize: 13, color: '#0F6E56', margin: '12px 0 0' }}>
             A confirmation email has been sent to {email}
