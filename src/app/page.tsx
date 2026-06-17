@@ -1,5 +1,5 @@
-import Link from 'next/link'
 'use client'
+import Link from 'next/link'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -7,13 +7,12 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if this is a password reset redirect
     const hash = window.location.hash
     if (hash.includes('type=recovery')) {
       router.push(`/auth/reset-password${hash}`)
     }
   }, [])
-export default function HomePage() {
+
   return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
