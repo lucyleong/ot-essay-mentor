@@ -66,7 +66,7 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
       If for any reason you must cancel your appointment, please go to your
       Google Calendar invitation and change your availability from "Yes" to "No". Your 
-      cancellation must be made <strong>AT LEAST 24 HOURS</strong> in advance.
+      cancellation must be made at least 24 hours in advance.
     </p>
 
     ${divider()}
