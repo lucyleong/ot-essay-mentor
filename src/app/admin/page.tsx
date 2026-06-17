@@ -335,34 +335,56 @@ onClick={() => {
                     {/* Survey stats */}
                     {reports.surveys.totalResponses > 0 && (
                       <>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 20 }}>
-                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                            <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.avgRating}/5</p>
-                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Avg ease of connecting</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys ({reports.surveys.totalResponses} responses)</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+                          
+                          {/* Avg ease of connecting */}
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
+                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
+                              <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#534AB7' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
+                            </div>
                           </div>
-                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                            <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{reports.surveys.totalResponses}</p>
-                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Total responses</p>
+
+                          {/* Mentor on time */}
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Mentor on time</p>
+                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                              {reports.surveys.mentorOnTime.map(([label, count]: [string, number]) => (
+                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                          {reports.surveys.mentorOnTime.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
-                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Mentor on time: {label}</p>
+
+                          {/* Next steps */}
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Gave next steps</p>
+                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                              {reports.surveys.nextSteps.map(([label, count]: [string, number]) => (
+                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                          {reports.surveys.nextSteps.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
-                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Next steps given: {label}</p>
+                          </div>
+
+                          {/* Work with mentor again */}
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Would work with mentor again</p>
+                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                              {reports.surveys.workAgain.map(([label, count]: [string, number]) => (
+                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                          {reports.surveys.workAgain.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                              <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{count}</p>
-                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>Work with mentor again: {label}</p>
-                            </div>
-                          ))}
+                          </div>
+
                         </div>
                       </>
                     )}
