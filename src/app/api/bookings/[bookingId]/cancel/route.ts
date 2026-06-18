@@ -40,51 +40,37 @@ export async function POST(
     .update({ is_booked: false })
     .eq('id', booking.slot_id)
 
-  // Remove student from Google Calendar event
+  // Delete Google Calendar event and clear slot fields
   try {
     const { data: slot } = await supabase
       .from('appointment_slots')
-      .select('google_calendar_event_id, mentor_profiles(email)')
+      .select('google_calendar_event_id')
       .eq('id', booking.slot_id)
       .single()
 
     if (slot?.google_calendar_event_id) {
       const accessToken = await getFreshAccessToken()
 
-      // Get current attendees
-      const getRes = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${slot.google_calendar_event_id}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      )
-      const currentEvent = await getRes.json()
-
-      // Filter out the cancelled student
-      const { data: cancelledBooking } = await supabase
-        .from('student_bookings')
-        .select('student_email')
-        .eq('id', bookingId)
-        .single()
-
-      const updatedAttendees = (currentEvent.attendees ?? []).filter(
-        (a: any) => a.email !== cancelledBooking?.student_email
-      )
-
-      // Patch the event
+      // Delete the calendar event entirely
       await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/primary/events/${slot.google_calendar_event_id}?sendUpdates=all`,
         {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ attendees: updatedAttendees }),
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       )
+
+      // Clear calendar fields from slot
+      await supabase
+        .from('appointment_slots')
+        .update({
+          google_calendar_event_id: null,
+          google_meet_link: null,
+        })
+        .eq('id', booking.slot_id)
     }
   } catch (calErr) {
-    console.error('Calendar update failed on cancel:', calErr)
-    // Don't fail the cancellation if calendar update fails
+    console.error('Calendar deletion failed on cancel:', calErr)
   }
 
   return NextResponse.json({ ok: true })
