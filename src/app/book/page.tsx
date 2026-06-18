@@ -80,8 +80,6 @@ export default function BookPage() {
       .then(setQuestions)
   }, [typeFilter])
 
-  }, [])
-
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() + i)
