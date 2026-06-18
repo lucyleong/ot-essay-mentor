@@ -12,7 +12,7 @@ export default function VerifyPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
+console.log('Entered:', code.trim().toUpperCase(), 'Expected:', process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase())
     if (code.trim().toUpperCase() === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
       // Store verification in sessionStorage so booking page knows they're verified
       sessionStorage.setItem('booking_verified', 'true')
@@ -52,9 +52,9 @@ export default function VerifyPage() {
             />
           </div>
 
-          {error && (
+         {error && (
             <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#791F1F' }}>
-              {error}
+             {error}
             </div>
           )}
 
