@@ -385,6 +385,20 @@ onClick={() => {
                           </div>
                       </div>
 
+                      {/* How heard - full width */}
+                      {reports.surveys.howHeard?.length > 0 && (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                          <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>How they heard / comments</p>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                            {reports.surveys.howHeard.map((answer: string, i: number) => (
+                              <p key={i} style={{ margin: '0 0 6px', fontSize: 13, color: '#2C2C2A', borderBottom: '0.5px solid #e8e6de', paddingBottom: 6 }}>
+                                "{answer}"
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                         </div>
                     )}
 

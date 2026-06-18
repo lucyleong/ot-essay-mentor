@@ -151,6 +151,9 @@ export async function GET() {
       mentorOnTime:   Object.entries(mentorOnTimeMap),
       nextSteps:      Object.entries(nextStepsMap),
       workAgain:      Object.entries(workAgainMap),
+      howHeard:       (studentSurveys ?? [])
+        .map((s: any) => s.additional_answers?.how_heard)
+        .filter((a: any) => a && a.trim().length > 0),
     },
   })
 }
