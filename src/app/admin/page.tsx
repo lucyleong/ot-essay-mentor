@@ -31,6 +31,9 @@ export default function AdminPage() {
   const [reports,     setReports]     = useState<any>(null)
 const [reportsLoading, setReportsLoading] = useState(false)
   const [error,       setError]       = useState<string | null>(null)
+  const [endSessionConfirm, setEndSessionConfirm] = useState('')
+const [endingSession,     setEndingSession]     = useState(false)
+const [sessionEnded,      setSessionEnded]      = useState(false)
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -117,6 +120,7 @@ const [reportsLoading, setReportsLoading] = useState(false)
     { key: 'bookings',  label: 'All bookings' },
     { key: 'mentors',   label: 'Mentors' },
     { key: 'calendar',  label: 'Google Calendar' },
+    { key: 'session',   label: 'End Session' },
   ]
 
   return (
@@ -518,7 +522,79 @@ onClick={() => {
                 )}
               </div>
             )}
+{/* END SESSION */}
+            {activePanel === 'session' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>End Session</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 24px' }}>
+                  Use this at the end of the semester to clear all program data.
+                </p>
 
+                {sessionEnded ? (
+                  <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ fontSize: 16, fontWeight: 500, color: '#085041', margin: '0 0 8px' }}>Session ended successfully</p>
+                    <p style={{ fontSize: 14, color: '#0F6E56', margin: 0 }}>All program data has been cleared. Ready for next semester!</p>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 12, padding: '1.5rem', marginBottom: 20 }}>
+                      <p style={{ fontWeight: 500, fontSize: 15, color: '#791F1F', margin: '0 0 12px' }}>⚠️ Warning — this cannot be undone</p>
+                      <p style={{ fontSize: 14, color: '#791F1F', margin: '0 0 8px', lineHeight: 1.6 }}>
+                        Ending the session will permanently delete:
+                      </p>
+                      <ul style={{ fontSize: 14, color: '#791F1F', margin: '0 0 12px', paddingLeft: 20, lineHeight: 2 }}>
+                        <li>All student bookings</li>
+                        <li>All appointment slots</li>
+                        <li>All uploaded essays</li>
+                        <li>All survey responses</li>
+                        <li>All intake form answers</li>
+                        <li>All email logs</li>
+                      </ul>
+                      <p style={{ fontSize: 14, color: '#791F1F', margin: 0, fontWeight: 500 }}>
+                        Mentor profiles and notes will be kept. Download your CSV report first!
+                      </p>
+                    </div>
+
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.5rem' }}>
+                      <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 8px' }}>Type END SESSION to confirm</p>
+                      <input
+                        type="text"
+                        value={endSessionConfirm}
+                        onChange={e => setEndSessionConfirm(e.target.value)}
+                        placeholder="END SESSION"
+                        style={{ width: '100%', boxSizing: 'border-box', marginBottom: 16 }}
+                      />
+                      <button
+                        onClick={async () => {
+                          if (endSessionConfirm !== 'END SESSION') {
+                            alert('Please type END SESSION exactly to confirm.')
+                            return
+                          }
+                          setEndingSession(true)
+                          const res = await fetch('/api/admin/end-session', { method: 'POST' })
+                          setEndingSession(false)
+                          if (res.ok) {
+                            setSessionEnded(true)
+                            loadData()
+                          } else {
+                            alert('Something went wrong. Please try again.')
+                          }
+                        }}
+                        disabled={endingSession || endSessionConfirm !== 'END SESSION'}
+                        style={{
+                          width: '100%', background: '#E24B4A', color: '#ffffff',
+                          border: 'none', borderRadius: 8, padding: '10px',
+                          fontSize: 14, fontWeight: 500, cursor: 'pointer',
+                          opacity: endSessionConfirm !== 'END SESSION' ? 0.5 : 1,
+                        }}
+                      >
+                        {endingSession ? 'Ending session...' : 'End Session'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
               <div>
