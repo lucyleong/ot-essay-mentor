@@ -1,7 +1,7 @@
 import { emailLayout, detailRow, divider } from './layout'
 import { format, parseISO } from 'date-fns'
 
-type ConfirmationData = {
+type ConfirmationData = {cancelUrl: string
   studentName:      string
   mentorName:       string
   mentorDepartment: string
@@ -11,6 +11,7 @@ type ConfirmationData = {
   meetLink:         string | null
   confirmationCode: string
   essayUploadUrl:   string
+  cancelUrl: string
 }
 
 export function studentConfirmationEmail(d: ConfirmationData) {
@@ -60,14 +61,17 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     ${divider()}
 
     <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
+      <p style="margin:0 0 8px;font-size:15px;font-weight:500;color:#2C2C2A;">
       Cancellation policy:
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      If for any reason you must cancel your appointment, please go to your
-      Google Calendar invitation and change your availability from "Yes" to "No". Your 
-      cancellation must be made at least 24 hours in advance.
+      If you need to cancel, please do so at least 24 hours in advance by clicking the button below.
     </p>
+
+    <a href="${d.cancelUrl}" style="display:inline-block;background:#E24B4A;color:#ffffff;text-decoration:none;font-size:14px;font-weight:500;padding:10px 24px;border-radius:8px;margin-bottom:24px;">
+      Cancel my appointment
+    </a>
 
     ${divider()}
 

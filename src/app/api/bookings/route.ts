@@ -164,6 +164,7 @@ try {
   // Send student confirmation email
   try {
     const { subject, html } = studentConfirmationEmail({
+      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/book/${booking.id}/cancel`,
   studentName:      `${body.firstName} ${body.lastName}`,
 mentorName: (slot.mentor_profiles as any).full_name.split(' ')[0],
   mentorDepartment: (slot.mentor_profiles as any).department ?? '',
