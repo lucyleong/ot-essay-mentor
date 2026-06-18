@@ -204,7 +204,6 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
             margin: '8px 0',
           }}>
            
-          </div>
           <p style={{ fontSize: 13, color: '#0F6E56', margin: '12px 0 0' }}>
             A confirmation email has been sent to {email}
           </p>
