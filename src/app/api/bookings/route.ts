@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
     .limit(1)
     .maybeSingle()
 
-const slot = existingBooking?.appointment_slots as any
-  const isUpcoming = slot?.start_time && new Date(slot.start_time) > new Date()
+const existingSlot = existingBooking?.appointment_slots as any
+  const isUpcoming = existingSlot?.start_time && new Date(existingSlot.start_time) > new Date()
 
   if (existingBooking && isUpcoming) {
     const slot        = existingBooking.appointment_slots as any
