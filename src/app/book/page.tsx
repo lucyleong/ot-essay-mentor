@@ -140,10 +140,20 @@ export default function BookPage() {
         if (q.sort_order === 9 && !showMentor) return false
         return true
       })
-      .map(q => ({
-        questionId: q.id,
-        answer: answers[q.id] ?? '',
-      }))
+      .flatMap(q => {
+        const value = answers[q.id]
+        if (Array.isArray(value)) {
+          // Multiselect — create one answer entry per selected option
+          return value.map((v: string) => ({
+            questionId: q.id,
+            answer: v,
+          }))
+        }
+        return [{
+          questionId: q.id,
+          answer: value ?? '',
+        }]
+      })
 
     const res = await fetch('/api/bookings', {
       method: 'POST',
