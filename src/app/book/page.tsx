@@ -566,6 +566,24 @@ const isOptional = !q.is_required
                             )
                           })}
                         </div>
+                       {q.question_type === 'multiselect' && (answers[q.id] ?? []).includes('Other') && (
+                          <input
+                            type="text"
+                            placeholder="Please specify other..."
+                            value={answers[`${q.id}_other`] ?? ''}
+                            onChange={e => handleAnswerChange(`${q.id}_other`, e.target.value)}
+                            style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
+                          />
+                        )}
+                        {q.question_type === 'multiselect' && (answers[q.id] ?? []).includes('Multiracial') && (
+                          <input
+                            type="text"
+                            placeholder="Please specify which races..."
+                            value={answers[`${q.id}_multiracial`] ?? ''}
+                            onChange={e => handleAnswerChange(`${q.id}_multiracial`, e.target.value)}
+                            style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
+                          />
+                        )}
                       )}
                     </div>
                   </div>
