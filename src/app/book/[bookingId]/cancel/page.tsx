@@ -95,7 +95,7 @@ export default function CancelPage({
         >
           {confirming ? 'Cancelling...' : 'Yes, cancel my appointment'}
         </button>
-        
+        <a
           href="/"
           style={{ flex: 1, background: '#ffffff', color: '#2C2C2A', border: '0.5px solid #e8e6de', borderRadius: 8, padding: '10px', fontSize: 14, textAlign: 'center', textDecoration: 'none' }}
         >
