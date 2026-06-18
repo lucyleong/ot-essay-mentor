@@ -15,9 +15,8 @@ export async function POST(request: NextRequest) {
   }
 
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
-  console.log('Today PST:', today)
 
-  const { data: bookings, error: bookingsError } = await supabase
+  const { data: bookings } = await supabase
     .from('student_bookings')
     .select(`
       id, student_name, student_phone,
@@ -29,9 +28,6 @@ export async function POST(request: NextRequest) {
     `)
     .is('cancelled_at', null)
 
-  console.log('Total bookings fetched:', bookings?.length ?? 0)
-  console.log('Bookings error:', bookingsError)
-
   // Filter to today's appointments in PST
   const todayBookings = (bookings ?? []).filter((b: any) => {
     const slot = b.appointment_slots
@@ -41,8 +37,6 @@ export async function POST(request: NextRequest) {
     })
     return slotDate === today
   })
-
-  console.log('Today bookings:', todayBookings.length)
 
   if (todayBookings.length === 0) {
     return NextResponse.json({ sent: 0, reason: 'No appointments today' })
@@ -90,7 +84,7 @@ export async function POST(request: NextRequest) {
           endTime:      slot.end_time,
           meetLink:     slot.google_meet_link ?? null,
           smsStatus:    (b.sms_confirmed_at ? 'confirmed' :
-              b.sms_confirm_sent  ? 'no_reply'  : 'no_sms') as 'confirmed' | 'no_reply' | 'no_sms',
+                        b.sms_confirm_sent  ? 'no_reply'  : 'no_sms') as 'confirmed' | 'no_reply' | 'no_sms',
         }
       })
 
