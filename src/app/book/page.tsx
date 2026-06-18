@@ -196,18 +196,9 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
             {selectedSlot && format(parseISO(selectedSlot.start_time), 'EEEE, MMMM d')} at{' '}
             {selectedSlot && format(parseISO(selectedSlot.start_time), 'h:mm a')}
           </p>
-          <div style={{
-            background: '#ffffff',
-            borderRadius: 8,
-            padding: '10px 16px',
-            display: 'inline-block',
-            margin: '8px 0',
-          }}>
-           
           <p style={{ fontSize: 13, color: '#0F6E56', margin: '12px 0 0' }}>
             A confirmation email has been sent to {email}
           </p>
-        </div>
       </main>
     )
   }
