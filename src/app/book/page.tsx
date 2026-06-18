@@ -57,6 +57,9 @@ export default function BookPage() {
     (window as any).onTurnstileSuccess = (token: string) => {
       console.log('Turnstile token received:', token ? 'yes' : 'no')
       setTurnstileToken(token)
+    }
+  }, [])
+
   useEffect(() => {
     // Check if student has verified their access code
     const verified = sessionStorage.getItem('booking_verified')
