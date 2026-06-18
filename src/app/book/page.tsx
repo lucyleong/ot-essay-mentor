@@ -29,6 +29,7 @@ type Question = {
 const OPTIONAL_START = 11
 
 export default function BookPage() {
+  const router = useRouter()
   const [slots,        setSlots]        = useState<Record<string, Slot[]>>({})
   const [total,        setTotal]        = useState(0)
   const [questions,    setQuestions]    = useState<Question[]>([])
@@ -56,8 +57,6 @@ export default function BookPage() {
     (window as any).onTurnstileSuccess = (token: string) => {
       console.log('Turnstile token received:', token ? 'yes' : 'no')
       setTurnstileToken(token)
-    }
-  }, [])
   useEffect(() => {
     // Check if student has verified their access code
     const verified = sessionStorage.getItem('booking_verified')
@@ -65,6 +64,7 @@ export default function BookPage() {
       router.push('/verify')
       return
     }
+  }, [])
 
   useEffect(() => {
     const params = typeFilter ? `?type=${typeFilter}` : ''
