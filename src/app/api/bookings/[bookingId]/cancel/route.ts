@@ -72,6 +72,46 @@ export async function POST(
   } catch (calErr) {
     console.error('Calendar deletion failed on cancel:', calErr)
   }
+// Notify program account of cancellation
+  try {
+    const { data: cancelledBooking } = await supabase
+      .from('student_bookings')
+      .select(`
+        student_name, student_email,
+        appointment_slots (
+          start_time,
+          mentor_profiles ( full_name )
+        )
+      `)
+      .eq('id', bookingId)
+      .single()
 
+    if (cancelledBooking) {
+      const slot       = cancelledBooking.appointment_slots as any
+      const mentor     = slot?.mentor_profiles
+      const apptDate   = slot?.start_time
+        ? new Date(slot.start_time).toLocaleDateString('en-US', {
+            weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
+            timeZone: 'America/Los_Angeles',
+          })
+        : 'unknown date'
+
+      await sendEmail({
+        to:               'otessaymentors@gmail.com',
+        subject:          `Cancellation: ${cancelledBooking.student_name} cancelled their appointment`,
+        html:             `
+          <p>A student has cancelled their appointment.</p>
+          <p><strong>Student:</strong> ${cancelledBooking.student_name} (${cancelledBooking.student_email})</p>
+          <p><strong>Mentor:</strong> ${mentor?.full_name ?? 'Unknown'}</p>
+          <p><strong>Appointment:</strong> ${apptDate}</p>
+          <p>The slot has been freed up and is available for new bookings.</p>
+        `,
+        notificationType: 'cancellation_admin',
+        recipientType:    'admin',
+      })
+    }
+  } catch (emailErr) {
+    console.error('Cancellation notification email failed:', emailErr)
+  }
   return NextResponse.json({ ok: true })
 }
