@@ -40,6 +40,42 @@ function countUnique(answers: any[], sortOrder: number) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
+function countMultiselect(answers: any[], sortOrder: number) {
+  // For multiselect, count each selected option per student (most recent booking)
+  const byStudent = new Map<string, { answers: string[]; bookedAt: string }>()
+
+  answers
+    .filter((a: any) => a.intake_questions?.sort_order === sortOrder)
+    .forEach((a: any) => {
+      const email    = a.student_email
+      const answer   = a.answer_text?.trim()
+      const bookedAt = a.student_bookings?.booked_at
+
+      if (!email || !answer) return
+
+      const existing = byStudent.get(email)
+
+      if (!existing || bookedAt > existing.bookedAt) {
+        // Start fresh for this student's most recent booking
+        if (!existing || bookedAt > existing.bookedAt) {
+          byStudent.set(email, { answers: [answer], bookedAt })
+        }
+      } else if (bookedAt === existing.bookedAt) {
+        // Same booking, add to the list
+        existing.answers.push(answer)
+      }
+    })
+
+  const map: Record<string, number> = {}
+  byStudent.forEach(({ answers }) => {
+    answers.forEach(answer => {
+      map[answer] = (map[answer] ?? 0) + 1
+    })
+  })
+
+  return Object.entries(map).sort((a, b) => b[1] - a[1])
+}
+
 export async function GET() {
   // Total bookings
   const { count: totalBookings } = await supabase
@@ -137,7 +173,7 @@ export async function GET() {
     },
     demographics: {
       firstGen:        { yes: firstGenYes, no: firstGenNo },
-      ethnicity:       countUnique(answersWithEmail, 13),
+ethnicity:       countMultiselect(answersWithEmail, 13),
       helpWith:        countUnique(answersWithEmail, 7),
       teachers:        countUnique(answersWithEmail, 6),
       privateCounselor: countUnique(answersWithEmail, 10),
