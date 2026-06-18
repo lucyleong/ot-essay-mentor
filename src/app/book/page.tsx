@@ -565,8 +565,7 @@ const isOptional = !q.is_required
                               </label>
                             )
                           })}
-                        </div>
-                       {q.question_type === 'multiselect' && (answers[q.id] ?? []).includes('Other') && (
+                        {(answers[q.id] ?? []).includes('Other') && (
                           <input
                             type="text"
                             placeholder="Please specify other..."
@@ -575,7 +574,7 @@ const isOptional = !q.is_required
                             style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
                           />
                         )}
-                        {q.question_type === 'multiselect' && (answers[q.id] ?? []).includes('Multiracial') && (
+                        {(answers[q.id] ?? []).includes('Multiracial') && (
                           <input
                             type="text"
                             placeholder="Please specify which races..."
@@ -584,6 +583,7 @@ const isOptional = !q.is_required
                             style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
                           />
                         )}
+                        </div>
                       )}
                     </div>
                   </div>
