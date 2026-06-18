@@ -44,7 +44,10 @@ export async function POST(request: NextRequest) {
     .limit(1)
     .maybeSingle()
 
-  if (existingBooking) {
+const slot = existingBooking?.appointment_slots as any
+  const isUpcoming = slot?.start_time && new Date(slot.start_time) > new Date()
+
+  if (existingBooking && isUpcoming) {
     const slot        = existingBooking.appointment_slots as any
     const mentorName  = slot?.mentor_profiles?.full_name ?? 'your mentor'
     const apptDate    = slot?.start_time
