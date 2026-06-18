@@ -89,8 +89,32 @@ export async function addStudentToCalendarEvent(bookingId: string) {
   const slot   = booking.appointment_slots
   const mentor = slot.mentor_profiles
 
-  if (!slot.google_calendar_event_id) return { meetLink: null }
-
+if (!slot.google_calendar_event_id) {
+    // No calendar event exists for this slot — create one now
+    const { eventId, meetLink: newMeetLink } = await createSlotOnCalendar(slot.id)
+    
+    // Now add the student as an attendee to the newly created event
+    const accessToken = await getFreshAccessToken()
+    
+    await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?conferenceDataVersion=1&sendUpdates=all`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization:  `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          attendees: [
+            { email: booking.student_email, displayName: booking.student_name },
+            { email: mentor.email, displayName: mentor.full_name },
+          ],
+        }),
+      }
+    )
+    
+    return { meetLink: newMeetLink }
+  }
   const accessToken = await getFreshAccessToken()
 
   // Get current event to preserve existing attendees
