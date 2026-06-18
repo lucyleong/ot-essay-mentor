@@ -1,7 +1,8 @@
 import { emailLayout, detailRow, divider } from './layout'
 import { format, parseISO } from 'date-fns'
 
-type ConfirmationData = {cancelUrl: string
+type ConfirmationData = {
+  cancelUrl:        string
   studentName:      string
   mentorName:       string
   mentorDepartment: string
@@ -11,7 +12,6 @@ type ConfirmationData = {cancelUrl: string
   meetLink:         string | null
   confirmationCode: string
   essayUploadUrl:   string
-  cancelUrl: string
 }
 
 export function studentConfirmationEmail(d: ConfirmationData) {
