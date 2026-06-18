@@ -574,15 +574,6 @@ const isOptional = !q.is_required
                             style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
                           />
                         )}
-                        {(answers[q.id] ?? []).includes('Multiracial') && (
-                          <input
-                            type="text"
-                            placeholder="Please specify which races..."
-                            value={answers[`${q.id}_multiracial`] ?? ''}
-                            onChange={e => handleAnswerChange(`${q.id}_multiracial`, e.target.value)}
-                            style={{ width: '100%', boxSizing: 'border-box', marginTop: 8 }}
-                          />
-                        )}
                         </div>
                       )}
                     </div>
