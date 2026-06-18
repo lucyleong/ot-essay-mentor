@@ -33,17 +33,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: err.message }, { status: 422 })
   }
 
-  // Check the slot is still available
-  // Check if student already has an upcoming booking
-  const { data: existingBooking } = await supabase
-    .from('student_bookings')
-    .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
-    .eq('student_email', body.studentEmail.toLowerCase().trim())
-    .is('cancelled_at', null)
-    .gte('appointment_slots.start_time', new Date().toISOString())
-    .limit(1)
-    .maybeSingle()
-
 const { data: existingBookings } = await supabase
     .from('student_bookings')
     .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
