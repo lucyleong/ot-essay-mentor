@@ -44,10 +44,20 @@ export async function POST(request: NextRequest) {
     .limit(1)
     .maybeSingle()
 
-const existingSlot = existingBooking?.appointment_slots as any
-  const isUpcoming = existingSlot?.start_time && new Date(existingSlot.start_time) > new Date()
+const { data: existingBookings } = await supabase
+    .from('student_bookings')
+    .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
+    .eq('student_email', body.studentEmail.toLowerCase().trim())
+    .is('cancelled_at', null)
 
-  if (existingBooking && isUpcoming) {
+  const existingBooking = (existingBookings ?? []).find((b: any) => {
+    const slot = b.appointment_slots
+    return slot && new Date(slot.start_time) > new Date()
+  })
+
+  const existingSlot = existingBooking?.appointment_slots as any
+
+  if (existingBooking) {
     const slot        = existingBooking.appointment_slots as any
     const mentorName  = slot?.mentor_profiles?.full_name ?? 'your mentor'
     const apptDate    = slot?.start_time
