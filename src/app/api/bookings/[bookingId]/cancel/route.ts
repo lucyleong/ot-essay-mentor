@@ -108,7 +108,7 @@ export async function POST(
           <p>The slot has been freed up and is available for new bookings.</p>
         `,
         notificationType: 'cancellation_admin',
-        recipientType:    'admin',
+        recipientType:    'mentor',
       })
     }
   } catch (emailErr) {
