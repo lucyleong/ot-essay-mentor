@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import Script from 'next/script'
@@ -57,6 +58,13 @@ export default function BookPage() {
       setTurnstileToken(token)
     }
   }, [])
+  useEffect(() => {
+    // Check if student has verified their access code
+    const verified = sessionStorage.getItem('booking_verified')
+    if (!verified) {
+      router.push('/verify')
+      return
+    }
 
   useEffect(() => {
     const params = typeFilter ? `?type=${typeFilter}` : ''
@@ -72,11 +80,6 @@ export default function BookPage() {
       .then(setQuestions)
   }, [typeFilter])
 
-  useEffect(() => {
-    (window as any).onTurnstileSuccess = (token: string) => {
-      console.log('Turnstile token received:', token ? 'yes' : 'no')
-      setTurnstileToken(token)
-    }
   }, [])
 
   const days = Array.from({ length: 7 }, (_, i) => {

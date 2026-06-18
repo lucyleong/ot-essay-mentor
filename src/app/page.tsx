@@ -57,7 +57,7 @@ export default function HomePage() {
         <p style={{ fontSize: 16, color: '#5F5E5A', lineHeight: 1.7, maxWidth: 600, margin: '0 auto 28px' }}>
           Appointments are free, available first-come first-served, and nearly every day of the week through the end of the year.
         </p>
-        <Link href="/book" style={{
+        <Link href="/verify" style={{
           display: 'inline-block',
           background: '#534AB7', color: '#ffffff',
           textDecoration: 'none', fontSize: 15, fontWeight: 500,
@@ -153,7 +153,7 @@ export default function HomePage() {
           <p style={{ color: '#EEEDFE', fontSize: 14, margin: '0 0 20px', lineHeight: 1.6 }}>
             Browse available appointments and sign up today. Spots fill up quickly!
           </p>
-          <Link href="/book" style={{
+          <Link href="/verify" style={{
             display: 'inline-block',
             background: '#ffffff', color: '#534AB7',
             textDecoration: 'none', fontSize: 14, fontWeight: 500,
