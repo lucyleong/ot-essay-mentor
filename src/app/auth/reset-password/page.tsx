@@ -18,8 +18,16 @@ export default function ResetPasswordPage() {
       setError('Passwords do not match.')
       return
     }
-    if (password.length < 8) {
+   if (password.length < 8) {
       setError('Password must be at least 8 characters.')
+      return
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError('Password must contain at least one uppercase letter.')
+      return
+    }
+    if (!/[0-9]/.test(password)) {
+      setError('Password must contain at least one number.')
       return
     }
     setLoading(true)
@@ -62,7 +70,7 @@ export default function ResetPasswordPage() {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
+              placeholder="Min 8 chars, 1 uppercase, 1 number"
               required
               style={{ width: '100%', boxSizing: 'border-box' }}
             />
