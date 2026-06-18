@@ -66,7 +66,7 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      If you need to cancel, please do so at least 24 hours in advance by clicking the button below.
+    If you need to cancel, please do so at least 24 hours in advance by clicking the button below. <strong>Do not decline the Google Calendar invite</strong> — that will not cancel your appointment in our system.
     </p>
 
     <a href="${d.cancelUrl}" style="display:inline-block;background:#E24B4A;color:#ffffff;text-decoration:none;font-size:14px;font-weight:500;padding:10px 24px;border-radius:8px;margin-bottom:24px;">
