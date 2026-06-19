@@ -158,8 +158,7 @@ onClick={() => {
           </button>
         ))}
 
-       <div style={{ marginTop: 'auto', padding: '12px 16px', borderTop: '0.5px solid #e8e6de' }}>
-          <a href="/" style={{ display: 'block', fontSize: 12, color: '#888780', textDecoration: 'none', marginBottom: 8 }}>
+<div style={{ marginTop: 16, padding: '12px 16px', borderTop: '0.5px solid #e8e6de' }}>          <a href="/" style={{ display: 'block', fontSize: 12, color: '#888780', textDecoration: 'none', marginBottom: 8 }}>
             ← Home
           </a>
           <button
