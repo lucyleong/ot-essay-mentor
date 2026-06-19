@@ -64,3 +64,17 @@ a {
 a:hover {
   text-decoration: underline;
 }
+@media (max-width: 768px) {
+  .mentor-sidebar {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    padding: 8px !important;
+  }
+  .mentor-sidebar > div:first-child {
+    display: none;
+  }
+  .mentor-layout {
+    flex-direction: column !important;
+  }
+}

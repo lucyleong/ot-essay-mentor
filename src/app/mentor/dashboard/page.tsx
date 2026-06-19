@@ -139,10 +139,10 @@ const timeOptions = generateTimeOptions()
   ]
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
+    <div className="mentor-layout" style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
 
       {/* Sidebar */}
-      <div style={{
+      <div className="mentor-sidebar" style={{
         width: 200,
         flexShrink: 0,
         background: '#ffffff',
