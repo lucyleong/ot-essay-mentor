@@ -123,11 +123,9 @@ const [sessionEnded,      setSessionEnded]      = useState(false)
     { key: 'session',   label: 'End Session' },
   ]
 
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
-
+  <div className="mentor-layout" style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
       {/* Sidebar */}
-      <div style={{
+     <div className="mentor-sidebar" style={{
         width: 200, flexShrink: 0, background: '#ffffff',
         borderRight: '0.5px solid #e8e6de',
         display: 'flex', flexDirection: 'column', padding: '16px 0',
