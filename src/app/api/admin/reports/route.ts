@@ -76,6 +76,31 @@ function countMultiselect(answers: any[], sortOrder: number) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
+function countAllAnswers(answers: any[], sortOrder: number) {
+  // Count every distinct answer a student has ever given (not just most recent)
+  const byStudent = new Map<string, Set<string>>()
+
+  answers
+    .filter((a: any) => a.intake_questions?.sort_order === sortOrder)
+    .forEach((a: any) => {
+      const email  = a.student_email
+      const answer = a.answer_text?.trim()
+      if (!email || !answer) return
+
+      if (!byStudent.has(email)) byStudent.set(email, new Set())
+      byStudent.get(email)!.add(answer)
+    })
+
+  const map: Record<string, number> = {}
+  byStudent.forEach(answerSet => {
+    answerSet.forEach(answer => {
+      map[answer] = (map[answer] ?? 0) + 1
+    })
+  })
+
+  return Object.entries(map).sort((a, b) => b[1] - a[1])
+}
+
 export async function GET() {
   // Total bookings
   const { count: totalBookings } = await supabase
@@ -174,7 +199,7 @@ export async function GET() {
     demographics: {
       firstGen:        { yes: firstGenYes, no: firstGenNo },
 ethnicity:       countMultiselect(answersWithEmail, 13),
-      helpWith:        countUnique(answersWithEmail, 7),
+helpWith:        countAllAnswers(answersWithEmail, 7),
       teachers:        countUnique(answersWithEmail, 6),
       privateCounselor: countUnique(answersWithEmail, 10),
       immigrants:      countUnique(answersWithEmail, 14),
