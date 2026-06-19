@@ -94,7 +94,7 @@ const { data: existingBookings } = await supabase
       slot_id:           body.slotId,
       student_name:      `${body.firstName} ${body.lastName}`,
       student_email:     body.studentEmail.toLowerCase().trim(),
-      student_phone:     body.smsConsent ? body.studentPhone : null,
+student_phone: body.studentPhone,
       confirmation_code: confirmationCode,
     })
     .select()
