@@ -131,6 +131,7 @@ const [showAllComments, setShowAllComments] = useState(false)
         width: 200, flexShrink: 0, background: '#ffffff',
         borderRight: '0.5px solid #e8e6de',
         display: 'flex', flexDirection: 'column', padding: '16px 0',
+        position: 'sticky', top: 0, height: '100vh', overflowY: 'auto',
       }}>
         <div style={{ padding: '12px 16px 16px', borderBottom: '0.5px solid #e8e6de', marginBottom: 8 }}>
           <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>Admin</p>
