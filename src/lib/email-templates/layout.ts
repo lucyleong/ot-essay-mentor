@@ -48,8 +48,7 @@ export function emailLayout(content: string, previewText: string = '') {
 export function detailRow(label: string, value: string) {
   return `
     <tr>
-      <td style="padding:8px 12px 8px 0;font-size:13px;color:#888780;width:140px;vertical-align:top;">${label}</td>
-      <td style="padding:8px 0;font-size:13px;color:#2C2C2A;font-weight:500;word-break:break-word;">${value}</td>
+<td style="padding:8px 6px 8px 0;font-size:13px;color:#888780;width:100px;vertical-align:top;">${label}</td>      <td style="padding:8px 0;font-size:13px;color:#2C2C2A;font-weight:500;word-break:break-word;">${value}</td>
     </tr>`
 }
 
