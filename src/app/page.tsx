@@ -51,7 +51,7 @@ export default function HomePage() {
         padding: '48px 32px',
         textAlign: 'center',
       }}>
-        <h2 style={{ fontSize: 28, fontWeight: 500, margin: '0 0 16px', color: '#2C2C2A', whiteSpace: 'nowrap' }}>
+       <h2 style={{ fontSize: 'clamp(20px, 5vw, 28px)', fontWeight: 500, margin: '0 0 16px', color: '#2C2C2A' }}>
           Free College Essay Support for Oakland Tech Seniors
         </h2>
         <p style={{ fontSize: 16, color: '#5F5E5A', lineHeight: 1.7, maxWidth: 600, margin: '0 auto 28px' }}>
