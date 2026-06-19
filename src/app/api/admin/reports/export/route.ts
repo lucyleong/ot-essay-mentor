@@ -23,6 +23,10 @@ export async function GET() {
     `)
     .order('booked_at', { ascending: false })
 
+  const { data: surveys } = await supabase
+    .from('survey_responses')
+    .select('booking_id, respondent_type, rating_overall, additional_answers')
+
   if (!bookings) {
     return new NextResponse('No data', { status: 404 })
   }
@@ -38,6 +42,26 @@ export async function GET() {
   const sortedQuestions = Array.from(questionMap.entries())
     .sort((a, b) => a[0] - b[0])
 
+  // Build survey lookup by booking ID
+  const surveyByBooking = new Map<string, any>()
+  ;(surveys ?? []).forEach((s: any) => {
+    if (!surveyByBooking.has(s.booking_id)) {
+      surveyByBooking.set(s.booking_id, {})
+    }
+    const entry = surveyByBooking.get(s.booking_id)
+    if (s.respondent_type === 'student') {
+      entry.sessionEase = s.rating_overall
+      entry.mentorOnTime = s.additional_answers?.mentor_on_time
+      entry.nextSteps    = s.additional_answers?.next_steps
+      entry.workAgain     = s.additional_answers?.work_again
+      entry.howHeard      = s.additional_answers?.how_heard
+    }
+    if (s.respondent_type === 'mentor') {
+      entry.noShow     = s.additional_answers?.no_show
+      entry.meetIssue  = s.additional_answers?.meet_issue
+    }
+  })
+
   // Build CSV headers
   const headers = [
     'Student Name',
@@ -51,6 +75,13 @@ export async function GET() {
     'Meeting Type',
     'Mentor',
     ...sortedQuestions.map(([, text]) => text),
+    'Student: Ease of Connecting',
+    'Student: Mentor On Time',
+    'Student: Next Steps Given',
+    'Student: Would Work Again',
+    'Student: How Heard / Comments',
+    'Mentor: No Show',
+    'Mentor: Meet Issue',
   ]
 
   // Build CSV rows
@@ -73,6 +104,8 @@ export async function GET() {
       ? new Date(slot.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
       : ''
 
+    const survey = surveyByBooking.get(b.id) ?? {}
+
     return [
       b.student_name,
       b.student_email,
@@ -85,6 +118,13 @@ export async function GET() {
       slot?.meeting_type ?? '',
       mentor?.full_name ?? '',
       ...sortedQuestions.map(([order]) => answerMap.get(order) ?? ''),
+      survey.sessionEase ?? '',
+      survey.mentorOnTime ?? '',
+      survey.nextSteps ?? '',
+      survey.workAgain ?? '',
+      survey.howHeard ?? '',
+      survey.noShow ?? '',
+      survey.meetIssue ?? '',
     ]
   })
 
