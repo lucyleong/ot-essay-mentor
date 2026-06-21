@@ -21,6 +21,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
   const count        = d.appointments.length
   const confirmed    = d.appointments.filter(a => a.smsStatus === 'confirmed').length
   const noReply      = d.appointments.filter(a => a.smsStatus === 'no_reply').length
+  const noSms        = d.appointments.filter(a => a.smsStatus === 'no_sms').length
 
   const statusBar = `
     <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
@@ -33,8 +34,12 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
         <div style="font-size:12px;color:#854F0B;margin-top:2px;">No reply</div>
       </div>
       <div style="background:#F1EFE8;border-radius:8px;padding:10px 16px;flex:1;min-width:80px;text-align:center;">
-        <div style="font-size:22px;font-weight:500;color:#444441;">${count}</div>
-        <div style="font-size:12px;color:#5F5E5A;margin-top:2px;">Total today</div>
+        <div style="font-size:22px;font-weight:500;color:#5F5E5A;">${noSms}</div>
+        <div style="font-size:12px;color:#5F5E5A;margin-top:2px;">No SMS sent</div>
+      </div>
+      <div style="background:#EEEDFE;border-radius:8px;padding:10px 16px;flex:1;min-width:80px;text-align:center;">
+        <div style="font-size:22px;font-weight:500;color:#3C3489;">${count}</div>
+        <div style="font-size:12px;color:#534AB7;margin-top:2px;">Total today</div>
       </div>
     </div>`
 
