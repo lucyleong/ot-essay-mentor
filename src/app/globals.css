@@ -77,4 +77,9 @@ a:hover {
   .mentor-layout {
     flex-direction: column !important;
   }
+}@media (max-width: 768px) {
+  .booking-stats-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    font-size: 11px !important;
+  }
 }

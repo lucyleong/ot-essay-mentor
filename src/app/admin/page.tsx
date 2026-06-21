@@ -321,7 +321,7 @@ onClick={() => {
                   <div>
                     {/* Booking stats */}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(80px, 120px))', gap: 8, marginBottom: 20 }}>
+                  <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, marginBottom: 20 }}>
                       {[
                        { label: 'Total',     value: reports.bookings.total },
                         { label: 'Active',    value: reports.bookings.active },
