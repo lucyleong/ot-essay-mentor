@@ -67,6 +67,8 @@ a:hover {
 @media (max-width: 768px) {
   .mentor-sidebar {
     width: 100% !important;
+    height: auto !important;
+    position: relative !important;
     flex-direction: row !important;
     overflow-x: auto;
     padding: 8px !important;
@@ -77,6 +79,7 @@ a:hover {
   .mentor-layout {
     flex-direction: column !important;
   }
+}
 }@media (max-width: 768px) {
   .booking-stats-grid {
     grid-template-columns: repeat(3, 1fr) !important;
