@@ -616,6 +616,7 @@ const isOptional = !q.is_required
                 type="submit"
                 disabled={submitting || !!emailError || !!phoneError || !email || !firstName || !lastName || !phone}
                 style={{ flex: 1 }}
+            style={{ flex: 1, background: '#534AB7', color: '#ffffff', border: 'none' }}
               >
                 {submitting ? 'Booking...' : 'Confirm booking'}
               </button>
