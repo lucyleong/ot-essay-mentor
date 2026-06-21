@@ -160,8 +160,8 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? (resetMode ? 'Sending...' : 'Signing in...') : (resetMode ? 'Send reset link' : 'Sign in')}
+<button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}>            
+  {loading ? (resetMode ? 'Sending...' : 'Signing in...') : (resetMode ? 'Send reset link' : 'Sign in')}
           </button>
 
           {resetMode && (
