@@ -321,13 +321,15 @@ onClick={() => {
                   <div>
                     {/* Booking stats */}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5 , 1fr)', gap: 8, marginBottom: 20 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(80px, 120px))', gap: 8, marginBottom: 20 }}>
                       {[
-                        { label: 'Total',     value: reports.bookings.total },
+                       { label: 'Total',     value: reports.bookings.total },
                         { label: 'Active',    value: reports.bookings.active },
                         { label: 'Cancelled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Meet issues', value: reports.bookings.meetIssues },
+                        { label: 'Total slots', value: reports.bookings.totalSlots },
+                        { label: 'Unused slots', value: reports.bookings.unbookedSlots },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                           <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{stat.value}</p>

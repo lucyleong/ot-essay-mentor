@@ -117,6 +117,19 @@ export async function GET() {
     .select('*', { count: 'exact', head: true })
     .not('cancelled_at', 'is', null)
 
+  // Unused capacity - slots that were never booked or got cancelled and not rebooked
+  const { count: totalSlots } = await supabase
+    .from('appointment_slots')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_cancelled', false)
+
+  const { count: unbookedSlots } = await supabase
+    .from('appointment_slots')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_cancelled', false)
+    .eq('is_booked', false)
+    .lt('start_time', new Date().toISOString())
+
   // No shows and meet issues from mentor surveys
   const { data: noShowData } = await supabase
     .from('survey_responses')
@@ -195,6 +208,8 @@ export async function GET() {
       cancelled: cancelledBookings ?? 0,
       noShows,
       meetIssues,
+      totalSlots:    totalSlots ?? 0,
+      unbookedSlots: unbookedSlots ?? 0,
     },
     demographics: {
       firstGen:        { yes: firstGenYes, no: firstGenNo },
