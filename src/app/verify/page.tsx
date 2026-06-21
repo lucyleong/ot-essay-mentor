@@ -58,8 +58,7 @@ console.log('Entered:', code.trim().toUpperCase(), 'Expected:', process.env.NEXT
             </div>
           )}
 
-          <button type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Verifying...' : 'Continue →'}
+<button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}>            {loading ? 'Verifying...' : 'Continue →'}
           </button>
         </form>
       </div>
