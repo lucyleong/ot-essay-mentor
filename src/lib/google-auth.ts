@@ -43,13 +43,12 @@ export async function getFreshAccessToken(): Promise<string> {
       grant_type:    'refresh_token',
     }),
   })
-
-  const refreshed = await res.json()
+const refreshed = await res.json()
   if (!res.ok) {
     // Send alert email - token refresh failed
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/internal/alert`, {
-        method: 'POST',
+await fetch(`https://www.otessaymentors.org/api/internal/alert`, {
+          method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.INTERNAL_API_SECRET}`,
