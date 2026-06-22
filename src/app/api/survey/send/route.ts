@@ -38,15 +38,16 @@ export async function POST(request: NextRequest) {
 
     if (!slot || !mentor) continue
 
-    // Check if survey already sent
-    const { data: existing } = await supabase
-      .from('survey_responses')
+    // Check if survey email already sent (regardless of whether they filled it out)
+    const { data: existingEmail } = await supabase
+      .from('notifications_log')
       .select('id')
       .eq('booking_id', booking.id)
+      .eq('notification_type', 'survey_student')
       .limit(1)
       .maybeSingle()
 
-    if (existing) continue
+    if (existingEmail) continue
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL!
 
