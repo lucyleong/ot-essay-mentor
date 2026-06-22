@@ -45,7 +45,25 @@ export async function getFreshAccessToken(): Promise<string> {
   })
 
   const refreshed = await res.json()
-  if (!res.ok) throw new Error('Token refresh failed')
+  if (!res.ok) {
+    // Send alert email - token refresh failed
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/internal/alert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.INTERNAL_API_SECRET}`,
+        },
+        body: JSON.stringify({
+          subject: '🚨 Google Calendar token refresh failed',
+          message: 'The Google Calendar OAuth token has expired or become invalid. New appointment slots will NOT get Meet links until this is fixed. Go to the admin dashboard and click "Connect Google Calendar" to reauthorize.',
+        }),
+      })
+    } catch (alertErr) {
+      console.error('Failed to send alert email:', alertErr)
+    }
+    throw new Error('Token refresh failed')
+  }
 
   const newExpiry = new Date(
     Date.now() + refreshed.expires_in * 1000
