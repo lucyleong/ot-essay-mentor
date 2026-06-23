@@ -45,6 +45,15 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
       </table>
     </div>
 
+    <p style="margin:0 0 16px;font-size:13px;color:#854F0B;background:#FAEEDA;border-radius:8px;padding:10px 14px;line-height:1.6;">
+      <strong>IMPORTANT:</strong> Please make sure you are signed into THIS GMAIL account in your browser before clicking the meeting link. If you are signed into a different Google account (or not signed in at all), you will not be let into the meeting.
+    </p>
+
+    ${divider()}
+
+    <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
+      Before your appointment:
+    </p>
     ${divider()}
 
     <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">

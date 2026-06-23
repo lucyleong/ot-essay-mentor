@@ -28,6 +28,8 @@ export async function createSlotOnCalendar(slotId: string) {
       dateTime: slot.end_time,
       timeZone: 'America/Los_Angeles',
     },
+    guestsCanModify: true,
+    guestsCanInviteOthers: false,
     conferenceData: {
       createRequest: {
         requestId: slotId,
