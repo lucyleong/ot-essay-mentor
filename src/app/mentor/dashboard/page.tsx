@@ -51,6 +51,8 @@ const [addingSlot,     setAddingSlot]     = useState(false)
 const [slotSuccess,    setSlotSuccess]    = useState('')
 const [slotError,      setSlotError]      = useState('')
 const [allBookings, setAllBookings] = useState<any[]>([])
+const [walkinQueue, setWalkinQueue] = useState<any[]>([])
+const [isInPersonAvailable, setIsInPersonAvailable] = useState(false)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -95,9 +97,16 @@ const timeOptions = generateTimeOptions()
     setBookings(filtered)
     setAllBookings(allBookings)
     // Load mentor's slots
-    const slotsRes = await fetch('/api/slots')
+   const slotsRes = await fetch('/api/slots')
     const slotsData = await slotsRes.json()
     setSlots(Array.isArray(slotsData) ? slotsData : [])
+
+    // Load walk-in queue
+    const queueRes = await fetch('/api/mentor/walkin-queue')
+    const queueData = await queueRes.json()
+    setWalkinQueue(queueData.queue ?? [])
+    setIsInPersonAvailable(queueData.isInPersonAvailable ?? false)
+
     setLoading(false)
   }
 
@@ -136,8 +145,8 @@ const timeOptions = generateTimeOptions()
     { key: 'upcoming', label: 'Upcoming' },
     { key: 'students', label: 'Students' },
     { key: 'slots',    label: 'My availability' },
+    ...(isInPersonAvailable ? [{ key: 'walkin', label: 'Walk-in Queue' }] : []),
   ]
-
   return (
     <div className="mentor-layout" style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
 
@@ -620,6 +629,59 @@ style={{
                           Cancel
                         </button>
                       )}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* WALK-IN QUEUE */}
+            {activePanel === 'walkin' && isInPersonAvailable && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Walk-in Queue</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Students currently checked in and waiting at the College and Career Center
+                </p>
+
+                {walkinQueue.length === 0 ? (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', margin: 0 }}>No one is waiting right now.</p>
+                  </div>
+                ) : (
+                  walkinQueue.map((entry, index) => (
+                    <div key={entry.id} style={{
+                      background: '#ffffff', border: '0.5px solid #e8e6de',
+                      borderRadius: 12, padding: '14px 20px', marginBottom: 8,
+                      display: 'flex', alignItems: 'center', gap: 12,
+                    }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: '#EEEDFE', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', fontSize: 12, fontWeight: 500,
+                        color: '#3C3489', flexShrink: 0,
+                      }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                          {entry.student_name}
+                        </p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          {entry.student_email}
+                          {entry.student_phone ? ` · ${entry.student_phone}` : ''}
+                          {' · Checked in '}
+                          {new Date(entry.checked_in_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })}
+                        </p>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
+                          setWalkinQueue(prev => prev.filter(e => e.id !== entry.id))
+                        }}
+                        style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                      >
+                        Start session
+                      </button>
                     </div>
                   ))
                 )}
