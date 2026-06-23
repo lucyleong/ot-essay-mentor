@@ -406,45 +406,6 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                   </div>
                 </div>
 
-                <div style={{
-                  background: '#ffffff', border: '0.5px solid #e8e6de',
-                  borderRadius: 12, padding: '14px 20px', marginBottom: 16,
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                }}>
-                  <div>
-                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                      I'm available for in-person walk-ins
-                    </p>
-                    <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
-                      Turn this on when you're at the College and Career Center
-                    </p>
-                  </div>
-                  <button
-                    onClick={async () => {
-                      const newValue = !isInPersonAvailable
-                      await fetch('/api/mentor/in-person-toggle', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ isAvailable: newValue }),
-                      })
-                      setIsInPersonAvailable(newValue)
-                    }}
-                    style={{
-                      width: 48, height: 26, borderRadius: 20, border: 'none',
-                      background: isInPersonAvailable ? '#534AB7' : '#D3D1C7',
-                      position: 'relative', cursor: 'pointer', padding: 0,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <div style={{
-                      width: 20, height: 20, borderRadius: '50%', background: '#ffffff',
-                      position: 'absolute', top: 3,
-                      left: isInPersonAvailable ? 25 : 3,
-                      transition: 'left 0.2s',
-                    }} />
-                  </button>
-                </div>
-
                 {slotSuccess && (
                   <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#085041' }}>
                     {slotSuccess}
@@ -457,10 +418,48 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                   </div>
                 )}
 
-                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+              <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
                   <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
 
-                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: '#f5f4f0', borderRadius: 8, padding: '10px 14px', marginBottom: 16,
+                  }}>
+                    <div>
+                      <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
+                        I'm at the College and Career Center and available for in-person walk-ins
+                      </p>
+                      <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>
+                        Turn this on when you're there in person.
+                      </p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        const newValue = !isInPersonAvailable
+                        await fetch('/api/mentor/in-person-toggle', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ isAvailable: newValue }),
+                        })
+                        setIsInPersonAvailable(newValue)
+                      }}
+                      style={{
+                        width: 48, height: 26, borderRadius: 20, border: 'none',
+                        background: isInPersonAvailable ? '#534AB7' : '#D3D1C7',
+                        position: 'relative', cursor: 'pointer', padding: 0,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <div style={{
+                        width: 20, height: 20, borderRadius: '50%', background: '#ffffff',
+                        position: 'absolute', top: 3,
+                        left: isInPersonAvailable ? 25 : 3,
+                        transition: 'left 0.2s',
+                      }} />
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
                       <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
