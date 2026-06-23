@@ -584,10 +584,7 @@ style={{
                 }}>
                   <div>
                     <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
-                      I'm at the College and Career Center and available for in-person walk-ins
-                    </p>
-                    <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>
-                      Turn this on when you're there in person.
+                      I'm at the College and Career Center right now for in-person walk-ins
                     </p>
                   </div>
                   <button
