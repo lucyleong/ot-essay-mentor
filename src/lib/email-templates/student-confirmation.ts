@@ -54,11 +54,6 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
     <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
       Before your appointment:
     </p>
-    ${divider()}
-
-    <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;font-weight:500;">
-      Before your appointment:
-    </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
       The day before your appointment, please share your college essay via a Google Docs link or by uploading the document
