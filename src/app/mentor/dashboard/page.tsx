@@ -395,7 +395,7 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
               </div>
             )}
 
-            {activePanel === 'slots' && (
+           {activePanel === 'slots' && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
                   <div>
@@ -404,7 +404,45 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                       Add appointment slots for students to book
                     </p>
                   </div>
-                  
+                </div>
+
+                <div style={{
+                  background: '#ffffff', border: '0.5px solid #e8e6de',
+                  borderRadius: 12, padding: '14px 20px', marginBottom: 16,
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }}>
+                  <div>
+                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                      I'm available for in-person walk-ins
+                    </p>
+                    <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                      Turn this on when you're at the College and Career Center
+                    </p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      const newValue = !isInPersonAvailable
+                      await fetch('/api/mentor/in-person-toggle', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ isAvailable: newValue }),
+                      })
+                      setIsInPersonAvailable(newValue)
+                    }}
+                    style={{
+                      width: 48, height: 26, borderRadius: 20, border: 'none',
+                      background: isInPersonAvailable ? '#534AB7' : '#D3D1C7',
+                      position: 'relative', cursor: 'pointer', padding: 0,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div style={{
+                      width: 20, height: 20, borderRadius: '50%', background: '#ffffff',
+                      position: 'absolute', top: 3,
+                      left: isInPersonAvailable ? 25 : 3,
+                      transition: 'left 0.2s',
+                    }} />
+                  </button>
                 </div>
 
                 {slotSuccess && (
