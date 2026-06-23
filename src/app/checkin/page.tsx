@@ -96,7 +96,7 @@ export default function CheckInPage() {
           <p style={{ fontSize: 22, fontWeight: 500, margin: '0 0 8px', color: '#085041' }}>
             You're checked in!
           </p>
-          <p style={{ fontSize: 14, color: '#0F6E56', margin: 0 }}>
+         <p style={{ fontSize: 13, color: '#0F6E56', margin: 0 }}>
             A mentor will be with you shortly. Please have a seat and wait to be called.
           </p>
         </div>
