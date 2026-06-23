@@ -249,28 +249,6 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
     </p>
   </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-        {[
-          { label: 'Virtual', value: 'virtual' },
-          { label: 'In person', value: 'in_person' },
-        ].map(f => (
-          <button
-            key={f.label}
-            onClick={() => setTypeFilter(f.value)}
-            style={{
-              fontSize: 12,
-              padding: '4px 14px',
-              borderRadius: 20,
-              borderColor: typeFilter === f.value ? '#534AB7' : '#D3D1C7',
-              background:  typeFilter === f.value ? '#EEEDFE' : '#ffffff',
-              color:       typeFilter === f.value ? '#3C3489' : '#5F5E5A',
-            }}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
       {loading ? (
         <p style={{ color: '#888780', fontSize: 13 }}>Loading available slots...</p>
       ) : total === 0 ? (
@@ -321,12 +299,6 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
                       {slot.mentor_profiles?.department ? ` · ${slot.mentor_profiles.department}` : ''}
                     </p>
                   </div>
-                  <span style={{
-                    fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                    background: '#F1EFE8', color: '#5F5E5A',
-                  }}>
-                    {slot.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
-                  </span>
                   <button
                     onClick={e => { e.stopPropagation(); selectSlot(slot) }}
                     style={{ fontSize: 12, padding: '5px 14px' }}
