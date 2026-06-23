@@ -460,21 +460,11 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
                   <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
                       <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
                     </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Meeting type</label>
-                      <select value={slotType} onChange={e => setSlotType(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
-                        <option value="virtual">Virtual</option>
-                        <option value="in_person">In person</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
                       <input
