@@ -73,28 +73,6 @@ export async function POST(request: NextRequest) {
       console.error('Student survey email failed:', err)
     }
 
-    // Send mentor survey email
-    try {
-      const mentorSurvey = surveyEmail({
-        recipientName:  mentor.full_name.split(' ')[0],
-        otherPartyName: booking.student_name.split(' ')[0],
-        startTime:      slot.start_time,
-        surveyUrl:      `${appUrl}/survey/${booking.id}/mentor`,
-        recipientType:  'mentor',
-      })
-
-      await sendEmail({
-        to:               mentor.email,
-        subject:          mentorSurvey.subject,
-        html:             mentorSurvey.html,
-        bookingId:        booking.id,
-        notificationType: 'survey_mentor',
-        recipientType:    'mentor',
-      })
-    } catch (err) {
-      console.error('Mentor survey email failed:', err)
-    }
-
     sent++
   }
 

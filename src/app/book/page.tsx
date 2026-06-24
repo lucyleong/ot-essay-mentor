@@ -243,7 +243,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
       Oakland Tech Seniors, let's get these essays done!
     </p>
     <p style={{ margin: '0 0 12px' }}>
-      Use this form to sign up for a FREE appointment with a College Essay Mentor
+      Use this form to sign up for a FREE virtual appointment with a College Essay Mentor
       to work on your essays! We will confirm your appointment via
       email with a Google Meet link 
       and request for access to the PIQ / essay if you have one!
