@@ -26,21 +26,34 @@ export default function DailyIssuesPage() {
       })
   }, [])
 
-  async function toggle(bookingId: string, field: 'noShow' | 'meetIssue') {
+ async function toggle(bookingId: string, field: 'noShow' | 'meetIssue') {
     setSaving(bookingId)
-    const updated = bookings.map(b =>
-      b.bookingId === bookingId ? { ...b, [field]: !b[field] } : b
-    )
-    setBookings(updated)
 
-    const booking = updated.find(b => b.bookingId === bookingId)!
+    let latestBooking: DayBooking | undefined
+
+    setBookings(prev => {
+      const updated = prev.map(b =>
+        b.bookingId === bookingId ? { ...b, [field]: !b[field] } : b
+      )
+      latestBooking = updated.find(b => b.bookingId === bookingId)
+      return updated
+    })
+
+    // Wait a tick for state to settle, then read the freshest value
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    if (!latestBooking) {
+      setSaving(null)
+      return
+    }
+
     await fetch('/api/mentor/daily-issues', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         bookingId,
-        noShow: booking.noShow,
-        meetIssue: booking.meetIssue,
+        noShow: latestBooking.noShow,
+        meetIssue: latestBooking.meetIssue,
       }),
     })
     setSaving(null)
