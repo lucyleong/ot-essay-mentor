@@ -27,25 +27,30 @@ export default function DailyIssuesPage() {
   }, [])
 
  async function toggle(bookingId: string, field: 'noShow' | 'meetIssue') {
+    const currentBooking = bookings.find(b => b.bookingId === bookingId)
+    if (!currentBooking) return
+
     setSaving(bookingId)
 
-    let latestBooking: DayBooking | undefined
+    const newNoShow    = field === 'noShow'    ? !currentBooking.noShow    : currentBooking.noShow
+    const newMeetIssue = field === 'meetIssue' ? !currentBooking.meetIssue : currentBooking.meetIssue
 
-    setBookings(prev => {
-      const updated = prev.map(b =>
-        b.bookingId === bookingId ? { ...b, [field]: !b[field] } : b
-      )
-      latestBooking = updated.find(b => b.bookingId === bookingId)
-      return updated
+    setBookings(prev => prev.map(b =>
+      b.bookingId === bookingId ? { ...b, noShow: newNoShow, meetIssue: newMeetIssue } : b
+    ))
+
+    await fetch('/api/mentor/daily-issues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookingId,
+        noShow: newNoShow,
+        meetIssue: newMeetIssue,
+      }),
     })
 
-    // Wait a tick for state to settle, then read the freshest value
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    if (!latestBooking) {
-      setSaving(null)
-      return
-    }
+    setSaving(null)
+  }
 
     await fetch('/api/mentor/daily-issues', {
       method: 'POST',
