@@ -81,18 +81,13 @@ const [showAllComments, setShowAllComments] = useState(false)
   }, [activePanel])
 
   async function loadData() {
-   const { data: mentorData } = await supabase
-      .from('mentor_profiles')
-      .select('id, full_name, email, is_active, is_virtual_available, created_at')
-      .neq('email', 'otessaymentors@gmail.com')
-      .order('full_name', { ascending: true })
+   const mentorRes  = await fetch('/api/admin/mentors/list')
+    const mentorData = await mentorRes.json()
 
-    const sortedMentors = (mentorData ?? []).sort((a, b) => {
+    const sortedMentors = (mentorData ?? []).sort((a: Mentor, b: Mentor) => {
       if (a.is_active === b.is_active) return 0
       return a.is_active ? -1 : 1
     })
-
-console.log('All mentors loaded:', sortedMentors.length, sortedMentors.map(m => `${m.full_name}: ${m.is_active}`))
     setMentors(sortedMentors)
     const bookingRes  = await fetch('/api/admin/bookings')
     const bookingData = await bookingRes.json()
