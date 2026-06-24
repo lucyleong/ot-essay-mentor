@@ -132,19 +132,27 @@ const [showAllComments, setShowAllComments] = useState(false)
   }
 
  async function toggleMentorActive(mentor: Mentor) {
-    console.log('Toggling mentor:', mentor.full_name, 'current is_active:', mentor.is_active)
-    const { error } = await supabase
-      .from('mentor_profiles')
-      .update({ is_active: !mentor.is_active })
-      .eq('id', mentor.id)
-    console.log('Update error:', error)
+    await fetch('/api/admin/mentors/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mentorId: mentor.id,
+        field: 'is_active',
+        value: !mentor.is_active,
+      }),
+    })
     loadData()
   }
 async function toggleMentorVirtual(mentor: Mentor) {
-    await supabase
-      .from('mentor_profiles')
-      .update({ is_virtual_available: !mentor.is_virtual_available })
-      .eq('id', mentor.id)
+    await fetch('/api/admin/mentors/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mentorId: mentor.id,
+        field: 'is_virtual_available',
+        value: !mentor.is_virtual_available,
+      }),
+    })
     loadData()
   }
   async function loadReports() {
