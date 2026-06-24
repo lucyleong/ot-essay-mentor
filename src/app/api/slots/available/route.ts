@@ -18,21 +18,21 @@ export async function GET(request: NextRequest) {
       duration_minutes,
       meeting_type,
       google_meet_link,
-      mentor_profiles (
+      mentor_profiles!inner (
         id,
         full_name,
         department,
-        bio
+        bio,
+        is_virtual_available
       )
     `)
     .eq('is_booked', false)
     .eq('is_cancelled', false)
     .is('program_session_id', null)
+    .eq('mentor_profiles.is_virtual_available', true)
     .gte('start_time', now.toISOString())
     .lte('start_time', window.toISOString())
     .order('start_time', { ascending: true })
-
-  if (type) query = query.eq('meeting_type', type)
 
   const { data, error } = await query
 
