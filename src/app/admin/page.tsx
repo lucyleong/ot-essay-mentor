@@ -36,6 +36,7 @@ const [reportsLoading, setReportsLoading] = useState(false)
 const [endingSession,     setEndingSession]     = useState(false)
 const [sessionEnded,      setSessionEnded]      = useState(false)
 const [showAllComments, setShowAllComments] = useState(false)
+const [cancellingId, setCancellingId] = useState<string | null>(null)
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -373,13 +374,43 @@ onClick={() => {
                             : 'No slot'}
                         </p>
                       </div>
-                      <span style={{
+                     <span style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
                         background: booking.cancelled_at ? '#F1EFE8' : '#E1F5EE',
                         color: booking.cancelled_at ? '#5F5E5A' : '#085041',
                       }}>
                         {booking.cancelled_at ? 'Cancelled' : 'Active'}
                       </span>
+
+                      {!booking.cancelled_at && (
+                        cancellingId === booking.id ? (
+                          <>
+                            <button
+                              onClick={async () => {
+                                await fetch(`/api/bookings/${booking.id}/cancel`, { method: 'POST' })
+                                setCancellingId(null)
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => setCancellingId(null)}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => setCancellingId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                          >
+                            Cancel
+                          </button>
+                        )
+                      )}
                     </div>
                   ))}
                 </div>
