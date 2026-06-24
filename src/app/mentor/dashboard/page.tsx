@@ -80,7 +80,7 @@ const timeOptions = generateTimeOptions()
 
     const { data: mentorData } = await supabase
       .from('mentor_profiles')
-      .select('id, full_name, email')
+      .select('id, full_name, email, is_virtual_available')
       .eq('auth_user_id', user.id)
       .single()
 
@@ -140,11 +140,11 @@ const timeOptions = generateTimeOptions()
     }
   }
 
-  const navItems = [
+ const navItems = [
     { key: 'today',    label: 'Today' },
     { key: 'upcoming', label: 'Upcoming' },
     { key: 'students', label: 'Students' },
-    { key: 'slots',    label: 'My availability' },
+    ...(mentor?.is_virtual_available !== false ? [{ key: 'slots', label: 'My availability' }] : []),
     ...(isInPersonAvailable ? [{ key: 'walkin', label: 'Walk-in Queue' }] : []),
   ]
   return (
