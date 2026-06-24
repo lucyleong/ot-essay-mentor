@@ -88,10 +88,11 @@ export async function POST(request: NextRequest) {
         }
       })
 console.log('Dashboard URL:', `${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard`)
-    const { subject, html } = mentorMorningSummaryEmail({
+   const { subject, html } = mentorMorningSummaryEmail({
       mentorName:   mentor.full_name,
       appointments,
       dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard`,
+      issuesUrl:    `${process.env.NEXT_PUBLIC_APP_URL}/mentor/daily-issues`,
     })
 
     try {

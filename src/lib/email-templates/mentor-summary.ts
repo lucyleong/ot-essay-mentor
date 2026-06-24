@@ -14,8 +14,8 @@ type SummaryData = {
   mentorName:   string
   appointments: Appointment[]
   dashboardUrl: string
+  issuesUrl:    string
 }
-
 export function mentorMorningSummaryEmail(d: SummaryData) {
   const today        = format(new Date(), 'EEEE, MMMM d, yyyy')
   const count        = d.appointments.length
@@ -102,12 +102,16 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
 
     ${divider()}
 
-    <a href="${d.dashboardUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;">
+   <a href="${d.dashboardUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;margin-right:10px;">
       Open mentor dashboard
     </a>
 
+    <a href="${d.issuesUrl}" style="display:inline-block;background:#ffffff;color:#534AB7;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;border:0.5px solid #534AB7;">
+      Report an issue
+    </a>
+
     <p style="font-size:12px;color:#888780;margin:16px 0 0;line-height:1.6;">
-      This summary was sent at 8:00 AM. Student confirmation statuses reflect replies received as of that time.
+      Only use "Report an issue" if a student was a no-show or had trouble connecting. This summary was sent at 8:00 AM. Student confirmation statuses reflect replies received as of that time.
     </p>`
 
   return { subject, html: emailLayout(content, subject) }
