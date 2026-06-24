@@ -584,9 +584,10 @@ const isOptional = !q.is_required
               </div>
             )}
 <div
-              className="cf-turnstile"
+             className="cf-turnstile"
               data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               data-callback="onTurnstileSuccess"
+              data-refresh-expired="auto"
               style={{ marginBottom: 12 }}
             />
 
