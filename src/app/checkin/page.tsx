@@ -31,6 +31,14 @@ export default function CheckInPage() {
       .then(setQuestions)
   }, [])
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlCode = params.get('code')
+
+    if (urlCode && urlCode.toUpperCase() === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
+      sessionStorage.setItem('checkin_verified', 'true')
+      return
+    }
+
     const verified = sessionStorage.getItem('checkin_verified')
     if (!verified) {
       router.push('/verify')

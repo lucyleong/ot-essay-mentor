@@ -60,8 +60,15 @@ export default function BookPage() {
     }
   }, [])
 
-  useEffect(() => {
-    // Check if student has verified their access code
+ useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlCode = params.get('code')
+
+    if (urlCode && urlCode.toUpperCase() === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
+      sessionStorage.setItem('booking_verified', 'true')
+      return
+    }
+
     const verified = sessionStorage.getItem('booking_verified')
     if (!verified) {
       router.push('/verify')
