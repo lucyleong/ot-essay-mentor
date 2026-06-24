@@ -12,7 +12,6 @@ type Question = {
 }
 
 export default function CheckInPage() {
-    export default function CheckInPage() {
   const router = useRouter()
   const [questions, setQuestions] = useState<Question[]>([])
   const [firstName, setFirstName] = useState('')
