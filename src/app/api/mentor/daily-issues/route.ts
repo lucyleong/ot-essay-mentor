@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { bookingId, noShow, meetIssue } = body
+  console.log('Received body:', JSON.stringify(body))
 
   if (!bookingId) {
     return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 })

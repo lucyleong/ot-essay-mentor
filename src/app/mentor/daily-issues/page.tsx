@@ -82,7 +82,7 @@ export default function DailyIssuesPage() {
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 onClick={() => toggle(b.bookingId, 'noShow')}
-                disabled={saving === b.bookingId}
+disabled={saving !== null}
                 style={{
                   fontSize: 12, padding: '6px 14px', borderRadius: 20,
                   background: b.noShow ? '#FCEBEB' : '#ffffff',
@@ -94,7 +94,7 @@ export default function DailyIssuesPage() {
               </button>
               <button
                 onClick={() => toggle(b.bookingId, 'meetIssue')}
-                disabled={saving === b.bookingId}
+disabled={saving !== null}
                 style={{
                   fontSize: 12, padding: '6px 14px', borderRadius: 20,
                   background: b.meetIssue ? '#FAEEDA' : '#ffffff',
