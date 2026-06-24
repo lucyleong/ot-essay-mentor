@@ -92,8 +92,8 @@ const [showAllComments, setShowAllComments] = useState(false)
       return a.is_active ? -1 : 1
     })
 
+console.log('All mentors loaded:', sortedMentors.length, sortedMentors.map(m => `${m.full_name}: ${m.is_active}`))
     setMentors(sortedMentors)
-
     const bookingRes  = await fetch('/api/admin/bookings')
     const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
