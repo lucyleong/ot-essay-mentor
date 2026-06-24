@@ -131,11 +131,13 @@ const [showAllComments, setShowAllComments] = useState(false)
     loadData()
   }
 
-  async function toggleMentorActive(mentor: Mentor) {
-    await supabase
+ async function toggleMentorActive(mentor: Mentor) {
+    console.log('Toggling mentor:', mentor.full_name, 'current is_active:', mentor.is_active)
+    const { error } = await supabase
       .from('mentor_profiles')
       .update({ is_active: !mentor.is_active })
       .eq('id', mentor.id)
+    console.log('Update error:', error)
     loadData()
   }
 async function toggleMentorVirtual(mentor: Mentor) {
