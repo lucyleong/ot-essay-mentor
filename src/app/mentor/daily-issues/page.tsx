@@ -34,7 +34,6 @@ export default function DailyIssuesPage() {
     setBookings(updated)
 
     const booking = updated.find(b => b.bookingId === bookingId)!
-
     await fetch('/api/mentor/daily-issues', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
