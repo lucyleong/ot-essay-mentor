@@ -15,10 +15,11 @@ export async function GET() {
   }
 
   // Fetch mentor first names for the mentor multiselect question
-  const { data: mentors } = await supabase
+ const { data: mentors } = await supabase
     .from('mentor_profiles')
     .select('full_name')
     .eq('is_active', true)
+    .eq('is_virtual_available', true)
     .neq('email', 'otessaymentors@gmail.com')
     .order('full_name', { ascending: true })
 
