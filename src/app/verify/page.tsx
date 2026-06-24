@@ -8,15 +8,19 @@ export default function VerifyPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  function handleSubmit(e: React.FormEvent) {
+ function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-console.log('Entered:', code.trim().toUpperCase(), 'Expected:', process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase())
-    if (code.trim().toUpperCase() === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
-      // Store verification in sessionStorage so booking page knows they're verified
+
+    const entered = code.trim().toUpperCase()
+
+    if (entered === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
       sessionStorage.setItem('booking_verified', 'true')
       router.push('/book')
+    } else if (entered === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
+      sessionStorage.setItem('checkin_verified', 'true')
+      router.push('/checkin')
     } else {
       setError('Incorrect code. Please check with your teacher and try again.')
       setLoading(false)
