@@ -12,6 +12,8 @@ type Question = {
 }
 
 export default function CheckInPage() {
+    export default function CheckInPage() {
+  const router = useRouter()
   const [questions, setQuestions] = useState<Question[]>([])
   const [firstName, setFirstName] = useState('')
   const [lastName,  setLastName]  = useState('')
@@ -27,6 +29,13 @@ export default function CheckInPage() {
     fetch('/api/bookings/questions')
       .then(r => r.json())
       .then(setQuestions)
+  }, [])
+  useEffect(() => {
+    const verified = sessionStorage.getItem('checkin_verified')
+    if (!verified) {
+      router.push('/verify')
+      return
+    }
   }, [])
 
   function validateEmail(value: string) {
