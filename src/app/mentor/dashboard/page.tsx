@@ -362,6 +362,34 @@ const timeOptions = generateTimeOptions()
                       >
                         Profile
                       </button>
+
+                      {cancellingId === booking.id ? (
+                        <>
+                          <button
+                            onClick={async () => {
+                              await fetch(`/api/bookings/${booking.id}/cancel`, { method: 'POST' })
+                              setCancellingId(null)
+                              loadData()
+                            }}
+                            style={{ fontSize: 12, padding: '5px 14px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            onClick={() => setCancellingId(null)}
+                            style={{ fontSize: 12, padding: '5px 14px' }}
+                          >
+                            Never mind
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => setCancellingId(booking.id)}
+                          style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </div>
                   ))
                 )}
