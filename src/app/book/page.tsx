@@ -273,10 +273,10 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
         days.map(dateKey => (
           <div key={dateKey} style={{ marginBottom: 20 }}>
             <p style={{
-              fontSize: 11, fontWeight: 500, letterSpacing: '.06em',
-              textTransform: 'uppercase', color: '#888780',
+              fontSize: 15, fontWeight: 600, letterSpacing: '.02em',
+              textTransform: 'uppercase', color: '#2C2C2A',
               borderBottom: '0.5px solid #e8e6de',
-              paddingBottom: 6, marginBottom: 8,
+              paddingBottom: 8, marginBottom: 10,
             }}>
               {format(parseISO(dateKey), 'EEEE, MMM d')}
             </p>
@@ -308,7 +308,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
                   </div>
                   <button
                     onClick={e => { e.stopPropagation(); selectSlot(slot) }}
-                    style={{ fontSize: 12, padding: '5px 14px' }}
+                    style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
                   >
                     Book
                   </button>
