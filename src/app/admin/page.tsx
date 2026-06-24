@@ -54,6 +54,31 @@ const [showAllComments, setShowAllComments] = useState(false)
     loadReports()
   }, [])
 
+  useEffect(() => {
+    if (activePanel === 'qrcodes' && typeof window !== 'undefined' && (window as any).QRCode) {
+      const bookingEl = document.getElementById('qr-booking')
+      const checkinEl = document.getElementById('qr-checkin')
+
+      if (bookingEl) {
+        bookingEl.innerHTML = ''
+        new (window as any).QRCode(bookingEl, {
+          text: `https://www.otessaymentors.org/book?code=${process.env.NEXT_PUBLIC_BOOKING_CODE}`,
+          width: 160,
+          height: 160,
+        })
+      }
+
+      if (checkinEl) {
+        checkinEl.innerHTML = ''
+        new (window as any).QRCode(checkinEl, {
+          text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
+          width: 160,
+          height: 160,
+        })
+      }
+    }
+  }, [activePanel])
+
   async function loadData() {
     const { data: mentorData } = await supabase
       .from('mentor_profiles')
@@ -116,10 +141,11 @@ const [showAllComments, setShowAllComments] = useState(false)
     setReportsLoading(false)
   }
 
-  const navItems = [
+ const navItems = [
     { key: 'reports',   label: 'Reports' },
     { key: 'bookings',  label: 'All bookings' },
     { key: 'mentors',   label: 'Mentors' },
+    { key: 'qrcodes',   label: 'QR Codes' },
     { key: 'calendar',  label: 'Google Calendar' },
     { key: 'session',   label: 'End Session' },
   ]
@@ -605,6 +631,34 @@ onClick={() => {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+            {/* QR CODES */}
+            {activePanel === 'qrcodes' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>QR Codes</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Print these for students to scan and skip typing the access code
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
+                    <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>Virtual booking</p>
+                    <p style={{ fontSize: 12, color: '#888780', margin: '0 0 12px' }}>Scan to go straight to the booking form</p>
+                    <div id="qr-booking" style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }} />
+                    <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
+                      otessaymentors.org/book?code={process.env.NEXT_PUBLIC_BOOKING_CODE}
+                    </p>
+                  </div>
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
+                    <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>In-person check-in</p>
+                    <p style={{ fontSize: 12, color: '#888780', margin: '0 0 12px' }}>Scan to check in at the CCC</p>
+                    <div id="qr-checkin" style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }} />
+                    <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
+                      otessaymentors.org/checkin?code={process.env.NEXT_PUBLIC_CHECKIN_CODE}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
             {/* GOOGLE CALENDAR */}
