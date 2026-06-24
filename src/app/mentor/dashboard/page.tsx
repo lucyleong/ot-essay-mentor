@@ -54,6 +54,7 @@ const [slotError,      setSlotError]      = useState('')
 const [allBookings, setAllBookings] = useState<any[]>([])
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [isInPersonAvailable, setIsInPersonAvailable] = useState(false)
+const [cancellingId, setCancellingId] = useState<string | null>(null)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -275,12 +276,40 @@ const timeOptions = generateTimeOptions()
                             Join Google Meet
                           </a>
                         )}
-                        <button
+                       <button
                           onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                           style={{ fontSize: 12, padding: '5px 14px' }}
                         >
                           View student profile
                         </button>
+
+                        {cancellingId === booking.id ? (
+                          <>
+                            <button
+                              onClick={async () => {
+                                await fetch(`/api/bookings/${booking.id}/cancel`, { method: 'POST' })
+                                setCancellingId(null)
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '5px 14px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                            >
+                              Confirm cancel
+                            </button>
+                            <button
+                              onClick={() => setCancellingId(null)}
+                              style={{ fontSize: 12, padding: '5px 14px' }}
+                            >
+                              Never mind
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => setCancellingId(booking.id)}
+                            style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                          >
+                            Cancel appointment
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))

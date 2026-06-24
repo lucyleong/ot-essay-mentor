@@ -246,7 +246,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
       Use this form to sign up for a FREE virtual appointment with a College Essay Mentor
       to work on your essays! We will confirm your appointment via
       email with a Google Meet link 
-      and request for access to the PIQ / essay if you have one!
+      and request for access to the PIQ / essay if you have one.
     </p>
     <p style={{ margin: '0 0 12px' }}>
       One appointment per student at a time only. Please complete your appointment before booking a new one.
