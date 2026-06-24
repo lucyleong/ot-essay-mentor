@@ -52,18 +52,6 @@ export default function DailyIssuesPage() {
     setSaving(null)
   }
 
-    await fetch('/api/mentor/daily-issues', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bookingId,
-        noShow: latestBooking.noShow,
-        meetIssue: latestBooking.meetIssue,
-      }),
-    })
-    setSaving(null)
-  }
-
   if (loading) return <p style={{ padding: '2rem', color: '#888780' }}>Loading...</p>
 
   return (
