@@ -27,13 +27,13 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-    const { data: mentor } = await supabase
+   const { data: mentor } = await supabase
       .from('mentor_profiles')
-      .select('id')
+      .select('id, is_active')
       .eq('auth_user_id', user.id)
       .single()
 
-    if (!mentor) {
+    if (!mentor || !mentor.is_active) {
       return NextResponse.redirect(new URL('/', request.url))
     }
   }
