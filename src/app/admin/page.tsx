@@ -9,6 +9,7 @@ type Mentor = {
   full_name: string
   email: string
   is_active: boolean
+  is_virtual_available: boolean
   created_at: string
 }
 
@@ -80,13 +81,18 @@ const [showAllComments, setShowAllComments] = useState(false)
   }, [activePanel])
 
   async function loadData() {
-    const { data: mentorData } = await supabase
+   const { data: mentorData } = await supabase
       .from('mentor_profiles')
-      .select('id, full_name, email, is_active, created_at')
+      .select('id, full_name, email, is_active, is_virtual_available, created_at')
       .neq('email', 'otessaymentors@gmail.com')
       .order('full_name', { ascending: true })
 
-    setMentors(mentorData ?? [])
+    const sortedMentors = (mentorData ?? []).sort((a, b) => {
+      if (a.is_active === b.is_active) return 0
+      return a.is_active ? -1 : 1
+    })
+
+    setMentors(sortedMentors)
 
     const bookingRes  = await fetch('/api/admin/bookings')
     const bookingData = await bookingRes.json()
@@ -132,7 +138,13 @@ const [showAllComments, setShowAllComments] = useState(false)
       .eq('id', mentor.id)
     loadData()
   }
-
+async function toggleMentorVirtual(mentor: Mentor) {
+    await supabase
+      .from('mentor_profiles')
+      .update({ is_virtual_available: !mentor.is_virtual_available })
+      .eq('id', mentor.id)
+    loadData()
+  }
   async function loadReports() {
     setReportsLoading(true)
     const res  = await fetch('/api/admin/reports')
@@ -259,6 +271,19 @@ onClick={() => {
                         <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>{mentor.full_name}</p>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{mentor.email}</p>
                       </div>
+                     <span style={{
+                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                        background: mentor.is_virtual_available ? '#EEEDFE' : '#F1EFE8',
+                        color: mentor.is_virtual_available ? '#3C3489' : '#5F5E5A',
+                      }}>
+                        {mentor.is_virtual_available ? 'Virtual' : 'No virtual'}
+                      </span>
+                      <button
+                        onClick={() => toggleMentorVirtual(mentor)}
+                        style={{ fontSize: 12, padding: '4px 10px' }}
+                      >
+                        {mentor.is_virtual_available ? 'Remove from virtual' : 'Add to virtual'}
+                      </button>
                       <span style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
                         background: mentor.is_active ? '#E1F5EE' : '#F1EFE8',
