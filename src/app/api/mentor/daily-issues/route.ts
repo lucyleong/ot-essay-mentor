@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     meet_issue: meetIssue ? 'Yes' : 'No',
   }
 
-  if (existing) {
+ if (existing) {
     await supabase
       .from('survey_responses')
       .update({ additional_answers: additionalAnswers })
