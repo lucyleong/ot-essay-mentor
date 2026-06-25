@@ -35,7 +35,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}> Conduct</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        Our mentors are volunteers who donate their time to support Oakland Tech students. Please treat them with respect. Mentors reserve the right to end appointments that are disrespectful or unproductive. Students may report any issues with mentors by contacting the Administrator at the listed email below.
+        Our mentors are all OUSD-Certified School Volunteers who donate their time to support Oakland Tech students. Please treat them with respect. Mentors reserve the right to end appointments that are disrespectful or unproductive. Students may report any issues with mentors by contacting the Administrator at the listed email below.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
