@@ -28,9 +28,9 @@ export default function TermsPage() {
         By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues. Message frequency may vary. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
       </p>
 
-      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Mentor conduct</h3>
+      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}> Conduct</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        Our mentors are volunteers who donate their time to support Oakland Tech students. Please treat them with respect. Mentors reserve the right to end appointments that are disrespectful or unproductive.
+        Our mentors are volunteers who donate their time to support Oakland Tech students. Please treat them with respect. Mentors reserve the right to end appointments that are disrespectful or unproductive. Students may report any issues with mentors by contacting the Administrator at the listed email below.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
@@ -44,7 +44,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Information we collect</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment and analyze anonymous statistics .
+        When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment and analyze anonymous statistics.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>How we use your information</h3>
