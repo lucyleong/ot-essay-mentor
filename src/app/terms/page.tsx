@@ -10,22 +10,22 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Program eligibility</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        The OT College Essay Mentor Program is available to all current Oakland Tech seniors who are preparing college applications. One appointment per student is available on a first-come, first-served basis.
+        The OT College Essay Mentor Program is available to all current Oakland Tech seniors who are preparing college applications. Student can reserve as many appointments as needed but must only hold one appointment at a time. Appointments are available on a first-come, first-served basis.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Appointments</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        Appointments are free of charge. By booking an appointment you agree to attend at the scheduled time. If you need to cancel, please do so at least 24 hours in advance by updating your Google Calendar invitation. Last-minute cancellations prevent other students from using the slot.
+        Appointments are free of charge. By booking an appointment you agree to attend at the scheduled time. If you need to cancel, please do so at least 24 hours in advance by clicking the cancel button on the confirmation email. Last-minute cancellations prevent other students from using the slot.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Gmail requirement</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        A Gmail address is required to book an appointment. This allows mentors to share Google Docs and Google Meet links with you directly.
+        A Gmail address is required to book an appointment. This enables the use of Google Meet and sharing documents via Google Docs. You will not be let into the appointment if you are not loggin in with the Gmail address that was provided during sign up.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues. Message and data rates may apply. Reply STOP to unsubscribe at any time.
+        By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues. Message frequency may vary. Message and data rates may apply. Reply HELP for help or STOP to opt-out.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Mentor conduct</h3>
@@ -35,7 +35,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
-        The OT College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide writing and editing support only.
+        The OT College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide brainstorming, writing and editing support only.
       </p>
 
       <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 40px' }} />
@@ -54,12 +54,12 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text messages</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues.  You can reply STOP at any time to unsubscribe. Message and data rates may apply.
+        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues.  Message frequency varies. You can reply HELP for help or STOP to opt-outat any time. Message and data rates may apply. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Data retention</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        Your information is retained for the duration of the program year and archived at the end of each semester. Essays you share are deleted at the end of each program session.
+        Your information is retained for the duration of the program year, then anonymized and archived at the end of each semester. Essays you share are deleted at the end of each program session.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
