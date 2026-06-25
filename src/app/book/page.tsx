@@ -26,7 +26,7 @@ type Question = {
   sort_order: number
 }
 
-const OPTIONAL_START = 11
+const OPTIONAL_START = 10
 
 export default function BookPage() {
   const router = useRouter()
