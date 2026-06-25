@@ -20,12 +20,12 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Gmail requirement</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        A Gmail address is required to book an appointment. This enables the use of Google Meet and sharing documents via Google Docs. You will not be let into the appointment if you are not loggin in with the Gmail address that was provided during sign up.
+        A Gmail address is required to book an appointment. This enables the use of Google Meet and sharing documents via Google Docs. You will not be let into the appointment if you are not logged in with the Gmail address that was provided during sign up.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues. Message frequency may vary. Message and data rates may apply. Reply HELP for help or STOP to opt-out.
+        By providing your phone number and checking the SMS consent box, you agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues. Message frequency may vary. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Mentor conduct</h3>
@@ -44,7 +44,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Information we collect</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment.
+        When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment and analyze anonymous statistics .
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>How we use your information</h3>
@@ -54,7 +54,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text messages</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues.  Message frequency varies. You can reply HELP for help or STOP to opt-outat any time. Message and data rates may apply. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
+        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues.  Message frequency varies. Message and data rates may apply. You can reply HELP for help or STOP to opt-out at any time. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Data retention</h3>
