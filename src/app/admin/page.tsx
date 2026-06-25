@@ -637,7 +637,7 @@ onClick={() => {
 
                       {/* Immigrants */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrants</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrant family</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.demographics.immigrants.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
@@ -663,7 +663,7 @@ onClick={() => {
 
                       {/* Teacher distribution */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English/Advisory teacher</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English / Advisory teacher</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                           {reports.demographics.teachers.map(([label, count]: [string, number]) => (
                             <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
