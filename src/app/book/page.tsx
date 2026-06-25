@@ -114,7 +114,7 @@ export default function BookPage() {
 
   function handleAnswerChange(questionId: string, value: any) {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
-    const mentorPrevQuestion = questions.find(q => q.sort_order === 8)
+    const mentorPrevQuestion = questions.find(q => q.question_text === 'I have worked with a College Essay Mentor before through this program')
     if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       setShowMentor(value === 'Yes')
     }
@@ -144,7 +144,7 @@ export default function BookPage() {
     const formattedAnswers = questions
       .filter(q => {
         if (q.sort_order <= 4) return false
-        if (q.sort_order === 9 && !showMentor) return false
+        if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
         return true
       })
       .flatMap(q => {
@@ -457,7 +457,7 @@ placeholder="(510)555-0100"
             {questions
               .filter(q => {
                 if (q.sort_order <= 4) return false
-                if (q.sort_order === 9 && !showMentor) return false
+                if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
 
                 return true
               })
