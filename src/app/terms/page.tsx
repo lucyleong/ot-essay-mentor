@@ -1,6 +1,11 @@
+import Link from 'next/link'
+
 export default function TermsPage() {
   return (
     <main style={{ maxWidth: 700, margin: '0 auto', padding: '3rem 2rem' }}>
+      <Link href="/" style={{ fontSize: 13, color: '#888780', textDecoration: 'none', display: 'block', marginBottom: 20 }}>
+        ← Back to home
+      </Link>
       <h1 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px' }}>Terms, Conditions & Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#888780', margin: '0 0 40px' }}>
         Oakland Tech College Essay Mentor Program · Last updated: June 2026
