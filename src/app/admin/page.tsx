@@ -538,7 +538,7 @@ onClick={() => {
                               </p>
                             ))}
                           </div>
-                          {reports.surveys.howHeard.length > 4 && (
+                       {reports.surveys.howHeard.length > 4 && (
                             <button
                               onClick={() => setShowAllComments(!showAllComments)}
                               style={{ fontSize: 12, marginTop: 8 }}
@@ -546,6 +546,32 @@ onClick={() => {
                               {showAllComments ? 'Show less' : `Show all ${reports.surveys.howHeard.length} comments`}
                             </button>
                           )}
+                        </div>
+                      )}
+
+                      {/* Mentor issues - full width */}
+                      {reports.surveys.mentorIssues?.length > 0 && (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                          <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>
+                            Flagged mentor issues
+                          </p>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                            {reports.surveys.mentorIssues.map((m: any) => (
+                              <div key={m.mentorName} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                                <p style={{ flex: 1, margin: 0, fontSize: 13, fontWeight: 500 }}>{m.mentorName}</p>
+                                {m.lateCount > 0 && (
+                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                                    {m.lateCount} late
+                                  </span>
+                                )}
+                                {m.wouldNotWorkAgainCount > 0 && (
+                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
+                                    {m.wouldNotWorkAgainCount} wouldn't work with again
+                                  </span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
 
