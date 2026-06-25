@@ -244,11 +244,11 @@ export async function GET() {
     demographics: {
       firstGen:        { yes: firstGenYes, no: firstGenNo },
 ethnicity:       countMultiselect(answersWithEmail, 13),
-helpWith:        countAllAnswers(answersWithEmail, 7),
-      teachers:        countUnique(answersWithEmail, 6),
-      privateCounselor: countUnique(answersWithEmail, 10),
+      helpWith:        countAllAnswers(answersWithEmail, 6),
+      teachers:        countUnique(answersWithEmail, 5),
+      privateCounselor: countUnique(answersWithEmail, 9),
       immigrants:      countUnique(answersWithEmail, 14),
-      lgbtq:           countUnique(answersWithEmail, 16),
+      lgbtq:           countUnique(answersWithEmail, 12),
     },
     mentorActivity: Object.entries(mentorMap).sort((a, b) => b[1] - a[1]),
     surveys: {
