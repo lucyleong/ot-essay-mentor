@@ -354,8 +354,10 @@ onClick={() => {
             {activePanel === 'bookings' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>All bookings</h1>
-                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
-                  {bookings.filter(b => !b.cancelled_at).length} active bookings
+               <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} upcoming ·{' '}
+                  {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) < new Date()).length} completed ·{' '}
+                  {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
