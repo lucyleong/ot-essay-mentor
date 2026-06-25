@@ -596,18 +596,16 @@ onClick={() => {
                         </div>
                       </div>
                       
-                      {/* First gen */}
+                  {/* First gen */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                            <p style={{ margin: 0, fontSize: 13 }}>Yes</p>
-                            <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{reports.demographics.firstGen.yes}</p>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                            <p style={{ margin: 0, fontSize: 13 }}>No</p>
-                            <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{reports.demographics.firstGen.no}</p>
-                          </div>
+                          {reports.demographics.firstGen.map(([label, count]: [string, number]) => (
+                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
+                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
+                            </div>
+                          ))}
                         </div>
                       </div>
 

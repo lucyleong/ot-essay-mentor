@@ -159,10 +159,8 @@ export async function GET() {
       intake_questions: a.intake_questions,
     }))
 
-  // First gen (sort_order 15)
+// First gen (sort_order 15)
   const firstGenEntries = countUnique(answersWithEmail, 15)
-  const firstGenYes = firstGenEntries.find(([k]) => k === 'Yes')?.[1] ?? 0
-  const firstGenNo  = firstGenEntries.find(([k]) => k === 'No')?.[1] ?? 0
 
   // Mentor activity
   const { data: mentorActivity } = await supabase
@@ -242,7 +240,7 @@ export async function GET() {
       unbookedSlots: unbookedSlots ?? 0,
     },
     demographics: {
-      firstGen:        { yes: firstGenYes, no: firstGenNo },
+     firstGen:        firstGenEntries,
 ethnicity:       countMultiselect(answersWithEmail, 13),
       helpWith:        countAllAnswers(answersWithEmail, 6),
       teachers:        countUnique(answersWithEmail, 5),
