@@ -359,7 +359,11 @@ onClick={() => {
                 </p>
 
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                  {bookings.map(booking => (
+                 {bookings.map(booking => {
+                    const startTime = (booking.appointment_slots as any)?.start_time
+                    const isPast = startTime ? new Date(startTime) < new Date() : false
+
+                    return (
                     <div key={booking.id} style={{
                       display: 'flex', alignItems: 'center', gap: 12,
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
@@ -374,15 +378,15 @@ onClick={() => {
                             : 'No slot'}
                         </p>
                       </div>
-                     <span style={{
+                    <span style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: booking.cancelled_at ? '#F1EFE8' : '#E1F5EE',
-                        color: booking.cancelled_at ? '#5F5E5A' : '#085041',
+                        background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
+                        color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
                       }}>
-                        {booking.cancelled_at ? 'Cancelled' : 'Active'}
+                        {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
                       </span>
 
-                      {!booking.cancelled_at && (
+                      {!booking.cancelled_at && !isPast && (
                         cancellingId === booking.id ? (
                           <>
                             <button
@@ -411,8 +415,8 @@ onClick={() => {
                           </button>
                         )
                       )}
-                    </div>
-                  ))}
+                   </div>
+                  )})}
                 </div>
               </div>
             )}
