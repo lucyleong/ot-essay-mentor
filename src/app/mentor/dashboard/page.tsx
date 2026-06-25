@@ -528,7 +528,8 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                     </div>
                   </div>
 
-<div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>                      <div>
+<div style={{ display: 'grid', gridTemplateColumns: slotRecurrence !== 'none' ? '1fr 1fr 1fr' : '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>
+                      <div>
                         <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
                         <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
                           <option value="none">One time only</option>
@@ -537,6 +538,17 @@ Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
                           <option value="biweekly">Every 2 weeks</option>
                         </select>
                       </div>
+                      {slotRecurrence !== 'none' && (
+                        <div>
+                          <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat until</label>
+                          <input
+                            type="date"
+                            value={slotUntil}
+                            onChange={e => setSlotUntil(e.target.value)}
+                            style={{ width: '100%', boxSizing: 'border-box' }}
+                          />
+                        </div>
+                      )}
                       <button
                     onClick={async () => {
                       if (!slotDate || !slotStart || !slotEnd) {
