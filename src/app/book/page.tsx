@@ -328,7 +328,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
           background: '#ffffff',
         }}>
           <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>
-Booking with {selectedSlot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
+Booking Virtual Appointment with {selectedSlot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
 
           </p>
           <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
@@ -444,7 +444,7 @@ placeholder="(510)555-0100"
                     style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
                   />
                   <span>
-                    I agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If I cancel an appointment, I will also receive a confirmation of that cancellation. If I have not canceled the appointment and have not logged in, I may receive a text to help troubleshoot any log in issues.
+                    I agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If I cancel an appointment, I will also receive a cancellation confirmation. If I have not canceled and have not logged in, I may receive a text to help troubleshoot any log in issues.
                     Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
                     <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
                       Terms, Conditions & Privacy Policy

@@ -27,7 +27,7 @@ export async function GET() {
 
   // Build the final questions array with mentor names injected
   const questions = (data ?? []).map(q => {
-    if (q.sort_order === 9 && mentorNames.length > 0) {
+    if (q.question_text === 'Which mentor(s) have you worked with?' && mentorNames.length > 0) {
       return { ...q, options: mentorNames }
     }
     return q
