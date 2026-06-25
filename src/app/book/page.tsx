@@ -435,7 +435,7 @@ placeholder="(510)555-0100"
     {phoneError}
   </p>
 )}
-              {phone && (
+             {phone && (
                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: '#5F5E5A', marginTop: 8, cursor: 'pointer' }}>
                   <input
                     type="checkbox"
@@ -443,8 +443,13 @@ placeholder="(510)555-0100"
                     onChange={e => setSmsConsent(e.target.checked)}
                     style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
                   />
-                  I agree to receive a reminder text message about this appointment.
-                  Message and data rates may apply. Reply STOP to unsubscribe.
+                  <span>
+                    I agree to receive a reminder text message about this appointment. Message frequency varies.
+                    Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
+                    <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
+                      Terms, Conditions & Privacy Policy
+                    </a>.
+                  </span>
                 </label>
               )}
             </div>
