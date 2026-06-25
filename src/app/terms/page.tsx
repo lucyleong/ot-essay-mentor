@@ -38,10 +38,10 @@ export default function TermsPage() {
         The OT College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide brainstorming, writing and editing support only.
       </p>
 
-      <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 40px' }} />
+      <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 24px' }} />
 
       <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Privacy Policy</h2>
-
+      
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Information we collect</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
         When you book an appointment, we collect your name, Gmail address, phone number, school information, and responses to our intake questions. This information is used solely to coordinate your mentoring appointment and analyze anonymous statistics.
