@@ -179,7 +179,14 @@ export async function GET() {
   // Student survey ratings
   const { data: studentSurveys } = await supabase
     .from('survey_responses')
-    .select('rating_overall, additional_answers')
+    .select(`
+      rating_overall, additional_answers,
+      student_bookings (
+        appointment_slots (
+          mentor_profiles ( full_name )
+        )
+      )
+    `)
     .eq('respondent_type', 'student')
 
   const ratings = (studentSurveys ?? []).map(s => s.rating_overall).filter(Boolean)
@@ -191,15 +198,38 @@ export async function GET() {
   const nextStepsMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
   const workAgainMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
 
-  ;(studentSurveys ?? []).forEach(s => {
+  const mentorIssuesMap: Record<string, { lateCount: number; wouldNotWorkAgainCount: number; details: any[] }> = {}
+
+  ;(studentSurveys ?? []).forEach((s: any) => {
     const onTime    = s.additional_answers?.mentor_on_time
     const nextSteps = s.additional_answers?.next_steps
     const workAgain = s.additional_answers?.work_again
+    const mentorName = s.student_bookings?.appointment_slots?.mentor_profiles?.full_name ?? 'Unknown'
 
     if (onTime    && mentorOnTimeMap[onTime]    !== undefined) mentorOnTimeMap[onTime]++
     if (nextSteps && nextStepsMap[nextSteps]     !== undefined) nextStepsMap[nextSteps]++
     if (workAgain && workAgainMap[workAgain]     !== undefined) workAgainMap[workAgain]++
+
+    // Track issues per mentor
+    if (onTime === 'No' || workAgain === 'No') {
+      if (!mentorIssuesMap[mentorName]) {
+        mentorIssuesMap[mentorName] = { lateCount: 0, wouldNotWorkAgainCount: 0, details: [] }
+      }
+      if (onTime === 'No') mentorIssuesMap[mentorName].lateCount++
+      if (workAgain === 'No') mentorIssuesMap[mentorName].wouldNotWorkAgainCount++
+      mentorIssuesMap[mentorName].details.push({
+        onTime: onTime === 'No',
+        wouldNotWorkAgain: workAgain === 'No',
+      })
+    }
   })
+
+  const mentorIssues = Object.entries(mentorIssuesMap).map(([name, data]) => ({
+    mentorName: name,
+    lateCount: data.lateCount,
+    wouldNotWorkAgainCount: data.wouldNotWorkAgainCount,
+    totalIssues: data.lateCount + data.wouldNotWorkAgainCount,
+  })).sort((a, b) => b.totalIssues - a.totalIssues)
 
   return NextResponse.json({
     bookings: {
@@ -230,6 +260,7 @@ helpWith:        countAllAnswers(answersWithEmail, 7),
       howHeard:       (studentSurveys ?? [])
         .map((s: any) => s.additional_answers?.how_heard)
         .filter((a: any) => a && a.trim().length > 0),
+      mentorIssues,
     },
   })
 }
