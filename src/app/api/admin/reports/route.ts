@@ -196,7 +196,7 @@ export async function GET() {
   const nextStepsMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
   const workAgainMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
 
-  const mentorIssuesMap: Record<string, { lateCount: number; wouldNotWorkAgainCount: number; details: any[] }> = {}
+  const mentorIssuesMap: Record<string, { lateCount: number; wouldNotWorkAgainCount: number; noNextStepsCount: number; details: any[] }> = {}
 
   ;(studentSurveys ?? []).forEach((s: any) => {
     const onTime    = s.additional_answers?.mentor_on_time
@@ -209,15 +209,17 @@ export async function GET() {
     if (workAgain && workAgainMap[workAgain]     !== undefined) workAgainMap[workAgain]++
 
     // Track issues per mentor
-    if (onTime === 'No' || workAgain === 'No') {
+    if (onTime === 'No' || workAgain === 'No' || nextSteps === 'No') {
       if (!mentorIssuesMap[mentorName]) {
-        mentorIssuesMap[mentorName] = { lateCount: 0, wouldNotWorkAgainCount: 0, details: [] }
+        mentorIssuesMap[mentorName] = { lateCount: 0, wouldNotWorkAgainCount: 0, noNextStepsCount: 0, details: [] }
       }
       if (onTime === 'No') mentorIssuesMap[mentorName].lateCount++
       if (workAgain === 'No') mentorIssuesMap[mentorName].wouldNotWorkAgainCount++
+      if (nextSteps === 'No') mentorIssuesMap[mentorName].noNextStepsCount++
       mentorIssuesMap[mentorName].details.push({
         onTime: onTime === 'No',
         wouldNotWorkAgain: workAgain === 'No',
+        noNextSteps: nextSteps === 'No',
       })
     }
   })
@@ -226,7 +228,8 @@ export async function GET() {
     mentorName: name,
     lateCount: data.lateCount,
     wouldNotWorkAgainCount: data.wouldNotWorkAgainCount,
-    totalIssues: data.lateCount + data.wouldNotWorkAgainCount,
+    noNextStepsCount: data.noNextStepsCount,
+    totalIssues: data.lateCount + data.wouldNotWorkAgainCount + data.noNextStepsCount,
   })).sort((a, b) => b.totalIssues - a.totalIssues)
 
   return NextResponse.json({

@@ -564,9 +564,14 @@ onClick={() => {
                                     {m.lateCount} late
                                   </span>
                                 )}
-                                {m.wouldNotWorkAgainCount > 0 && (
+                               {m.wouldNotWorkAgainCount > 0 && (
                                   <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
                                     {m.wouldNotWorkAgainCount} wouldn't work with again
+                                  </span>
+                                )}
+                                {m.noNextStepsCount > 0 && (
+                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                                    {m.noNextStepsCount} no next steps given
                                   </span>
                                 )}
                               </div>
