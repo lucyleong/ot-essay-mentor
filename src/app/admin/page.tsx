@@ -463,7 +463,7 @@ onClick={() => {
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Meet issues', value: reports.bookings.meetIssues },
                         { label: 'Total slots', value: reports.bookings.totalSlots },
-                        { label: 'Unused slots', value: reports.bookings.unbookedSlots },
+                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                           <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{stat.value}</p>
