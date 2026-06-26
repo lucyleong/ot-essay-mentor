@@ -48,7 +48,7 @@ export default function CancelPage({
       <main style={{ maxWidth: 500, margin: '0 auto', padding: '3rem 1rem', textAlign: 'center' }}>
         <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 12, padding: '2rem' }}>
           <p style={{ fontSize: 20, fontWeight: 500, color: '#791F1F', margin: '0 0 8px' }}>Appointment cancelled</p>
-          <p style={{ fontSize: 14, color: '#791F1F', margin: '0 0 16px' }}>
+         <p style={{ fontSize: 13, color: '#791F1F', margin: '0 0 16px' }}>
             Your appointment has been cancelled. We hope to see you again soon!
           </p>
           <a href="/book" style={{ color: '#534AB7', fontSize: 14 }}>Book a new appointment →</a>
