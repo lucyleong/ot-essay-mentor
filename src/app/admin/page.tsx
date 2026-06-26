@@ -73,13 +73,46 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
       if (checkinEl) {
         checkinEl.innerHTML = ''
         new (window as any).QRCode(checkinEl, {
-          text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
+         text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
           width: 160,
           height: 160,
         })
       }
     }
   }, [activePanel])
+
+  useEffect(() => {
+    if (activePanel === 'reports' && reports?.surveys?.mentorIssues?.length > 0 && typeof window !== 'undefined' && (window as any).Chart) {
+      const canvas = document.getElementById('mentor-issues-chart') as HTMLCanvasElement
+      if (!canvas) return
+
+      const existingChart = (window as any).Chart.getChart(canvas)
+      if (existingChart) existingChart.destroy()
+
+      const issues = reports.surveys.mentorIssues
+      new (window as any).Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: issues.map((m: any) => m.mentorName),
+          datasets: [
+            { label: 'Late', data: issues.map((m: any) => m.lateCount), backgroundColor: '#C9851A' },
+            { label: "Wouldn't work with again", data: issues.map((m: any) => m.wouldNotWorkAgainCount), backgroundColor: '#E24B4A' },
+            { label: 'No next steps given', data: issues.map((m: any) => m.noNextStepsCount), backgroundColor: '#888780' },
+          ],
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } },
+            y: { stacked: true },
+          },
+          plugins: { legend: { display: false } },
+        },
+      })
+    }
+  }, [activePanel, reports])
 
   async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
@@ -549,33 +582,28 @@ onClick={() => {
                         </div>
                       )}
 
-                      {/* Mentor issues - full width */}
+                     {/* Mentor issues - full width */}
                       {reports.surveys.mentorIssues?.length > 0 && (
                         <div style={{ gridColumn: '1 / -1' }}>
                           <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>
                             Flagged mentor issues
                           </p>
-                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                            {reports.surveys.mentorIssues.map((m: any) => (
-                              <div key={m.mentorName} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                                <p style={{ flex: 1, margin: 0, fontSize: 13, fontWeight: 500 }}>{m.mentorName}</p>
-                                {m.lateCount > 0 && (
-                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
-                                    {m.lateCount} late
-                                  </span>
-                                )}
-                               {m.wouldNotWorkAgainCount > 0 && (
-                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
-                                    {m.wouldNotWorkAgainCount} wouldn't work with again
-                                  </span>
-                                )}
-                                {m.noNextStepsCount > 0 && (
-                                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-                                    {m.noNextStepsCount} no next steps given
-                                  </span>
-                                )}
-                              </div>
-                            ))}
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8, fontSize: 12, color: '#888780' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#C9851A' }} />
+                              Late
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#E24B4A' }} />
+                              Wouldn't work with again
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#888780' }} />
+                              No next steps given
+                            </span>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.surveys.mentorIssues.length * 40 + 80, 160) }}>
+                            <canvas id="mentor-issues-chart" role="img" aria-label="Bar chart of flagged mentor issues by type"></canvas>
                           </div>
                         </div>
                       )}

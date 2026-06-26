@@ -35,6 +35,8 @@ export default function RootLayout({
 <body className="min-h-full flex flex-col">
         {children}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-      </body>    </html>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+      </body>
+    </html>
   );
 }
