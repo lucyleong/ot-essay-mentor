@@ -216,7 +216,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
             scales: {
               x: { beginAtZero: true, ticks: { stepSize: 1 } },
             },
-            plugins: {
+           plugins: {
               legend: { display: false },
               datalabels: {
                 color: '#ffffff',
@@ -226,6 +226,11 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
                 align: 'start',
               },
             },
+          },
+        })
+      }
+    }
+  }, [activePanel, reports])
 
   async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
