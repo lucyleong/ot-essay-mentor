@@ -36,6 +36,7 @@ export async function proxy(request: NextRequest) {
 if (!mentor || !mentor.is_active) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
+  }
 
   // Protect admin routes
   if (pathname.startsWith('/admin')) {
