@@ -1027,12 +1027,24 @@ onClick={() => setActivePanel(item.key)}
                         }
 
                         setAddingSchedule(false)
-                        setScheduleSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! They will sync to Google Calendar automatically within a few minutes.`)
+                        setScheduleSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! Generating Google Meet links...`)
                         setScheduleDate('')
                         setScheduleStart('')
                         setScheduleEnd('')
                         setScheduleRecurrence('none')
                         setScheduleUntil('')
+
+                        // Auto-sync calendar after a few seconds
+                        setTimeout(async () => {
+                          const syncRes = await fetch('/api/slots/sync-calendar-for-mentor', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ mentorId: scheduleMentorId }),
+                          })
+                          if (syncRes.ok) {
+                            setScheduleSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added with Google Meet links!`)
+                          }
+                        }, 3000)
                       }}
                       disabled={addingSchedule}
                       style={{ background: '#534AB7', color: '#ffffff', border: 'none', padding: '8px 20px', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 500 }}
