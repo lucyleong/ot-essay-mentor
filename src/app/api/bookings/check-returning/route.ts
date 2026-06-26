@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   const { data: previousBooking } = await supabase
     .from('student_bookings')
-    .select('id, student_name, student_phone')
+    .select('id, student_name, student_phone, sms_consent')
     .eq('student_email', email.toLowerCase().trim())
     .is('cancelled_at', null)
     .order('booked_at', { ascending: false })
@@ -24,10 +24,11 @@ export async function GET(request: NextRequest) {
   }
 
   const nameParts = previousBooking.student_name.split(' ')
-  return NextResponse.json({
+ return NextResponse.json({
     isReturning: true,
     firstName:   nameParts[0] ?? '',
     lastName:    nameParts.slice(1).join(' ') ?? '',
     phone:       previousBooking.student_phone ?? '',
+    smsConsent:  previousBooking.sms_consent ?? false,
   })
 }
