@@ -29,6 +29,9 @@ const [howHeard,      setHowHeard]      = useState('')
       const data = await res.json()
       if (res.ok) {
         setBooking(data)
+        if (data.already_submitted) {
+          setSubmitted(true)
+        }
       } else {
         setError('Survey not found.')
       }
@@ -210,8 +213,7 @@ const [howHeard,      setHowHeard]      = useState('')
       <button
         onClick={handleSubmit}
 disabled={!sessionEase || !mentorOnTime || !nextSteps || !workAgain}
-        style={{ width: '100%', fontSize: 14 }}
-      >
+style={{ width: '100%', fontSize: 14, background: '#534AB7', color: '#ffffff', border: 'none' }}      >
         Submit feedback
       </button>
 
