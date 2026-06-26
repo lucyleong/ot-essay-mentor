@@ -24,6 +24,7 @@ type Question = {
   options: string[] | null
   is_required: boolean
   sort_order: number
+  question_key?: string
 }
 
 const OPTIONAL_START = 10
@@ -52,6 +53,7 @@ export default function BookPage() {
   const [firstName,    setFirstName]    = useState('')
   const [lastName,     setLastName]     = useState('')
   const [email,        setEmail]        = useState('')
+  const [isReturning, setIsReturning] = useState(false)
   const [emailError,   setEmailError]   = useState('')
   const [phoneError,   setPhoneError]   = useState('')
   const [phone,        setPhone]        = useState('')
@@ -112,12 +114,31 @@ export default function BookPage() {
     }, 100)
   }
 
-  function validateEmail(v: string) {
-    if (!v) { setEmailError(''); return }
+ function validateEmail(v: string) {
+    if (!v) { setEmailError(''); setIsReturning(false); return }
     if (!/^[^\s@]+@gmail\.com$/i.test(v)) {
       setEmailError('Please use a Gmail address (@gmail.com)')
+      setIsReturning(false)
     } else {
       setEmailError('')
+      checkReturningStudent(v)
+    }
+  }
+
+  async function checkReturningStudent(emailToCheck: string) {
+    try {
+      const res = await fetch(`/api/bookings/check-returning?email=${encodeURIComponent(emailToCheck)}`)
+      const data = await res.json()
+      if (data.isReturning) {
+        setIsReturning(true)
+        setFirstName(data.firstName)
+        setLastName(data.lastName)
+        if (data.phone) setPhone(data.phone)
+      } else {
+        setIsReturning(false)
+      }
+    } catch {
+      setIsReturning(false)
     }
   }
 
@@ -463,10 +484,14 @@ placeholder="(510)555-5555"
               )}
             </div>
 
-            {questions
+          {questions
               .filter(q => {
                 if (q.sort_order <= 4) return false
                 if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
+               if (isReturning) {
+                  const alwaysAskKeys = ['worked_with_mentor_before', 'which_mentor', 'help_with', 'private_counselor']
+                  if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
+                }
 
                 return true
               })
