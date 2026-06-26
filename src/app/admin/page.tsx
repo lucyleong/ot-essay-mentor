@@ -23,9 +23,36 @@ type Booking = {
   appointment_slots: any
 }
 
+function generateTimeOptions(startAfter?: string) {
+  const options = []
+  for (let hour = 9; hour <= 21; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const val  = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`
+      if (startAfter && val <= startAfter) continue
+      const h    = hour % 12 || 12
+      const ampm = hour < 12 ? 'AM' : 'PM'
+      const m    = String(min).padStart(2, '0')
+      options.push({ value: val, label: `${h}:${m} ${ampm}` })
+    }
+  }
+  return options
+}
+const timeOptions = generateTimeOptions()
+
 export default function AdminPage() {
-  const [activePanel, setActivePanel] = useState('reports')
-  const [mentors,     setMentors]     = useState<Mentor[]>([])
+    const [activePanel, setActivePanel] = useState('reports')
+ const [mentors,     setMentors]     = useState<Mentor[]>([])
+  const [scheduleMentorId, setScheduleMentorId] = useState('')
+  const [scheduleDate,     setScheduleDate]     = useState('')
+  const [scheduleStart,    setScheduleStart]    = useState('')
+  const [scheduleEnd,      setScheduleEnd]      = useState('')
+  const [scheduleBreak,    setScheduleBreak]    = useState('10')
+  const [scheduleRecurrence, setScheduleRecurrence] = useState('none')
+  const [scheduleUntil,    setScheduleUntil]    = useState('')
+  const [scheduleType,     setScheduleType]     = useState('virtual')
+  const [addingSchedule,   setAddingSchedule]   = useState(false)
+  const [scheduleSuccess,  setScheduleSuccess]  = useState('')
+  const [scheduleError,    setScheduleError]    = useState('')
   const [bookings,    setBookings]    = useState<Booking[]>([])
   const [loading,     setLoading]     = useState(true)
   const [connected,   setConnected]   = useState(false)
@@ -831,8 +858,192 @@ onClick={() => setActivePanel(item.key)}
                     </p>
                   </div>
                 </div>
+             </div>
+            )}
+
+            {/* SCHEDULES */}
+            {activePanel === 'schedules' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Create mentor schedule</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Add availability on behalf of a mentor
+                </p>
+
+                {scheduleSuccess && (
+                  <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#085041' }}>
+                    {scheduleSuccess}
+                  </div>
+                )}
+                {scheduleError && (
+                  <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#791F1F' }}>
+                    {scheduleError}
+                  </div>
+                )}
+
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Mentor</label>
+                    <select value={scheduleMentorId} onChange={e => setScheduleMentorId(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                      <option value="">Select a mentor</option>
+                      {mentors.filter(m => m.is_active).map(m => (
+                        <option key={m.id} value={m.id}>{m.full_name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
+                      <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
+                      <input
+                        type="time"
+                        value={scheduleStart}
+                        onChange={e => setScheduleStart(e.target.value)}
+                        list="admin-start-times"
+                        min="09:00"
+                        max="21:00"
+                        style={{ width: '100%', boxSizing: 'border-box' }}
+                      />
+                      <datalist id="admin-start-times">
+                        {timeOptions.map(t => (
+                          <option key={t.value} value={t.value} />
+                        ))}
+                      </datalist>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available until</label>
+                      <input
+                        type="time"
+                        value={scheduleEnd}
+                        onChange={e => setScheduleEnd(e.target.value)}
+                        list="admin-end-times"
+                        min={scheduleStart || "09:00"}
+                        max="21:00"
+                        style={{ width: '100%', boxSizing: 'border-box' }}
+                      />
+                      <datalist id="admin-end-times">
+                        {generateTimeOptions(scheduleStart).map(t => (
+                          <option key={t.value} value={t.value} />
+                        ))}
+                      </datalist>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Break between</label>
+                      <select value={scheduleBreak} onChange={e => setScheduleBreak(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                        <option value="10">10 minutes</option>
+                        <option value="5">5 minutes</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
+                      <select value={scheduleRecurrence} onChange={e => setScheduleRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                        <option value="none">One time only</option>
+                        <option value="daily">Every day</option>
+                        <option value="weekly">Every week</option>
+                        <option value="biweekly">Every 2 weeks</option>
+                      </select>
+                    </div>
+                    {scheduleRecurrence !== 'none' && (
+                      <div>
+                        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat until</label>
+                        <input
+                          type="date"
+                          value={scheduleUntil}
+                          onChange={e => setScheduleUntil(e.target.value)}
+                          style={{ width: '100%', boxSizing: 'border-box' }}
+                        />
+                      </div>
+                    )}
+                    <button
+                      onClick={async () => {
+                        if (!scheduleMentorId) {
+                          setScheduleError('Please select a mentor.')
+                          return
+                        }
+                        if (!scheduleDate || !scheduleStart || !scheduleEnd) {
+                          setScheduleError('Please fill in the date, start time, and end time.')
+                          return
+                        }
+                        setAddingSchedule(true)
+                        setScheduleError('')
+                        setScheduleSuccess('')
+
+                        const breakMinutes = parseInt(scheduleBreak)
+                        const slotDuration = 20
+                        const intervalMins = slotDuration + breakMinutes
+
+                        const windowStart = new Date(`${scheduleDate}T${scheduleStart}:00`)
+                        const windowEnd   = new Date(`${scheduleDate}T${scheduleEnd}:00`)
+
+                        const slotTimes: { startTime: string; endTime: string }[] = []
+                        let current = new Date(windowStart)
+
+                        while (true) {
+                          const slotEndTime = new Date(current.getTime() + slotDuration * 60_000)
+                          if (slotEndTime > windowEnd) break
+                          slotTimes.push({
+                            startTime: current.toISOString(),
+                            endTime:   slotEndTime.toISOString(),
+                          })
+                          current = new Date(current.getTime() + intervalMins * 60_000)
+                        }
+
+                        if (slotTimes.length === 0) {
+                          setScheduleError('No slots fit in that time window. Please check your times.')
+                          setAddingSchedule(false)
+                          return
+                        }
+
+                        let data: any = {}
+                        try {
+                          const res = await fetch('/api/admin/schedules', {
+                            method:  'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body:    JSON.stringify({
+                              mentorId:        scheduleMentorId,
+                              slotTimes,
+                              durationMinutes: 20,
+                              meetingType:     scheduleType,
+                              recurrenceRule:  scheduleRecurrence === 'none' ? null : scheduleRecurrence,
+                              recurrenceUntil: scheduleRecurrence === 'none' ? null : scheduleUntil,
+                            }),
+                          })
+                          data = await res.json()
+                          if (!res.ok) {
+                            setScheduleError(data.error ?? 'Something went wrong.')
+                            setAddingSchedule(false)
+                            return
+                          }
+                        } catch {
+                          setScheduleError('Server error. Please try again.')
+                          setAddingSchedule(false)
+                          return
+                        }
+
+                        setAddingSchedule(false)
+                        setScheduleSuccess(`${data.slotsCreated} slot${data.slotsCreated !== 1 ? 's' : ''} added! They will sync to Google Calendar automatically within a few minutes.`)
+                        setScheduleDate('')
+                        setScheduleStart('')
+                        setScheduleEnd('')
+                        setScheduleRecurrence('none')
+                        setScheduleUntil('')
+                      }}
+                      disabled={addingSchedule}
+                      style={{ background: '#534AB7', color: '#ffffff', border: 'none', padding: '8px 20px', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 500 }}
+                    >
+                      {addingSchedule ? 'Saving...' : 'Save schedule'}
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
+
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
               <div>
