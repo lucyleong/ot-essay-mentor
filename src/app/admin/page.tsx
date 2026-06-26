@@ -88,7 +88,12 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
 
       const existingChart = (window as any).Chart.getChart(canvas)
       if (existingChart) existingChart.destroy()
+const existingChart = (window as any).Chart.getChart(canvas)
+      if (existingChart) existingChart.destroy()
 
+      if ((window as any).ChartDataLabels) {
+        (window as any).Chart.register((window as any).ChartDataLabels)
+      }
       const issues = reports.surveys.mentorIssues
       new (window as any).Chart(canvas, {
         type: 'bar',
@@ -502,8 +507,8 @@ onClick={() => {
                         { label: 'Cancelled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Meet issues', value: reports.bookings.meetIssues },
+                      { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                         { label: 'Total offered', value: reports.bookings.totalSlots },
-                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                           <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{stat.value}</p>
