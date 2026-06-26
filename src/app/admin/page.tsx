@@ -200,6 +200,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
         if (existing) existing.destroy()
 
         const sorted = [...entries].sort((a, b) => b[1] - a[1])
+        const barColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#378ADD', '#BA7517', '#639922', '#888780', '#993556', '#0F6E56']
 
         new (window as any).Chart(canvas, {
           type: 'bar',
@@ -207,7 +208,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
             labels: sorted.map(([label]) => shortenLabel(label)),
             datasets: [{
               data: sorted.map(([, count]) => count),
-              backgroundColor: '#534AB7',
+              backgroundColor: sorted.map((_, i) => barColors[i % barColors.length]),
             }],
           },
           options: {
