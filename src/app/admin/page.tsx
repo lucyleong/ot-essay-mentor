@@ -186,7 +186,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
           },
         })
       }
-
+renderPie('pie-mentor-activity', reports.mentorActivity)
       renderPie('pie-first-gen', reports.demographics.firstGen)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor)
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
@@ -737,16 +737,11 @@ onClick={() => setActivePanel(item.key)}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Intake form responses</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
-                      {/* Mentor activity */}
+                    {/* Mentor activity */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor appointments</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.mentorActivity.map(([name, count]: [string, number]) => (
-                            <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{name}</p>
-                              <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-mentor-activity" role="img" aria-label="Pie chart of appointments per mentor"></canvas>
                         </div>
                       </div>
                       
