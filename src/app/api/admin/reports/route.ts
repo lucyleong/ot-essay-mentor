@@ -22,10 +22,6 @@ function countUnique(answers: any[], questionKey: string) {
 
      const existing = byStudent.get(email)
 
-    if (questionKey === 'teacher' && a.student_email === 'stereophoniclp@gmail.com') {
-        console.log('Raw row:', JSON.stringify(a))
-      }
-
       if (!existing) {
         // First answer we've seen for this student
         byStudent.set(email, { answer, bookedAt })
@@ -53,8 +49,7 @@ function countMultiselect(answers: any[], questionKey: string) {
     .forEach((a: any) => {
       const email    = a.student_email
       const answer   = a.answer_text?.trim()
-      const bookedAt = a.student_bookings?.booked_at
-
+const bookedAt = a.booked_at
       if (!email || !answer) return
 
       const existing = byStudent.get(email)
