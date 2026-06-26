@@ -435,7 +435,7 @@ Booking Virtual Appointment with {selectedSlot.mentor_profiles?.full_name?.split
     setPhoneError('')
   }
 }}
-placeholder="(510)555-0100"
+placeholder="(510)555-5555"
   required
   style={{ borderColor: phoneError ? '#E24B4A' : undefined }}
 />

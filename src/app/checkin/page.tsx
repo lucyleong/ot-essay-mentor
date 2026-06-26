@@ -24,6 +24,7 @@ export default function CheckInPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted,  setSubmitted]  = useState(false)
   const [error,      setError]      = useState('')
+  const [showMentor, setShowMentor] = useState(false)
 
   useEffect(() => {
     fetch('/api/bookings/questions')
@@ -50,8 +51,12 @@ export default function CheckInPage() {
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
     setEmailError(isValid || !value ? '' : 'Please enter a valid email address')
   }
-  function handleAnswerChange(questionId: string, value: any) {
+ function handleAnswerChange(questionId: string, value: any) {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
+    const mentorPrevQuestion = questions.find(q => q.question_text === 'I have worked with a College Essay Mentor before through this program')
+    if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
+      setShowMentor(value === 'Yes')
+    }
   }
 
   function handleMultiSelect(questionId: string, option: string) {
@@ -70,6 +75,7 @@ export default function CheckInPage() {
 
     const formattedAnswers = questions
       .filter(q => q.sort_order > 4)
+       .filter(q => q.question_text !== 'Which mentor(s) have you worked with?' || showMentor)
       .flatMap(q => {
         const value = answers[q.id]
         if (Array.isArray(value)) {
@@ -190,8 +196,9 @@ placeholder="you@example.com"
           />
         </div>
 
-        {questions
+       {questions
           .filter(q => q.sort_order > 4)
+          .filter(q => q.question_text !== 'Which mentor(s) have you worked with?' || showMentor)
           .sort((a, b) => a.sort_order - b.sort_order)
           .map(q => (
             <div key={q.id} style={{ marginBottom: 14 }}>
