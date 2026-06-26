@@ -191,21 +191,22 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor)
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
       renderPie('pie-immigrants', reports.demographics.immigrants)
+      renderPie('pie-teachers', reports.demographics.teachers)
 
-      // Ethnicity horizontal bar chart
-      const ethnicityCanvas = document.getElementById('bar-ethnicity') as HTMLCanvasElement
-      if (ethnicityCanvas) {
-        const existingBar = (window as any).Chart.getChart(ethnicityCanvas)
-        if (existingBar) existingBar.destroy()
+      function renderHorizontalBar(canvasId: string, entries: [string, number][]) {
+        const canvas = document.getElementById(canvasId) as HTMLCanvasElement
+        if (!canvas) return
+        const existing = (window as any).Chart.getChart(canvas)
+        if (existing) existing.destroy()
 
-        const ethnicityData = [...reports.demographics.ethnicity].sort((a: any, b: any) => b[1] - a[1])
+        const sorted = [...entries].sort((a, b) => b[1] - a[1])
 
-        new (window as any).Chart(ethnicityCanvas, {
+        new (window as any).Chart(canvas, {
           type: 'bar',
           data: {
-            labels: ethnicityData.map(([label]: [string, number]) => shortenLabel(label)),
+            labels: sorted.map(([label]) => shortenLabel(label)),
             datasets: [{
-              data: ethnicityData.map(([, count]: [string, number]) => count),
+              data: sorted.map(([, count]) => count),
               backgroundColor: '#534AB7',
             }],
           },
@@ -216,7 +217,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
             scales: {
               x: { beginAtZero: true, ticks: { stepSize: 1 } },
             },
-           plugins: {
+            plugins: {
               legend: { display: false },
               datalabels: {
                 color: '#ffffff',
@@ -229,6 +230,9 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
           },
         })
       }
+
+      renderHorizontalBar('bar-ethnicity', reports.demographics.ethnicity)
+      renderHorizontalBar('bar-help-with', reports.demographics.helpWith)
     }
   }, [activePanel, reports])
 
@@ -777,29 +781,19 @@ onClick={() => setActivePanel(item.key)}
                         </div>
                       </div>
 
-                      {/* What they want help with */}
-                      <div>
+                     {/* What they want help with */}
+                      <div style={{ gridColumn: '1 / -1' }}>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.helpWith.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.demographics.helpWith.length * 40 + 60, 160) }}>
+                          <canvas id="bar-help-with" role="img" aria-label="Horizontal bar chart of what students want help with"></canvas>
                         </div>
                       </div>
 
                       {/* Teacher distribution */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English / Advisory teacher</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.teachers.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 220 }}>
+                          <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
                         </div>
                       </div>
 
