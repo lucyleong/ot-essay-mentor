@@ -157,7 +157,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
     if (activePanel === 'reports' && reports?.demographics && typeof window !== 'undefined' && (window as any).Chart) {
       const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780']
 
-      function renderPie(canvasId: string, entries: [string, number][]) {
+    function renderPie(canvasId: string, entries: [string, number][]) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         if (!canvas) return
         const existing = (window as any).Chart.getChart(canvas)
@@ -166,7 +166,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
         new (window as any).Chart(canvas, {
           type: 'pie',
           data: {
-            labels: entries.map(([label]) => label),
+            labels: entries.map(([label, count]) => `${label} (${count})`),
             datasets: [{
               data: entries.map(([, count]) => count),
               backgroundColor: entries.map((_, i) => pieColors[i % pieColors.length]),
@@ -737,21 +737,11 @@ onClick={() => setActivePanel(item.key)}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Intake form responses</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
-                  {/* Mentor activity */}
+                 {/* Mentor activity */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor appointments</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', display: 'flex', gap: 12, alignItems: 'center' }}>
-                          <div style={{ position: 'relative', height: 160, width: 160, flexShrink: 0 }}>
-                            <canvas id="pie-mentor-activity" role="img" aria-label="Pie chart of appointments per mentor"></canvas>
-                          </div>
-                          <div style={{ flex: 1, maxHeight: 160, overflowY: 'auto' }}>
-                            {reports.mentorActivity.map(([name, count]: [string, number]) => (
-                              <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 12 }}>
-                                <p style={{ margin: 0 }}>{name}</p>
-                                <p style={{ margin: 0, fontWeight: 500 }}>{count}</p>
-                              </div>
-                            ))}
-                          </div>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 240 }}>
+                          <canvas id="pie-mentor-activity" role="img" aria-label="Pie chart of appointments per mentor"></canvas>
                         </div>
                       </div>
                       
