@@ -6,13 +6,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-function countUnique(answers: any[], sortOrder: number) {
+function countUnique(answers: any[], questionKey: string) {
   // For each student, find their best answer:
   // - Use most recent non-blank answer
   const byStudent = new Map<string, { answer: string; bookedAt: string }>()
 
   answers
-    .filter((a: any) => a.intake_questions?.sort_order === sortOrder)
+    .filter((a: any) => a.intake_questions?.question_key === questionKey)
     .forEach((a: any) => {
       const email    = a.student_email
       const answer   = a.answer_text?.trim()
@@ -40,12 +40,12 @@ function countUnique(answers: any[], sortOrder: number) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
-function countMultiselect(answers: any[], sortOrder: number) {
+function countMultiselect(answers: any[], questionKey: string) {
   // For multiselect, count each selected option per student (most recent booking)
   const byStudent = new Map<string, { answers: string[]; bookedAt: string }>()
 
   answers
-    .filter((a: any) => a.intake_questions?.sort_order === sortOrder)
+    .filter((a: any) => a.intake_questions?.question_key === questionKey)
     .forEach((a: any) => {
       const email    = a.student_email
       const answer   = a.answer_text?.trim()
@@ -76,12 +76,12 @@ function countMultiselect(answers: any[], sortOrder: number) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
-function countAllAnswers(answers: any[], sortOrder: number) {
+function countAllAnswers(answers: any[], questionKey: string) {
   // Count every distinct answer a student has ever given (not just most recent)
   const byStudent = new Map<string, Set<string>>()
 
   answers
-    .filter((a: any) => a.intake_questions?.sort_order === sortOrder)
+    .filter((a: any) => a.intake_questions?.question_key === questionKey)
     .forEach((a: any) => {
       const email  = a.student_email
       const answer = a.answer_text?.trim()
@@ -144,7 +144,7 @@ export async function GET() {
     .from('booking_question_answers')
     .select(`
       answer_text,
-      intake_questions ( question_text, sort_order ),
+      intake_questions ( question_text, sort_order, question_key ),
       booking_id,
       student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at, cancelled_at )
     `)
@@ -160,7 +160,7 @@ export async function GET() {
     }))
 
 // First gen (sort_order 15)
-  const firstGenEntries = countUnique(answersWithEmail, 15)
+const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
 
   // Mentor activity
   const { data: mentorActivity } = await supabase
@@ -244,12 +244,12 @@ export async function GET() {
     },
     demographics: {
      firstGen:        firstGenEntries,
-ethnicity:       countMultiselect(answersWithEmail, 13),
-      helpWith:        countAllAnswers(answersWithEmail, 6),
-      teachers:        countUnique(answersWithEmail, 5),
-      privateCounselor: countUnique(answersWithEmail, 9),
-      immigrants:      countUnique(answersWithEmail, 14),
-      lgbtq:           countUnique(answersWithEmail, 12),
+ethnicity:       countMultiselect(answersWithEmail, 'ethnicity'),
+      helpWith:        countAllAnswers(answersWithEmail, 'help_with'),
+      teachers:        countUnique(answersWithEmail, 'teacher'),
+      privateCounselor: countUnique(answersWithEmail, 'private_counselor'),
+      immigrants:      countUnique(answersWithEmail, 'immigrant_status'),
+      lgbtq:           countUnique(answersWithEmail, 'lgbtq'),
     },
     mentorActivity: Object.entries(mentorMap).sort((a, b) => b[1] - a[1]),
     surveys: {
