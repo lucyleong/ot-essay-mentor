@@ -409,7 +409,13 @@ const timeOptions = generateTimeOptions()
                     <p style={{ color: '#888780', margin: 0 }}>No students yet.</p>
                   </div>
                 ) : (
-Array.from(new Map(allBookings.map(b => [b.student_email, b])).values())
+Array.from(
+                  new Map(
+                    [...allBookings]
+                      .sort((a, b) => new Date(a.booked_at).getTime() - new Date(b.booked_at).getTime())
+                      .map(b => [b.student_email, b])
+                  ).values()
+                )
                   .sort((a, b) => a.student_name.split(' ')[0].localeCompare(b.student_name.split(' ')[0]))
                   .map(booking => (
                     <div key={booking.student_email} style={{
