@@ -28,6 +28,15 @@ type Question = {
 
 const OPTIONAL_START = 10
 
+function shortenLabel(label: string) {
+  return label.split(' (')[0]
+}
+
+function getDetailInParens(label: string) {
+  const match = label.match(/\(([^)]+)\)/)
+  return match ? match[1] : ''
+}
+
 export default function BookPage() {
   const router = useRouter()
   const [slots,        setSlots]        = useState<Record<string, Slot[]>>({})
@@ -549,13 +558,14 @@ const isOptional = !q.is_required
                                   color: selected ? '#3C3489' : '#5F5E5A',
                                 }}
                               >
-                                <input
+                              <input
                                   type="checkbox"
                                   checked={selected}
                                   onChange={() => handleMultiSelect(q.id, opt)}
                                   style={{ width: 'auto', margin: 0 }}
+                                  title={getDetailInParens(opt)}
                                 />
-                                {opt}
+                                <span title={getDetailInParens(opt)}>{shortenLabel(opt)}</span>
                               </label>
                             )
                           })}
