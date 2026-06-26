@@ -16,7 +16,7 @@ function countUnique(answers: any[], questionKey: string) {
     .forEach((a: any) => {
       const email    = a.student_email
       const answer   = a.answer_text?.trim()
-      const bookedAt = a.student_bookings?.booked_at
+const bookedAt = a.booked_at
 
       if (!email || !answer) return
 
