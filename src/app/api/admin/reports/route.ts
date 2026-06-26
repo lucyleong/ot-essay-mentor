@@ -22,8 +22,8 @@ function countUnique(answers: any[], questionKey: string) {
 
      const existing = byStudent.get(email)
 
-      if (questionKey === 'teacher' && email === 'stereophoniclp@gmail.com') {
-        console.log('Processing:', { answer, bookedAt, existing })
+    if (questionKey === 'teacher' && a.student_email === 'stereophoniclp@gmail.com') {
+        console.log('Raw row:', JSON.stringify(a))
       }
 
       if (!existing) {
