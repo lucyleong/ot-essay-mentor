@@ -31,13 +31,13 @@ export async function GET(
   const slot   = booking.appointment_slots as any
   const mentor = slot?.mentor_profiles
 
-  // Check if a student survey response already exists
-  const { data: existingSurvey } = await supabase
+ // Check if a student survey response already exists
+  const { data: existingSurveys } = await supabase
     .from('survey_responses')
     .select('id')
     .eq('booking_id', bookingId)
     .eq('respondent_type', 'student')
-    .maybeSingle()
+    .limit(1)
 
   return NextResponse.json({
     student_name:  booking.student_name,
@@ -46,6 +46,6 @@ export async function GET(
     start_time:    slot?.start_time,
     end_time:      slot?.end_time,
     meeting_type:  slot?.meeting_type,
-    already_submitted: !!existingSurvey,
+   already_submitted: (existingSurveys ?? []).length > 0,
   })
 }
