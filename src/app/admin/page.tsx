@@ -88,8 +88,6 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
 
       const existingChart = (window as any).Chart.getChart(canvas)
       if (existingChart) existingChart.destroy()
-const existingChart = (window as any).Chart.getChart(canvas)
-      if (existingChart) existingChart.destroy()
 
       if ((window as any).ChartDataLabels) {
         (window as any).Chart.register((window as any).ChartDataLabels)
