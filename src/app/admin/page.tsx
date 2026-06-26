@@ -227,10 +227,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
         {navItems.map(item => (
           <button
             key={item.key}
-onClick={() => {
-  setActivePanel(item.key)
-  if (item.key === 'reports') loadReports()
-}}
+onClick={() => setActivePanel(item.key)}
             style={{
               display: 'flex', alignItems: 'center',
               padding: '9px 16px', fontSize: 13, cursor: 'pointer',
