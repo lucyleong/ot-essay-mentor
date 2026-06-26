@@ -205,6 +205,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
     { key: 'reports',   label: 'Reports' },
     { key: 'bookings',  label: 'All bookings' },
     { key: 'mentors',   label: 'Mentors' },
+    { key: 'schedules', label: 'Schedules' },
     { key: 'qrcodes',   label: 'QR Codes' },
     { key: 'calendar',  label: 'Google Calendar' },
     { key: 'session',   label: 'End Session' },
