@@ -750,11 +750,11 @@ onClick={() => setActivePanel(item.key)}
                         </div>
                       </div>
                       
-                 {/* First gen */}
+                 {/* Teacher distribution */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
-                          <canvas id="pie-first-gen" role="img" aria-label="Pie chart of first generation college student responses"></canvas>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English / Advisory teacher</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 220 }}>
+                          <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
                         </div>
                       </div>
 
@@ -763,6 +763,14 @@ onClick={() => setActivePanel(item.key)}
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Using private counselor</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
                           <canvas id="pie-private-counselor" role="img" aria-label="Pie chart of private counselor usage responses"></canvas>
+                        </div>
+                      </div>
+
+  {/* What they want help with */}
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.demographics.helpWith.length * 40 + 60, 160) }}>
+                          <canvas id="bar-help-with" role="img" aria-label="Horizontal bar chart of what students want help with"></canvas>
                         </div>
                       </div>
 
@@ -782,19 +790,11 @@ onClick={() => setActivePanel(item.key)}
                         </div>
                       </div>
 
-                     {/* What they want help with */}
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>What students want help with</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.demographics.helpWith.length * 40 + 60, 160) }}>
-                          <canvas id="bar-help-with" role="img" aria-label="Horizontal bar chart of what students want help with"></canvas>
-                        </div>
-                      </div>
-
-                      {/* Teacher distribution */}
+  {/* First gen */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English / Advisory teacher</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 220 }}>
-                          <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-first-gen" role="img" aria-label="Pie chart of first generation college student responses"></canvas>
                         </div>
                       </div>
 
