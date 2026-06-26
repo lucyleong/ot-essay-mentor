@@ -129,11 +129,12 @@ export default function BookPage() {
     try {
       const res = await fetch(`/api/bookings/check-returning?email=${encodeURIComponent(emailToCheck)}`)
       const data = await res.json()
-      if (data.isReturning) {
+    if (data.isReturning) {
         setIsReturning(true)
         setFirstName(data.firstName)
         setLastName(data.lastName)
         if (data.phone) setPhone(data.phone)
+        setSmsConsent(!!data.smsConsent)
       } else {
         setIsReturning(false)
       }
