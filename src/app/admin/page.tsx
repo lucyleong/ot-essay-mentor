@@ -143,10 +143,12 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
           },
           plugins: {
             legend: { display: false },
-            datalabels: {
+           datalabels: {
               color: '#ffffff',
               font: { weight: 500, size: 12 },
               formatter: (value: number) => value > 0 ? value : '',
+              anchor: 'end',
+              align: 'start',
             },
           },
         },
