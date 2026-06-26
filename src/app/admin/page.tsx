@@ -108,7 +108,14 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
             x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } },
             y: { stacked: true },
           },
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              color: '#ffffff',
+              font: { weight: 500, size: 12 },
+              formatter: (value: number) => value > 0 ? value : '',
+            },
+          },
         },
       })
     }
