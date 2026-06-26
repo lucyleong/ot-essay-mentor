@@ -20,7 +20,11 @@ function countUnique(answers: any[], questionKey: string) {
 
       if (!email || !answer) return
 
-      const existing = byStudent.get(email)
+     const existing = byStudent.get(email)
+
+      if (questionKey === 'teacher' && email === 'stereophoniclp@gmail.com') {
+        console.log('Processing:', { answer, bookedAt, existing })
+      }
 
       if (!existing) {
         // First answer we've seen for this student
