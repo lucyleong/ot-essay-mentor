@@ -12,6 +12,15 @@ type Question = {
   sort_order: number
 }
 
+function shortenLabel(label: string) {
+  return label.split(' (')[0]
+}
+
+function getDetailInParens(label: string) {
+  const match = label.match(/\(([^)]+)\)/)
+  return match ? match[1] : ''
+}
+
 export default function CheckInPage() {
   const router = useRouter()
   const [questions, setQuestions] = useState<Question[]>([])
@@ -240,13 +249,14 @@ placeholder="you@example.com"
                         border: `0.5px solid ${selected ? '#534AB7' : '#D3D1C7'}`,
                         color: selected ? '#3C3489' : '#5F5E5A',
                       }}>
-                        <input
+                       <input
                           type="checkbox"
                           checked={selected}
                           onChange={() => handleMultiSelect(q.id, opt)}
                           style={{ width: 'auto', margin: 0 }}
+                          title={getDetailInParens(opt)}
                         />
-                        {opt}
+                        <span title={getDetailInParens(opt)}>{shortenLabel(opt)}</span>
                       </label>
                     )
                   })}
