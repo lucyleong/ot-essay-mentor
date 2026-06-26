@@ -43,13 +43,29 @@ export function surveyEmail(d: SurveyEmailData) {
       }
     </p>
 
-    <a href="${d.surveyUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;">
+   <a href="${d.surveyUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;">
       ${isStudent ? 'Give feedback →' : 'Fill out report →'}
     </a>
 
+    ${isStudent ? `
     <p style="margin:20px 0 0;font-size:12px;color:#888780;">
       This survey will close in 7 days.
-    </p>`
+    </p>
+
+    ${divider()}
+
+    <p style="margin:0 0 12px;font-size:14px;color:#2C2C2A;line-height:1.6;">
+      Need more help with your essay? You can book another appointment anytime.
+    </p>
+
+    <a href="${process.env.NEXT_PUBLIC_APP_URL}/verify" style="display:inline-block;background:#ffffff;color:#534AB7;text-decoration:none;font-size:14px;font-weight:500;padding:10px 24px;border-radius:8px;border:0.5px solid #534AB7;">
+      Book another appointment →
+    </a>
+    ` : `
+    <p style="margin:20px 0 0;font-size:12px;color:#888780;">
+      This survey will close in 7 days.
+    </p>
+    `}`
 
   const subject = isStudent
     ? `How did your session with ${d.otherPartyName} go? (30 seconds)`
