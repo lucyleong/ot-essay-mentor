@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { addDays, addWeeks, addMonths } from 'date-fns'
+import { sendEmail } from '@/lib/email'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,6 +72,36 @@ export async function POST(request: NextRequest) {
     .select()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Notify the mentor that availability was added on their behalf
+  try {
+    const { data: mentor } = await supabase
+      .from('mentor_profiles')
+      .select('full_name, email')
+      .eq('id', body.mentorId)
+      .single()
+
+    if (mentor?.email) {
+      const firstDate = inserted?.[0]?.start_time
+        ? new Date(inserted[0].start_time).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'long', day: 'numeric' })
+        : 'an upcoming date'
+
+      await sendEmail({
+        to:               mentor.email,
+        subject:          `New availability added to your mentor dashboard`,
+        html:             `
+          <p>Hi ${mentor.full_name.split(' ')[0]},</p>
+          <p>We've added ${inserted?.length ?? 0} appointment slot${(inserted?.length ?? 0) !== 1 ? 's' : ''} to your mentor schedule, starting ${firstDate}.</p>
+          <p>You can view your full schedule by logging into your mentor dashboard at <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard">otessaymentors.org/mentor/dashboard</a>.</p>
+          <p>If you haven't logged in before, use the "Forgot password" link on the login page to set up your account.</p>
+        `,
+        notificationType: 'admin_created_schedule',
+        recipientType:    'mentor',
+      })
+    }
+  } catch (emailErr) {
+    console.error('Mentor schedule notification email failed:', emailErr)
+  }
 
   return NextResponse.json({ slotsCreated: inserted?.length ?? 0 })
 }
