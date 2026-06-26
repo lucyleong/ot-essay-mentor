@@ -94,7 +94,8 @@ const { data: existingBookings } = await supabase
       slot_id:           body.slotId,
       student_name:      `${body.firstName} ${body.lastName}`,
       student_email:     body.studentEmail.toLowerCase().trim(),
-student_phone: body.studentPhone,
+      student_phone:     body.studentPhone,
+      sms_consent:       !!body.smsConsent,
       confirmation_code: confirmationCode,
     })
     .select()
@@ -102,17 +103,10 @@ student_phone: body.studentPhone,
 if (bookingError) {
     console.error('Booking insert error:', bookingError)
     return NextResponse.json(
-      { error: bookingError.message },
-      { status: 500 }
-    )
-  }
- if (bookingError) {
-    return NextResponse.json(
       { error: (bookingError as any).message },
       { status: 500 }
     )
   }
-
   // Mark the slot as booked
   await supabase
     .from('appointment_slots')
