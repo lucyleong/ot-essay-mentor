@@ -58,7 +58,7 @@ export function surveyEmail(d: SurveyEmailData) {
       Need more help with your essay? You can book another appointment anytime.
     </p>
 
-    <a href="${process.env.NEXT_PUBLIC_APP_URL}/verify" style="display:inline-block;background:#ffffff;color:#534AB7;text-decoration:none;font-size:14px;font-weight:500;padding:10px 24px;border-radius:8px;border:0.5px solid #534AB7;">
+   <a href="${process.env.NEXT_PUBLIC_APP_URL}/verify" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:10px 24px;border-radius:8px;">
       Book another appointment →
     </a>
     ` : `
