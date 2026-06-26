@@ -394,12 +394,17 @@ Booking Virtual Appointment with {selectedSlot.mentor_profiles?.full_name?.split
                 required
                 style={{ borderColor: emailError ? '#E24B4A' : undefined }}
               />
-              {emailError && (
+            {emailError && (
                 <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>{emailError}</p>
               )}
               <p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0' }}>
                 A Gmail address is required
               </p>
+              {isReturning && (
+                <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginTop: 8, fontSize: 12, color: '#085041' }}>
+                  Welcome back, {firstName}! We've filled in your info from before — you can skip the questions you've already answered.
+                </div>
+              )}
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
