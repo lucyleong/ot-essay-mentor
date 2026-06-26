@@ -33,10 +33,9 @@ export async function proxy(request: NextRequest) {
       .eq('auth_user_id', user.id)
       .single()
 
-    if (!mentor || !mentor.is_active) {
-      return NextResponse.redirect(new URL('/', request.url))
+if (!mentor || !mentor.is_active) {
+      return NextResponse.redirect(new URL('/login', request.url))
     }
-  }
 
   // Protect admin routes
   if (pathname.startsWith('/admin')) {
