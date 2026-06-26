@@ -39,6 +39,10 @@ function generateTimeOptions(startAfter?: string) {
 }
 const timeOptions = generateTimeOptions()
 
+function shortenLabel(label: string) {
+  return label.split(' (')[0]
+}
+
 export default function AdminPage() {
     const [activePanel, setActivePanel] = useState('reports')
  const [mentors,     setMentors]     = useState<Mentor[]>([])
@@ -149,6 +153,79 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
       })
     }
   }, [activePanel, reports])
+  useEffect(() => {
+    if (activePanel === 'reports' && reports?.demographics && typeof window !== 'undefined' && (window as any).Chart) {
+      const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780']
+
+      function renderPie(canvasId: string, entries: [string, number][]) {
+        const canvas = document.getElementById(canvasId) as HTMLCanvasElement
+        if (!canvas) return
+        const existing = (window as any).Chart.getChart(canvas)
+        if (existing) existing.destroy()
+
+        new (window as any).Chart(canvas, {
+          type: 'pie',
+          data: {
+            labels: entries.map(([label]) => label),
+            datasets: [{
+              data: entries.map(([, count]) => count),
+              backgroundColor: entries.map((_, i) => pieColors[i % pieColors.length]),
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
+              datalabels: {
+                color: '#ffffff',
+                font: { weight: 500, size: 12 },
+                formatter: (value: number) => value > 0 ? value : '',
+              },
+            },
+          },
+        })
+      }
+
+      renderPie('pie-first-gen', reports.demographics.firstGen)
+      renderPie('pie-private-counselor', reports.demographics.privateCounselor)
+      renderPie('pie-lgbtq', reports.demographics.lgbtq)
+      renderPie('pie-immigrants', reports.demographics.immigrants)
+
+      // Ethnicity horizontal bar chart
+      const ethnicityCanvas = document.getElementById('bar-ethnicity') as HTMLCanvasElement
+      if (ethnicityCanvas) {
+        const existingBar = (window as any).Chart.getChart(ethnicityCanvas)
+        if (existingBar) existingBar.destroy()
+
+        const ethnicityData = [...reports.demographics.ethnicity].sort((a: any, b: any) => b[1] - a[1])
+
+        new (window as any).Chart(ethnicityCanvas, {
+          type: 'bar',
+          data: {
+            labels: ethnicityData.map(([label]: [string, number]) => shortenLabel(label)),
+            datasets: [{
+              data: ethnicityData.map(([, count]: [string, number]) => count),
+              backgroundColor: '#534AB7',
+            }],
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { beginAtZero: true, ticks: { stepSize: 1 } },
+            },
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: '#ffffff',
+                font: { weight: 500, size: 12 },
+                formatter: (value: number) => value > 0 ? value : '',
+                anchor: 'end',
+                align: 'start',
+              },
+            },
 
   async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
@@ -663,55 +740,35 @@ onClick={() => setActivePanel(item.key)}
                         </div>
                       </div>
                       
-                  {/* First gen */}
+                 {/* First gen */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.firstGen.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-first-gen" role="img" aria-label="Pie chart of first generation college student responses"></canvas>
                         </div>
                       </div>
 
                       {/* Private counselor */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Using private counselor</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.privateCounselor.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-private-counselor" role="img" aria-label="Pie chart of private counselor usage responses"></canvas>
                         </div>
                       </div>
 
                       {/* LGBTQ */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>LGBTQIAA+ / Gender nonconforming</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.lgbtq.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-lgbtq" role="img" aria-label="Pie chart of LGBTQIAA+ and gender nonconforming responses"></canvas>
                         </div>
                       </div>
 
                       {/* Immigrants */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrant family</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.immigrants.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ margin: 0, fontSize: 12 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
+                          <canvas id="pie-immigrants" role="img" aria-label="Pie chart of immigrant family status responses"></canvas>
                         </div>
                       </div>
 
@@ -741,16 +798,11 @@ onClick={() => setActivePanel(item.key)}
                         </div>
                       </div>
 
-                      {/* Ethnicity - full width */}
-<div>
+                    {/* Ethnicity - full width */}
+                      <div style={{ gridColumn: '1 / -1' }}>
                           <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Ethnicity</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                          {reports.demographics.ethnicity.map(([label, count]: [string, number]) => (
-                            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                              <p style={{ flex: 1, margin: 0, fontSize: 13 }}>{label}</p>
-                              <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                            </div>
-                          ))}
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.demographics.ethnicity.length * 40 + 60, 160) }}>
+                          <canvas id="bar-ethnicity" role="img" aria-label="Horizontal bar chart of ethnicity responses, students may select multiple"></canvas>
                         </div>
                       </div>
 
