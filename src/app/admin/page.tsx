@@ -88,7 +88,6 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
 
       const existingChart = (window as any).Chart.getChart(canvas)
       if (existingChart) existingChart.destroy()
-
       if ((window as any).ChartDataLabels) {
         (window as any).Chart.register((window as any).ChartDataLabels)
       }
@@ -519,6 +518,32 @@ onClick={() => {
                     {reports.surveys.totalResponses > 0 && (
                       <div style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 12, padding: '1rem', marginBottom: 20 }}>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys ({reports.surveys.totalResponses} responses)</p>
+                     {/* Mentor issues - full width, moved to top */}
+                      {reports.surveys.mentorIssues?.length > 0 && (
+                        <div style={{ marginBottom: 20 }}>
+                          <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>
+                            Flagged mentor issues
+                          </p>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8, fontSize: 12, color: '#888780' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#C9851A' }} />
+                              Late
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#E24B4A' }} />
+                              Wouldn't work with again
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#888780' }} />
+                              No next steps given
+                            </span>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.surveys.mentorIssues.length * 40 + 80, 160) }}>
+                            <canvas id="mentor-issues-chart" role="img" aria-label="Bar chart of flagged mentor issues by type"></canvas>
+                          </div>
+                        </div>
+                      )}
+
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
                           {/* Avg ease of connecting */}
                           <div>
@@ -592,33 +617,7 @@ onClick={() => {
                         </div>
                       )}
 
-                     {/* Mentor issues - full width */}
-                      {reports.surveys.mentorIssues?.length > 0 && (
-                        <div style={{ gridColumn: '1 / -1' }}>
-                          <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>
-                            Flagged mentor issues
-                          </p>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8, fontSize: 12, color: '#888780' }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#C9851A' }} />
-                              Late
-                            </span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#E24B4A' }} />
-                              Wouldn't work with again
-                            </span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#888780' }} />
-                              No next steps given
-                            </span>
-                          </div>
-                          <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.surveys.mentorIssues.length * 40 + 80, 160) }}>
-                            <canvas id="mentor-issues-chart" role="img" aria-label="Bar chart of flagged mentor issues by type"></canvas>
-                          </div>
-                        </div>
-                      )}
-
-                        </div>
+                    </div>
                     )}
 
                     
