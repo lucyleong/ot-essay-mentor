@@ -98,7 +98,7 @@ export async function POST(
         : 'unknown date'
 
       await sendEmail({
-        to:               'otessaymentors@gmail.com',
+      to:               process.env.PROGRAM_ACCOUNT_EMAIL!,
         subject:          `Cancellation: ${cancelledBooking.student_name} cancelled their appointment`,
         html:             `
           <p>A student has cancelled their appointment.</p>

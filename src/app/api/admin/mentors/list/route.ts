@@ -10,7 +10,7 @@ export async function GET() {
   const { data: mentorData, error } = await supabase
     .from('mentor_profiles')
     .select('id, full_name, email, is_active, is_virtual_available, created_at')
-    .neq('email', 'otessaymentors@gmail.com')
+.neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
     .order('full_name', { ascending: true })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

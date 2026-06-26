@@ -20,7 +20,7 @@ export async function GET() {
     .select('full_name')
     .eq('is_active', true)
     .eq('is_virtual_available', true)
-    .neq('email', 'otessaymentors@gmail.com')
+.neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
     .order('full_name', { ascending: true })
 
   const mentorNames = (mentors ?? []).map(m => m.full_name.split(' ')[0])

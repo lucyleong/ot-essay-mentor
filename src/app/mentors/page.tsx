@@ -11,7 +11,7 @@ export default async function MentorsPage() {
     .from('mentor_profiles')
     .select('id, full_name, bio')
     .eq('is_active', true)
-    .neq('email', 'otessaymentors@gmail.com')
+.neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
     .order('full_name', { ascending: true })
 
   return (

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await sendEmail({
-      to:               'otessaymentors@gmail.com',
+to:               process.env.PROGRAM_ACCOUNT_EMAIL!,
       subject:          body.subject ?? 'System Alert',
       html:             `<p>${body.message}</p>`,
       notificationType: 'system_alert',
