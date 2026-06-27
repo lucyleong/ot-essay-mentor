@@ -175,7 +175,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
   }
 
  const navItems = [
-    { key: 'today',    label: 'Today' },
+    { key: 'today',    label: 'Current' },
     { key: 'upcoming', label: 'Upcoming' },
     { key: 'students', label: 'Students' },
     ...(mentor?.is_virtual_available !== false ? [{ key: 'slots', label: 'My availability' }] : []),
@@ -252,7 +252,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
             {activePanel === 'today' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>
-                  Current — {format(new Date(), 'EEEE, MMMM d')}
+                  Today — {format(new Date(), 'EEEE, MMMM d')}
                 </h1>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   {todayBookings.length} appointment{todayBookings.length !== 1 ? 's' : ''} today
@@ -271,7 +271,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                       padding: '16px 20px',
                       marginBottom: 10,
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
                         <div>
                           <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
                             {booking.student_name}
@@ -282,13 +282,37 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
                           </p>
                         </div>
-                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                           {statusBadge(booking)}
                           {booking.student_essays.length > 0 && (
                             <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
                               {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
                             </span>
                           )}
+                          <button
+                            onClick={() => toggleIssue(booking.id, 'noShow')}
+                            disabled={savingIssue === booking.id}
+                            style={{
+                              fontSize: 12, padding: '4px 10px', borderRadius: 20,
+                              background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
+                              border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
+                              color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                            }}
+                          >
+                            {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
+                          </button>
+                          <button
+                            onClick={() => toggleIssue(booking.id, 'meetIssue')}
+                            disabled={savingIssue === booking.id}
+                            style={{
+                              fontSize: 12, padding: '4px 10px', borderRadius: 20,
+                              background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
+                              border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
+                              color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
+                            }}
+                          >
+                            {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                          </button>
                         </div>
                       </div>
 
@@ -344,33 +368,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <button
-                          onClick={() => toggleIssue(booking.id, 'noShow')}
-                          disabled={savingIssue === booking.id}
-                          style={{
-                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
-                            background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
-                            border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
-                            color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
-                          }}
-                        >
-                          {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
-                        </button>
-                        <button
-                          onClick={() => toggleIssue(booking.id, 'meetIssue')}
-                          disabled={savingIssue === booking.id}
-                          style={{
-                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
-                            background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
-                            border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
-                            color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
-                          }}
-                        >
-                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
-                        </button>
-                      </div>
-                    </div>
+                     </div>
                   ))
                 )}
 
