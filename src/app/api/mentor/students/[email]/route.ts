@@ -25,8 +25,9 @@ export async function GET(
     .select(`
       id, student_name, student_email, student_phone,
       booked_at, confirmation_code,
-      appointment_slots (
-        start_time, end_time, meeting_type, google_meet_link
+   appointment_slots (
+        start_time, end_time, meeting_type, google_meet_link,
+        mentor_profiles ( full_name )
       ),
       booking_question_answers (
         answer_text,
