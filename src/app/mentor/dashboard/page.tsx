@@ -292,9 +292,9 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         </div>
                       </div>
 
-                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                         {booking.appointment_slots.google_meet_link && (
-                          <a
+                        <a
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -307,13 +307,46 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             Join Google Meet
                           </a>
                         )}
-                       <button
+                        <button
                           onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                           style={{ fontSize: 12, padding: '5px 14px' }}
                         >
                           View student profile
                         </button>
-                       <button
+
+                        {isFuture(parseISO(booking.appointment_slots.start_time)) && (
+                          cancellingId === booking.id ? (
+                            <>
+                              <button
+                                onClick={async () => {
+                                  await fetch(`/api/bookings/${booking.id}/cancel`, { method: 'POST' })
+                                  setCancellingId(null)
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '5px 14px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                              >
+                                Confirm cancel
+                              </button>
+                              <button
+                                onClick={() => setCancellingId(null)}
+                                style={{ fontSize: 12, padding: '5px 14px' }}
+                              >
+                                Never mind
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => setCancellingId(booking.id)}
+                              style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                            >
+                              Cancel appointment
+                            </button>
+                          )
+                        )}
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end', marginTop: 8 }}>
+                        <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
                           disabled={savingIssue === booking.id}
                           style={{
@@ -321,7 +354,6 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
                             border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
                             color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
-                            marginLeft: 'auto',
                           }}
                         >
                           {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
@@ -338,37 +370,8 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         >
                           {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                         </button>
-
-                       {cancellingId === booking.id ? (
-                          <>
-                            <button
-                              onClick={async () => {
-                                await fetch(`/api/bookings/${booking.id}/cancel`, { method: 'POST' })
-                                setCancellingId(null)
-                                loadData()
-                              }}
-                              style={{ fontSize: 12, padding: '5px 14px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
-                            >
-                              Confirm cancel
-                            </button>
-                            <button
-                              onClick={() => setCancellingId(null)}
-                              style={{ fontSize: 12, padding: '5px 14px' }}
-                            >
-                              Never mind
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => setCancellingId(booking.id)}
-                            style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
-                          >
-                            Cancel appointment
-                          </button>
-                        )}
                       </div>
-
-                     </div>
+                    </div>
                   ))
                 )}
 
