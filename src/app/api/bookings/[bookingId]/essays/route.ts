@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ bookingId: string }> }
 ) {
   const { bookingId } = await context.params
-  const supabase = await createServerSupabaseClient()
 
   const { data, error } = await supabase
     .from('student_essays')
@@ -34,8 +37,7 @@ export async function POST(
   request: NextRequest,
   context: { params: Promise<{ bookingId: string }> }
 ) {
-  const { bookingId } = await context.params
-  const supabase    = await createServerSupabaseClient()
+ const { bookingId } = await context.params
   const contentType = request.headers.get('content-type') ?? ''
 
   // Google Doc link
