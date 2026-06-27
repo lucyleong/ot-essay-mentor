@@ -49,6 +49,8 @@ export default function StudentProfilePage({
   const [isPrivate, setIsPrivate] = useState(false)
   const [saving,    setSaving]    = useState(false)
   const [mentorId,  setMentorId]  = useState<string | null>(null)
+  const [mentorId,  setMentorId]  = useState<string | null>(null)
+  const [expandedBookingId, setExpandedBookingId] = useState<string | null>(null)
   const router   = useRouter()
   const supabase = createClient()
 const email = decodeURIComponent(emailParam)
@@ -145,43 +147,22 @@ const email = decodeURIComponent(emailParam)
         </div>
       )}
 
-      {/* Bookings with intake answers */}
-      {bookings.map((booking, index) => (
-        <div key={booking.id} style={{
+     {/* Intake info - shown once from most recent booking */}
+      {latestBooking && latestBooking.booking_question_answers?.length > 0 && (
+        <div style={{
           background: '#ffffff',
           border: '0.5px solid #e8e6de',
           borderRadius: 12,
           padding: '1.25rem',
-          marginBottom: 12,
+          marginBottom: 16,
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
-            <div>
-              <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                Appointment — {format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')}
-              </p>
-              <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
-                {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
-                {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
-                {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
-              </p>
-            </div>
-            {index === 0 && (
-              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
-                Most recent
-              </span>
-            )}
-          </div>
-
-          {/* Intake answers */}
-          <p style={{fontSize:11,color:'red'}}>Answers: {booking.booking_question_answers?.length ?? 0}</p>
-
-          {(booking.booking_question_answers ?? [])
-  .sort((a: any, b: any) => a.intake_questions.sort_order - b.intake_questions.sort_order)
+          <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 12px' }}>Intake info</h2>
+          {[...latestBooking.booking_question_answers]
+            .sort((a: any, b: any) => a.intake_questions.sort_order - b.intake_questions.sort_order)
             .map((answer, i) => (
               <div key={i} style={{
                 display: 'flex', gap: 12,
-                padding: '8px 0',
-                borderTop: i === 0 ? '0.5px solid #e8e6de' : 'none',
+                padding: '7px 0',
                 borderBottom: '0.5px solid #e8e6de',
               }}>
                 <p style={{ fontSize: 12, color: '#888780', margin: 0, width: 200, flexShrink: 0 }}>
@@ -192,10 +173,46 @@ const email = decodeURIComponent(emailParam)
                 </p>
               </div>
             ))}
+        </div>
+      )}
 
-          {/* Essays */}
-          {booking.student_essays.length > 0 && (
-            <div style={{ marginTop: 14 }}>
+      {/* Appointment history - compact, expandable */}
+      <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 10px' }}>Appointment history</h2>
+      {bookings.map((booking, index) => {
+        const isExpanded = expandedBookingId === booking.id
+        return (
+        <div key={booking.id} style={{
+          background: '#ffffff',
+          border: '0.5px solid #e8e6de',
+          borderRadius: 12,
+          padding: '1rem 1.25rem',
+          marginBottom: 8,
+        }}>
+          <div
+            onClick={() => setExpandedBookingId(isExpanded ? null : booking.id)}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+          >
+            <div>
+              <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                {format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')}
+                {index === 0 && (
+                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', marginLeft: 8 }}>
+                    Most recent
+                  </span>
+                )}
+              </p>
+              <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+                {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
+                {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
+                {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
+                {booking.student_essays.length > 0 ? ` · ${booking.student_essays.length} essay${booking.student_essays.length !== 1 ? 's' : ''}` : ''}
+              </p>
+            </div>
+            <span style={{ fontSize: 12, color: '#888780' }}>{isExpanded ? '▲' : '▼'}</span>
+          </div>
+
+          {isExpanded && booking.student_essays.length > 0 && (
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: '0.5px solid #e8e6de' }}>
               <p style={{ fontSize: 12, fontWeight: 500, color: '#5F5E5A', margin: '0 0 8px' }}>
                 Essays shared
               </p>
@@ -218,8 +235,9 @@ const email = decodeURIComponent(emailParam)
                     )}
                   </div>
                   {(essay.essay_type === 'google_doc' ? essay.google_doc_url : essay.signed_url) && (
-                      <a                    
-href={essay.essay_type === 'google_doc' ? essay.google_doc_url ?? '' : essay.signed_url ?? ''}                      target="_blank"
+                      
+                      href={essay.essay_type === 'google_doc' ? essay.google_doc_url ?? '' : essay.signed_url ?? ''}
+                      target="_blank"
                       rel="noopener noreferrer"
                       style={{ fontSize: 12, color: '#534AB7', textDecoration: 'none' }}
                     >
@@ -230,8 +248,25 @@ href={essay.essay_type === 'google_doc' ? essay.google_doc_url ?? '' : essay.sig
               ))}
             </div>
           )}
+
+          {isExpanded && booking.booking_question_answers?.length > 0 && (
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: '0.5px solid #e8e6de' }}>
+              <p style={{ fontSize: 12, fontWeight: 500, color: '#5F5E5A', margin: '0 0 8px' }}>
+                Intake answers for this session
+              </p>
+              {[...booking.booking_question_answers]
+                .sort((a: any, b: any) => a.intake_questions.sort_order - b.intake_questions.sort_order)
+                .map((answer, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, padding: '6px 0', fontSize: 12 }}>
+                    <p style={{ color: '#888780', margin: 0, width: 200, flexShrink: 0 }}>{answer.intake_questions.question_text}</p>
+                    <p style={{ color: '#2C2C2A', margin: 0 }}>{answer.answer_text}</p>
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
-      ))}
+        )
+      })}
 
       {/* Notes section */}
       <div style={{
