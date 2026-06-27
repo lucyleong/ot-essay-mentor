@@ -34,7 +34,14 @@ type BookingWithAnswers = {
     signed_url?: string | null
   }[]
 }
+}
 
+
+function shortenLabel(label: string) {
+  return label.split(' (')[0]
+}
+
+export default function StudentProfilePage({
 
 export default function StudentProfilePage({
   params,
@@ -215,8 +222,8 @@ const email = decodeURIComponent(emailParam)
                 <p style={{ fontSize: 12, color: '#888780', margin: 0, width: 200, flexShrink: 0 }}>
                   {answer.intake_questions.question_text}
                 </p>
-                <p style={{ fontSize: 13, color: '#2C2C2A', margin: 0 }}>
-                  {answer.answer_text}
+               <p style={{ fontSize: 13, color: '#2C2C2A', margin: 0 }}>
+                  {shortenLabel(answer.answer_text)}
                 </p>
               </div>
             ))}
