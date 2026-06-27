@@ -146,8 +146,8 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
     router.push('/login')
   }
 
-  const todayBookings    = bookings.filter(b => isToday(parseISO(b.appointment_slots.start_time)))
-   const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
+const todayBookings    = allBookings.filter(b => isToday(parseISO(b.appointment_slots.start_time)))   
+const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
    const recentBookings   = allBookings.filter(b => {
      const start = parseISO(b.appointment_slots.start_time)
      return !isToday(start) && isPast(start) && differenceInDays(new Date(), start) <= 7
@@ -252,7 +252,7 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
             {activePanel === 'today' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>
-                  Today — {format(new Date(), 'EEEE, MMMM d')}
+                  Current — {format(new Date(), 'EEEE, MMMM d')}
                 </h1>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   {todayBookings.length} appointment{todayBookings.length !== 1 ? 's' : ''} today
@@ -406,7 +406,7 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
                         </p>
                       </div>
                       <div style={{ display: 'flex', gap: 8 }}>
-
+                        
                         <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
                           disabled={savingIssue === booking.id}
@@ -429,7 +429,7 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
                             color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
                           }}
                         >
-                        {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                         </button>
                       </div>
                     </div>
