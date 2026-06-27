@@ -172,10 +172,11 @@ export default function BookPage() {
       return
     }
 
-    const formattedAnswers = questions
+   const formattedAnswers = questions
       .filter(q => {
         if (q.sort_order <= 4) return false
-        if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
+        if (q.question_text === 'I have worked with a College Essay Mentor before through this program' && isReturning) return false
+        if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false
         return true
       })
       .flatMap(q => {
@@ -490,12 +491,13 @@ placeholder="(510)555-5555"
               )}
             </div>
 
-          {questions
+         {questions
               .filter(q => {
                 if (q.sort_order <= 4) return false
-                if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
+                if (q.question_text === 'I have worked with a College Essay Mentor before through this program' && isReturning) return false
+                if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false
                if (isReturning) {
-                  const alwaysAskKeys = ['worked_with_mentor_before', 'which_mentor', 'help_with', 'private_counselor']
+                  const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
                   if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
                 }
 
