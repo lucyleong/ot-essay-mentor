@@ -49,7 +49,6 @@ export default function StudentProfilePage({
   const [isPrivate, setIsPrivate] = useState(false)
   const [saving,    setSaving]    = useState(false)
   const [mentorId,  setMentorId]  = useState<string | null>(null)
-  const [mentorId,  setMentorId]  = useState<string | null>(null)
   const [expandedBookingId, setExpandedBookingId] = useState<string | null>(null)
   const router   = useRouter()
   const supabase = createClient()
