@@ -7,6 +7,7 @@ type Appointment = {
   startTime:    string
   endTime:      string
   meetLink:     string | null
+  hasEssay:     boolean
   smsStatus:    'confirmed' | 'no_reply' | 'no_sms'
 }
 
@@ -67,14 +68,20 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
 
     return `
       <div style="border:0.5px solid #e8e6de;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
           <div>
             <p style="font-size:16px;font-weight:500;margin:0 0 2px;color:#2C2C2A;">${start} – ${end}</p>
             <p style="font-size:14px;margin:0;color:#2C2C2A;">${a.studentName}</p>
           </div>
-          <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:${statusBg};color:${statusColor};font-weight:500;">
-            ${statusLabel}
-          </span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            ${a.hasEssay ? `
+            <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:#EEEDFE;color:#3C3489;font-weight:500;">
+              Essay shared
+            </span>` : ''}
+            <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:${statusBg};color:${statusColor};font-weight:500;">
+              ${statusLabel}
+            </span>
+          </div>
         </div>
         <table width="100%" cellpadding="0" cellspacing="0">
           ${a.studentPhone ? detailRow('Phone', a.studentPhone) : detailRow('Phone', 'Not provided')}
@@ -106,12 +113,8 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
       Open mentor dashboard
     </a>
 
-    <a href="${d.issuesUrl}" style="display:inline-block;background:#ffffff;color:#534AB7;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;border:0.5px solid #534AB7;">
-      Report an issue
-    </a>
-
     <p style="font-size:12px;color:#888780;margin:16px 0 0;line-height:1.6;">
-      Only use "Report an issue" if a student was a no-show or had trouble connecting. This summary was sent at 8:00 AM. Student confirmation statuses reflect replies received as of that time.
+      This summary was sent at 8:00 AM. Student confirmation statuses reflect replies received as of that time.
     </p>`
 
   return { subject, html: emailLayout(content, subject) }

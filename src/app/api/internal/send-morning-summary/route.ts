@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
       appointment_slots (
         start_time, end_time, google_meet_link, mentor_id,
         mentor_profiles ( id, full_name, email )
-      )
+      ),
+      student_essays ( id )
     `)
     .is('cancelled_at', null)
 
@@ -77,12 +78,13 @@ export async function POST(request: NextRequest) {
       })
       .map((b: any) => {
         const slot = b.appointment_slots as any
-        return {
+      return {
           studentName:  b.student_name,
           studentPhone: b.student_phone ?? null,
           startTime:    slot.start_time,
           endTime:      slot.end_time,
           meetLink:     slot.google_meet_link ?? null,
+          hasEssay:     (b.student_essays?.length ?? 0) > 0,
           smsStatus:    (b.sms_confirmed_at ? 'confirmed' :
                         b.sms_confirm_sent  ? 'no_reply'  : 'no_sms') as 'confirmed' | 'no_reply' | 'no_sms',
         }
