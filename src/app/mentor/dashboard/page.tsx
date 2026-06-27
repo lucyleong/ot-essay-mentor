@@ -385,20 +385,28 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
                   </div>
                 ) : (
                   recentBookings.map(booking => (
-                    <div key={booking.id} style={{
+                   <div key={booking.id} style={{
                       background: '#ffffff',
                       border: '0.5px solid #e8e6de',
                       borderRadius: 12,
                       padding: '14px 20px',
                       marginBottom: 8,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: 10,
                     }}>
-                      <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                        {booking.student_name}
-                      </p>
-                      <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
-                        {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')}
-                      </p>
+                      <div>
+                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                          {booking.student_name}
+                        </p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')}
+                        </p>
+                      </div>
                       <div style={{ display: 'flex', gap: 8 }}>
+
                         <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
                           disabled={savingIssue === booking.id}
@@ -421,7 +429,7 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
                             color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
                           }}
                         >
-                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                        {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                         </button>
                       </div>
                     </div>
