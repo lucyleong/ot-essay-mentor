@@ -104,13 +104,41 @@ const timeOptions = generateTimeOptions()
     const slotsData = await slotsRes.json()
     setSlots(Array.isArray(slotsData) ? slotsData : [])
 
-    // Load walk-in queue
+   // Load walk-in queue
     const queueRes = await fetch('/api/mentor/walkin-queue')
     const queueData = await queueRes.json()
     setWalkinQueue(queueData.queue ?? [])
     setIsInPersonAvailable(queueData.isInPersonAvailable ?? false)
 
+    // Load existing issue reports for the last 7 days (covers today + recent)
+    const issuesRes = await fetch('/api/mentor/daily-issues?days=7')
+    const issuesData = await issuesRes.json()
+    const issuesMap: Record<string, { noShow: boolean; meetIssue: boolean }> = {}
+    for (const item of (Array.isArray(issuesData) ? issuesData : [])) {
+      issuesMap[item.bookingId] = { noShow: item.noShow, meetIssue: item.meetIssue }
+    }
+    setBookingIssues(issuesMap)
+
     setLoading(false)
+  }
+async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
+    const current = bookingIssues[bookingId] ?? { noShow: false, meetIssue: false }
+    const updated = { ...current, [field]: !current[field] }
+
+    setSavingIssue(bookingId)
+    setBookingIssues(prev => ({ ...prev, [bookingId]: updated }))
+
+    await fetch('/api/mentor/daily-issues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookingId,
+        noShow: updated.noShow,
+        meetIssue: updated.meetIssue,
+      }),
+    })
+
+    setSavingIssue(null)
   }
 
   async function handleSignOut() {
@@ -287,7 +315,7 @@ const timeOptions = generateTimeOptions()
                           View student profile
                         </button>
 
-                        {cancellingId === booking.id ? (
+                       {cancellingId === booking.id ? (
                           <>
                             <button
                               onClick={async () => {
@@ -314,6 +342,87 @@ const timeOptions = generateTimeOptions()
                             Cancel appointment
                           </button>
                         )}
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'noShow')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
+                            background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
+                        </button>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'meetIssue')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
+                            background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+
+                {/* Recent appointments - past 7 days, issue reporting only */}
+                <h2 style={{ fontSize: 16, fontWeight: 500, margin: '28px 0 4px' }}>Recent appointments</h2>
+                <p style={{ fontSize: 12, color: '#888780', margin: '0 0 14px' }}>
+                  Report a no-show or connection issue for sessions in the last 7 days
+                </p>
+                {recentBookings.length === 0 ? (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.5rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', margin: 0, fontSize: 13 }}>No recent appointments.</p>
+                  </div>
+                ) : (
+                  recentBookings.map(booking => (
+                    <div key={booking.id} style={{
+                      background: '#ffffff',
+                      border: '0.5px solid #e8e6de',
+                      borderRadius: 12,
+                      padding: '14px 20px',
+                      marginBottom: 8,
+                    }}>
+                      <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                        {booking.student_name}
+                      </p>
+                      <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
+                        {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')}
+                      </p>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'noShow')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
+                            background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
+                        </button>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'meetIssue')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 12px', borderRadius: 20,
+                            background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                        </button>
                       </div>
                     </div>
                   ))
