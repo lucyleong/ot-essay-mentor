@@ -234,7 +234,8 @@ const email = decodeURIComponent(emailParam)
       {/* Appointment history */}
       <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 10px' }}>Appointment history</h2>
       {bookings.map((booking, index) => {
-        const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
+       const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
+        const privateCounselor = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
         const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name
 
         return (
@@ -259,9 +260,11 @@ const email = decodeURIComponent(emailParam)
             {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
             {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
           </p>
-          {helpWith && (
+        {(helpWith || privateCounselor) && (
             <p style={{ fontSize: 13, color: '#2C2C2A', margin: '6px 0 0' }}>
-              Help with: {helpWith}
+              {helpWith && `Help with: ${helpWith}`}
+              {helpWith && privateCounselor && '  ·  '}
+              {privateCounselor && `Private counselor: ${privateCounselor}`}
             </p>
           )}
         </div>
