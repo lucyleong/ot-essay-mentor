@@ -313,7 +313,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         >
                           View student profile
                         </button>
-                        <button
+                       <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
                           disabled={savingIssue === booking.id}
                           style={{
@@ -321,6 +321,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
                             border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
                             color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                            marginLeft: 'auto',
                           }}
                         >
                           {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
