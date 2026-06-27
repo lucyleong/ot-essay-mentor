@@ -328,10 +328,15 @@ const email = decodeURIComponent(emailParam)
             style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical', marginBottom: 8 }}
           />
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button
+           <button
               onClick={saveNote}
               disabled={saving || !newNote.trim()}
-              style={{ fontSize: 12 }}
+              style={{
+                fontSize: 12,
+                background: newNote.trim() ? '#534AB7' : undefined,
+                color: newNote.trim() ? '#ffffff' : undefined,
+                border: newNote.trim() ? 'none' : undefined,
+              }}
             >
               {saving ? 'Saving...' : 'Save note'}
             </button>
