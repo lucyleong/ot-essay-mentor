@@ -3,7 +3,8 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
-  const date = request.nextUrl.searchParams.get('date') // YYYY-MM-DD in PST
+  const date     = request.nextUrl.searchParams.get('date') // YYYY-MM-DD in PST, optional
+  const days     = request.nextUrl.searchParams.get('days') // lookback window in days, optional
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -32,12 +33,21 @@ export async function GET(request: NextRequest) {
     .in('slot_id', slotIds)
     .is('cancelled_at', null)
 
-  // Filter to the requested date in PST
+  // Filter to either a specific date, or a lookback window of days (both in PST)
   const filtered = (bookings ?? []).filter((b: any) => {
     const slot = b.appointment_slots
     if (!slot?.start_time) return false
     const slotDate = new Date(slot.start_time).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
-    return slotDate === date
+
+    if (date) return slotDate === date
+
+    if (days) {
+      const now = new Date()
+      const cutoff = new Date(now.getTime() - parseInt(days) * 24 * 60 * 60 * 1000)
+      return new Date(slot.start_time) >= cutoff && new Date(slot.start_time) <= now
+    }
+
+    return false
   })
 
   // Get existing survey responses for these bookings
@@ -70,7 +80,6 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { bookingId, noShow, meetIssue } = body
-  console.log('Received body:', JSON.stringify(body))
 
   if (!bookingId) {
     return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 })

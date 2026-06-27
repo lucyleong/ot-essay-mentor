@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
-import { format, parseISO, isToday, isFuture } from 'date-fns'
-
+import { format, parseISO, isToday, isFuture, isPast, differenceInDays } from 'date-fns'
 type Booking = {
   id: string
   student_name: string
@@ -55,6 +54,8 @@ const [allBookings, setAllBookings] = useState<any[]>([])
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [isInPersonAvailable, setIsInPersonAvailable] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
+const [bookingIssues, setBookingIssues] = useState<Record<string, { noShow: boolean; meetIssue: boolean }>>({})
+const [savingIssue, setSavingIssue] = useState<string | null>(null)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -118,8 +119,11 @@ const timeOptions = generateTimeOptions()
   }
 
   const todayBookings    = bookings.filter(b => isToday(parseISO(b.appointment_slots.start_time)))
-  const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
-
+   const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
+   const recentBookings   = allBookings.filter(b => {
+     const start = parseISO(b.appointment_slots.start_time)
+     return !isToday(start) && isPast(start) && differenceInDays(new Date(), start) <= 7
+   })
   function statusBadge(booking: Booking) {
     if (booking.sms_confirmed_at) {
       return (
