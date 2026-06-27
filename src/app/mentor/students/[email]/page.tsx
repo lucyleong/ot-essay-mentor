@@ -40,9 +40,6 @@ type BookingWithAnswers = {
 function shortenLabel(label: string) {
   return label.split(' (')[0]
 }
-
-export default function StudentProfilePage({
-
 export default function StudentProfilePage({
   params,
 }: {
