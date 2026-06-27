@@ -282,44 +282,19 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
                           </p>
                         </div>
-                        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                           {statusBadge(booking)}
                           {booking.student_essays.length > 0 && (
                             <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
                               {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
                             </span>
                           )}
-                          <button
-                            onClick={() => toggleIssue(booking.id, 'noShow')}
-                            disabled={savingIssue === booking.id}
-                            style={{
-                              fontSize: 12, padding: '4px 10px', borderRadius: 20,
-                              background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
-                              border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
-                              color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
-                            }}
-                          >
-                            {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
-                          </button>
-                          <button
-                            onClick={() => toggleIssue(booking.id, 'meetIssue')}
-                            disabled={savingIssue === booking.id}
-                            style={{
-                              fontSize: 12, padding: '4px 10px', borderRadius: 20,
-                              background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
-                              border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
-                              color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
-                            }}
-                          >
-                            {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
-                          </button>
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {booking.appointment_slots.google_meet_link && (
-                          
-                        <a
+                          <a
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -337,6 +312,30 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                           style={{ fontSize: 12, padding: '5px 14px' }}
                         >
                           View student profile
+                        </button>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'noShow')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 14px', borderRadius: 8,
+                            background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
+                        </button>
+                        <button
+                          onClick={() => toggleIssue(booking.id, 'meetIssue')}
+                          disabled={savingIssue === booking.id}
+                          style={{
+                            fontSize: 12, padding: '5px 14px', borderRadius: 8,
+                            background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
+                            border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
+                            color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
+                          }}
+                        >
+                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                         </button>
 
                        {cancellingId === booking.id ? (
