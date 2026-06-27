@@ -34,7 +34,7 @@ type BookingWithAnswers = {
     signed_url?: string | null
   }[]
 }
-}
+
 
 
 function shortenLabel(label: string) {
