@@ -311,7 +311,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                           onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                           style={{ fontSize: 12, padding: '5px 14px' }}
                         >
-                          View student profile
+                         View student profile
                         </button>
 
                         {isFuture(parseISO(booking.appointment_slots.start_time)) && (
@@ -343,9 +343,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             </button>
                           )
                         )}
-                      </div>
 
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end', marginTop: 8 }}>
                         <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
                           disabled={savingIssue === booking.id}
@@ -354,6 +352,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                             background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
                             border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
                             color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                            marginLeft: 'auto',
                           }}
                         >
                           {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
