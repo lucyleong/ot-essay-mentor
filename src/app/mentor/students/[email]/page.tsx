@@ -148,7 +148,69 @@ const email = decodeURIComponent(emailParam)
           </div>
         </div>
       )}
+ {(() => {
+        const now = new Date()
+        const upcomingBookings = bookings.filter(b => new Date(b.appointment_slots.start_time) >= now)
+        const pastBookings     = bookings.filter(b => new Date(b.appointment_slots.start_time) < now)
 
+        function renderBookingRow(booking: any) {
+          const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
+          const privateCounselor = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
+          const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name
+
+          return (
+            <div key={booking.id} style={{ padding: '10px 0', borderBottom: '0.5px solid #e8e6de' }}>
+              <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                {format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')}
+              </p>
+              <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+                {mentorName ? `With ${mentorName} · ` : ''}
+                {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
+                {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
+                {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
+              </p>
+              {(helpWith || privateCounselor) && (
+                <p style={{ fontSize: 13, color: '#2C2C2A', margin: '6px 0 0' }}>
+                  {helpWith && `Help with: ${helpWith}`}
+                  {helpWith && privateCounselor && '  ·  '}
+                  {privateCounselor && `Private counselor: ${privateCounselor}`}
+                </p>
+              )}
+            </div>
+          )
+        }
+
+        return (
+          <>
+            {upcomingBookings.length > 0 && (
+              <div style={{
+                background: '#ffffff',
+                border: '0.5px solid #e8e6de',
+                borderRadius: 12,
+                padding: '1.25rem',
+                marginBottom: 16,
+              }}>
+                <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Upcoming appointment</h2>
+                {upcomingBookings.map(renderBookingRow)}
+              </div>
+            )}
+
+            {pastBookings.length > 0 && (
+              <div style={{
+                background: '#ffffff',
+                border: '0.5px solid #e8e6de',
+                borderRadius: 12,
+                padding: '1.25rem',
+                marginBottom: 16,
+              }}>
+                <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Appointment history</h2>
+                {pastBookings.map(renderBookingRow)}
+              </div>
+            )}
+          </>
+        )
+      })()}
+      
       {/* Intake info - demographic questions only asked on first booking */}
       {firstBooking && firstBooking.booking_question_answers?.length > 0 && (
         <div style={{
@@ -232,68 +294,7 @@ const email = decodeURIComponent(emailParam)
         </div>
       )}
 
-     {(() => {
-        const now = new Date()
-        const upcomingBookings = bookings.filter(b => new Date(b.appointment_slots.start_time) >= now)
-        const pastBookings     = bookings.filter(b => new Date(b.appointment_slots.start_time) < now)
-
-        function renderBookingRow(booking: any) {
-          const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
-          const privateCounselor = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
-          const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name
-
-          return (
-            <div key={booking.id} style={{ padding: '10px 0', borderBottom: '0.5px solid #e8e6de' }}>
-              <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                {format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')}
-              </p>
-              <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
-                {mentorName ? `With ${mentorName} · ` : ''}
-                {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
-                {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
-                {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
-              </p>
-              {(helpWith || privateCounselor) && (
-                <p style={{ fontSize: 13, color: '#2C2C2A', margin: '6px 0 0' }}>
-                  {helpWith && `Help with: ${helpWith}`}
-                  {helpWith && privateCounselor && '  ·  '}
-                  {privateCounselor && `Private counselor: ${privateCounselor}`}
-                </p>
-              )}
-            </div>
-          )
-        }
-
-        return (
-          <>
-            {upcomingBookings.length > 0 && (
-              <div style={{
-                background: '#ffffff',
-                border: '0.5px solid #e8e6de',
-                borderRadius: 12,
-                padding: '1.25rem',
-                marginBottom: 16,
-              }}>
-                <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Upcoming appointment</h2>
-                {upcomingBookings.map(renderBookingRow)}
-              </div>
-            )}
-
-            {pastBookings.length > 0 && (
-              <div style={{
-                background: '#ffffff',
-                border: '0.5px solid #e8e6de',
-                borderRadius: 12,
-                padding: '1.25rem',
-                marginBottom: 16,
-              }}>
-                <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Appointment history</h2>
-                {pastBookings.map(renderBookingRow)}
-              </div>
-            )}
-          </>
-        )
-      })()}
+    
 
       {/* Notes section */}
       <div style={{
