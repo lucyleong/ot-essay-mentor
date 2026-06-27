@@ -235,7 +235,7 @@ const email = decodeURIComponent(emailParam)
                     )}
                   </div>
                   {(essay.essay_type === 'google_doc' ? essay.google_doc_url : essay.signed_url) && (
-                      
+                        <a
                       href={essay.essay_type === 'google_doc' ? essay.google_doc_url ?? '' : essay.signed_url ?? ''}
                       target="_blank"
                       rel="noopener noreferrer"
