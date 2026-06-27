@@ -319,7 +319,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
 
  const navItems = [
     { key: 'reports',   label: 'Reports' },
-    { key: 'bookings',  label: 'All bookings' },
+    { key: 'bookings',  label: 'Bookings' },
     { key: 'mentors',   label: 'Mentors' },
     { key: 'schedules', label: 'Scheduling' },
     { key: 'qrcodes',   label: 'QR Codes' },
