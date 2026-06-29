@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 export async function GET() {
-  console.log('OAuth redirect_uri being used:', process.env.GOOGLE_REDIRECT_URI)
+
   const params = new URLSearchParams({
     client_id:     process.env.GOOGLE_CLIENT_ID!,
     redirect_uri:  process.env.GOOGLE_REDIRECT_URI!,
