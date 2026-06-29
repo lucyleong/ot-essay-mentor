@@ -481,7 +481,7 @@ placeholder="(510)555-5555"
                     style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
                   />
                   <span>
-                    By signing up, you agree to receive SMS updates from the OT College Mentor Program. You will receive up to 4 messages per appointment. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
+                    By signing up, you agree to receive SMS updates from the OT College Mentor Program. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
                     <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
                       Terms, Conditions & Privacy Policy
                     </a>.
