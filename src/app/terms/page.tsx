@@ -30,7 +30,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        By providing your phone number and checking the SMS consent box, you agree to receive text messages from the OT College Essay Mentor Program. You will receive a text to confirm that you've opt-in to receiving messages from the OT College Essay Mentor Program. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation of having received your response. If you have not canceled your appointment and have not logged in, you may receive a text from the mentor to help troubleshoot any log in issues. Carriers are not liable for any delayed or undelivered messages. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
+        By providing your phone number and checking the SMS consent box, you agree to receive text messages from the OT College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation of receiving your response. If you have not canceled your appointment and have not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Carriers are not liable for any delayed or undelivered messages. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}> Conduct</h3>
@@ -59,7 +59,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text messages</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        If you provide your phone number and consent to SMS, we will send you one appointment reminder text message. If you cancel an appointment, you will also receive a confirmation of that cancellation. If you have not canceled your appointment and have not logged in, you may receive a text to help troubleshoot any log in issues.  Message frequency varies. Message and data rates may apply. You can reply HELP for help or STOP to opt-out at any time. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
+        If you provide your phone number and consent to SMS, you agree to receive text messages from the OT College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation of receiving your response. If you have not canceled your appointment and have not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Message frequency varies. Message and data rates may apply. You can reply HELP for help or STOP to opt-out at any time. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Data retention</h3>
