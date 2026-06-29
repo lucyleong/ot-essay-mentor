@@ -481,8 +481,7 @@ placeholder="(510)555-5555"
                     style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
                   />
                   <span>
-                    I agree to receive one appointment reminder text message from the OT College Essay Mentor Program. If I cancel an appointment, I will also receive a cancellation confirmation. If I have not canceled and have not logged in, I may receive a text to help troubleshoot any log in issues.
-                    Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
+                    I agree to receive SMS updates from the OT College Mentor Program. You will receive up to 4 messages per appointment. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
                     <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
                       Terms, Conditions & Privacy Policy
                     </a>.
