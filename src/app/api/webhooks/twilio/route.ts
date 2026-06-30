@@ -46,8 +46,6 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  const firstName = upcoming.student_name.split(' ')[0]
-  const slot     = Array.isArray(upcoming.appointment_slots) ? upcoming.appointment_slots[0] : upcoming.appointment_slots
   const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
   const apptTime = format(parseISO(slot.start_time), 'h:mm a')
 
@@ -60,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     await sendSMS({
       to:   from,
-      body: `Got it, ${firstName}! Your appointment on ${apptDate} at ${apptTime} is confirmed. See you then!`,
+      body: `Your appointment with your mentor from the OT College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`,
     })
 
   } else if (body === '9') {
@@ -71,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     await sendSMS({
       to:   from,
-      body: `Your appointment on ${apptDate} at ${apptTime} has been cancelled. Visit otessaymentors.org to rebook anytime.`,
+      body: `Your appointment with your mentor from the OT College Mentor Program has been canceled. Reply HELP for help or STOP to opt-out.`,
     })
 
   } else {
