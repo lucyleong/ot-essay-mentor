@@ -28,30 +28,34 @@ export async function POST(request: NextRequest) {
     `)
     .is('cancelled_at', null)
     .eq('sms_consent', true)
-    .is('sms_confirm_sent', null)
-    .gte('appointment_slots.start_time', windowStart.toISOString())
-    .lte('appointment_slots.start_time', windowEnd.toISOString())
+    .eq('sms_confirm_sent', false)
+
+  // Filter to the 47-49 hour window in code, since filtering on a joined table's
+  // column directly in the query does not reliably work
+  const inWindow = (bookings ?? []).filter((b: any) => {
+    const slot = b.appointment_slots
+    if (!slot?.start_time || !b.student_phone) return false
+    const start = new Date(slot.start_time)
+    return start >= windowStart && start <= windowEnd
+  })
 
   let sent = 0
 
-  for (const booking of (bookings ?? [])) {
+  for (const booking of inWindow) {
     const slot = (booking as any).appointment_slots
-    if (!slot?.start_time || !booking.student_phone) continue
-
-    const firstName = booking.student_name.split(' ')[0]
-    const apptDate  = format(parseISO(slot.start_time), 'EEEE, MMMM d')
-    const apptTime  = format(parseISO(slot.start_time), 'h:mm a')
+    const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
+    const apptTime = format(parseISO(slot.start_time), 'h:mm a')
 
     try {
       await sendSMS({
         to:   booking.student_phone,
-        body: `Hi ${firstName}, your appointment with your mentor from the OT College Mentor Program is in 2 days on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
+        body: `Hi, your appointment with your mentor from the OT College Mentor Program is in 2 days on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
       })
 
       // Mark reminder as sent
       await supabase
         .from('student_bookings')
-        .update({ sms_confirm_sent: new Date().toISOString() })
+        .update({ sms_confirm_sent: true })
         .eq('id', booking.id)
 
       sent++
@@ -60,5 +64,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ sent })
+  return NextResponse.json({ sent, checked: bookings?.length ?? 0 })
 }

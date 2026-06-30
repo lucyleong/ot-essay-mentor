@@ -114,7 +114,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
     </a>
 
     <p style="font-size:12px;color:#888780;margin:16px 0 0;line-height:1.6;">
-      This summary was sent at 8:00 AM. Student confirmation statuses reflect replies received as of that time.
+      This summary was sent at 5:00 AM. Student confirmation statuses reflect replies received as of that time.
     </p>`
 
   return { subject, html: emailLayout(content, subject) }
