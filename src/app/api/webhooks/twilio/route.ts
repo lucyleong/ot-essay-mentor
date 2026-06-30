@@ -47,8 +47,9 @@ export async function POST(request: NextRequest) {
   }
 
   const firstName = upcoming.student_name.split(' ')[0]
-  const apptDate  = format(parseISO(upcoming.appointment_slots.start_time), 'EEEE, MMMM d')
-  const apptTime  = format(parseISO(upcoming.appointment_slots.start_time), 'h:mm a')
+  const slot     = Array.isArray(upcoming.appointment_slots) ? upcoming.appointment_slots[0] : upcoming.appointment_slots
+  const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
+  const apptTime = format(parseISO(slot.start_time), 'h:mm a')
 
   if (body === '1') {
     // Confirm
