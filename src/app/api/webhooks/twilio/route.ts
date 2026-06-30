@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
     })
   }
 
+  const slot     = Array.isArray(upcoming.appointment_slots) ? upcoming.appointment_slots[0] : upcoming.appointment_slots
   const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
   const apptTime = format(parseISO(slot.start_time), 'h:mm a')
 
