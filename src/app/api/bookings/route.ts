@@ -5,6 +5,7 @@ import { sendEmail } from '@/lib/email'
 import { studentConfirmationEmail } from '@/lib/email-templates/student-confirmation'
 import { format, parseISO } from 'date-fns'
 import { addStudentToCalendarEvent } from '@/lib/calendar'
+import { sendSMS } from '@/lib/sms'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient(
@@ -147,11 +148,18 @@ try {
   console.error('Calendar update failed:', calErr)
 }
 
-  // Trigger immediate SMS if within 72 hours
-  const hoursUntil = (new Date(slot.start_time).getTime() - Date.now()) / 3600_000
-  if (hoursUntil <= 72 && body.studentPhone && body.smsConsent) {
-    // SMS will be handled in Phase 8
-    console.log('SMS should be sent — will be wired in Phase 8')
+ // Send booking confirmation SMS if student consented
+  if (body.studentPhone && body.smsConsent) {
+    try {
+      const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
+      const apptTime = format(parseISO(slot.start_time), 'h:mm a')
+      await sendSMS({
+        to:   body.studentPhone,
+        body: `Hi ${body.firstName}! Your OT College Essay Mentor appointment is confirmed for ${apptDate} at ${apptTime}. Reply STOP to unsubscribe.`,
+      })
+    } catch (smsErr) {
+      console.error('Booking confirmation SMS failed:', smsErr)
+    }
   }
 
   // Send student confirmation email
