@@ -20,15 +20,21 @@ export async function POST(request: NextRequest) {
   }
 
   // Find their most recent upcoming booking
-  const { data: bookings } = await supabase
+  const cleanedFrom = from.replace(/\D/g, '').replace(/^1/, '')
+
+  const { data: allBookings } = await supabase
     .from('student_bookings')
     .select(`
       id, student_name, student_phone,
-      appointment_slots ( start_time )
+      appointment_slots ( start_time, mentor_profiles ( full_name, email ) )
     `)
     .is('cancelled_at', null)
-    .ilike('student_phone', `%${from.replace('+1', '').replace(/\D/g, '')}%`)
-    .order('appointment_slots(start_time)', { ascending: true })
+
+  const bookings = (allBookings ?? []).filter((b: any) => {
+    if (!b.student_phone) return false
+    const cleanedStored = b.student_phone.replace(/\D/g, '').replace(/^1/, '')
+    return cleanedStored === cleanedFrom
+  })
 
   const upcoming = (bookings ?? []).find((b: any) => {
     const start = b.appointment_slots?.start_time
