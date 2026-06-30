@@ -43,8 +43,14 @@ export async function POST(request: NextRequest) {
 
   for (const booking of inWindow) {
     const slot = (booking as any).appointment_slots
-    const apptDate = format(parseISO(slot.start_time), 'EEEE, MMMM d')
-    const apptTime = format(parseISO(slot.start_time), 'h:mm a')
+   const apptDate = format(
+      new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
+      'EEEE, MMMM d'
+    )
+    const apptTime = format(
+      new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
+      'h:mm a'
+    )
 
     try {
       await sendSMS({
