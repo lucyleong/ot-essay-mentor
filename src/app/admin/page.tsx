@@ -157,8 +157,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
   }, [activePanel, reports])
   useEffect(() => {
     if (activePanel === 'reports' && reports?.demographics && typeof window !== 'undefined' && (window as any).Chart) {
-      const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780']
-
+const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][]) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         if (!canvas) return
