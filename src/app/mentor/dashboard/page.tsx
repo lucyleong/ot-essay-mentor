@@ -452,31 +452,33 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                   </div>
                 ) : (
                   upcomingBookings.map(booking => (
-                    <div key={booking.id} style={{
+               <div key={booking.id} style={{
                       background: '#ffffff',
                       border: '0.5px solid #e8e6de',
                       borderRadius: 12,
                       padding: '16px 20px',
                       marginBottom: 10,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
                     }}>
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                          {booking.student_name}
-                        </p>
-                        <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
-                          {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')} –{' '}
-                          {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')}
-                        </p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
+                        <div>
+                          <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                            {booking.student_name}
+                          </p>
+                          <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+                            {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')} –{' '}
+                            {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')}
+                          </p>
+                        </div>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                          {statusBadge(booking)}
+                          {booking.student_essays.length > 0 && (
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
+                              {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      {statusBadge(booking)}
-                      {booking.student_essays.length > 0 && (
-                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
-                          {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                        </span>
-                      )}
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                       <button
                         onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                         style={{ fontSize: 12, padding: '5px 14px' }}
