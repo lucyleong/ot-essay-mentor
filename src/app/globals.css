@@ -64,29 +64,6 @@ a {
 a:hover {
   text-decoration: underline;
 }
-@media (max-width: 768px) {
-  .mentor-sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    flex-direction: row !important;
-    overflow-x: auto;
-    padding: 8px !important;
-  }
-  .mentor-sidebar > div:first-child {
-    display: none;
-  }
-  .mentor-layout {
-    flex-direction: column !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .booking-stats-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    font-size: 11px !important;
-  }
-}
 
 html, body {
   overflow-x: hidden;
@@ -97,6 +74,13 @@ html, body {
   * {
     max-width: 100%;
     min-width: 0;
+  }
+  .booking-stats-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    font-size: 11px !important;
+  }
+  .mentor-layout {
+    flex-direction: column !important;
   }
   div[style*="display: flex"] {
     flex-wrap: wrap !important;
@@ -120,7 +104,7 @@ html, body {
   .hamburger-btn {
     display: block !important;
   }
- .mentor-sidebar,
+  .mentor-sidebar,
   .admin-sidebar {
     display: none !important;
   }
