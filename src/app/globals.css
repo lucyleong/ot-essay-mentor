@@ -119,4 +119,14 @@ html, body {
     text-align: center !important;
     box-sizing: border-box !important;
   }
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: block !important;
+  }
+  .mentor-sidebar {
+    display: none !important;
+  }
+  .mentor-layout > div:last-child {
+    padding-top: 60px !important;
+  }
 }
