@@ -478,8 +478,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                           )}
                         </div>
                       </div>
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                      <button
+<div className="card-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>                      <button
                         onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                         style={{ fontSize: 12, padding: '5px 14px' }}
                       >
