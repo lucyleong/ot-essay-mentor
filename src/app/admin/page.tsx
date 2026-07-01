@@ -939,8 +939,7 @@ onClick={() => setActivePanel(item.key)}
                     </select>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
-                    <div>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
                       <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
                     </div>
@@ -987,8 +986,7 @@ onClick={() => setActivePanel(item.key)}
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>
-                    <div>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, alignItems: 'end', marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
                       <select value={scheduleRecurrence} onChange={e => setScheduleRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
                         <option value="none">One time only</option>

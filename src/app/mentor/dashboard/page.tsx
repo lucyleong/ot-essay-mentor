@@ -607,8 +607,7 @@ Array.from(
                   <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 14px' }}>Add availability</p>
 
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
-                    <div>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
                       <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }} />
                     </div>
@@ -655,8 +654,7 @@ Array.from(
                     </div>
                   </div>
 
-<div style={{ display: 'grid', gridTemplateColumns: slotRecurrence !== 'none' ? '1fr 1fr 1fr' : '2fr 1fr', gap: 10, alignItems: 'end', marginBottom: 12 }}>
-                      <div>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, alignItems: 'end', marginBottom: 12 }}>                      <div>
                         <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat</label>
                         <select value={slotRecurrence} onChange={e => setSlotRecurrence(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
                           <option value="none">One time only</option>
