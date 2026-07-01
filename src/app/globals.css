@@ -96,6 +96,12 @@ html, body {
 @media (max-width: 768px) {
   * {
     max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Force all flex containers inside cards to wrap */
+  div[style*="display: flex"] {
+    flex-wrap: wrap !important;
   }
   .flex-row {
     flex-wrap: wrap !important;
