@@ -206,7 +206,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
             background: '#ffffff', zIndex: 99, overflowY: 'auto',
             borderTop: '0.5px solid #e8e6de',
           }}>
-            {navItems.map(item => (
+        {navItems.map(item => (
               <button
                 key={item.key}
                 onClick={() => { setActivePanel(item.key); setMenuOpen(false) }}
@@ -222,6 +222,17 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                 {item.label}
               </button>
             ))}
+            <div style={{ padding: '16px 20px', borderTop: '0.5px solid #e8e6de' }}>
+              <a href="/" style={{ display: 'block', fontSize: 14, color: '#888780', textDecoration: 'none', marginBottom: 12 }}>
+                ← Home
+              </a>
+              <button
+                onClick={handleSignOut}
+                style={{ fontSize: 14, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                Sign out
+              </button>
+            </div>
           </div>
         )}
       </div>
