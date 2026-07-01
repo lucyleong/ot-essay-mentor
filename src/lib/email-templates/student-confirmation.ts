@@ -55,12 +55,13 @@ const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
       Before your appointment:
     </p>
 
-    <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      The day before your appointment, please share your college essay via a Google Docs link or by uploading the document
-      <a href="${d.essayUploadUrl}" style="color:#534AB7;font-weight:500;">here</a>.
-      If there are multiple essays in your document, please indicate which essay you
-      plan to discuss during your meeting: 1 long essay or up to 3 PIQs.
+   <p style="margin:0 0 12px;font-size:15px;color:#2C2C2A;line-height:1.6;">
+      The day before your appointment, please share your college essay. If there are multiple essays in your document, please indicate which essay you plan to discuss during your meeting: 1 long essay or up to 3 PIQs.
     </p>
+
+    <a href="${d.essayUploadUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;margin-bottom:20px;">
+      Upload your essay →
+    </a>
 
     ${divider()}
 
