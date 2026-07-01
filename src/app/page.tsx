@@ -7,9 +7,16 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
+    // Handle legacy hash-based recovery flow
     const hash = window.location.hash
     if (hash.includes('type=recovery')) {
-      router.push(`/auth/reset-password${hash}`)
+      router.push(`/reset-password${hash}`)
+    }
+    // Handle PKCE code-based recovery flow
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (code) {
+      router.push(`/reset-password?code=${code}`)
     }
   }, [])
 

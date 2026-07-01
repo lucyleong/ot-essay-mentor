@@ -9,8 +9,24 @@ export default function ResetPasswordPage() {
   const [error,           setError]           = useState('')
   const [success,         setSuccess]         = useState(false)
   const [loading,         setLoading]         = useState(false)
+  const [ready,           setReady]           = useState(false)
   const supabase = createClient()
   const router   = useRouter()
+
+  useEffect(() => {
+    async function exchangeCode() {
+      const params = new URLSearchParams(window.location.search)
+      const code   = params.get('code')
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) {
+          setError('This reset link is invalid or has expired. Please request a new one.')
+        }
+      }
+      setReady(true)
+    }
+    exchangeCode()
+  }, [])
 
   async function handleReset() {
     if (!password || !confirmPassword) {
@@ -39,6 +55,13 @@ export default function ResetPasswordPage() {
 
     setSuccess(true)
     setTimeout(() => router.push('/login'), 3000)
+  }
+if (!ready) {
+    return (
+      <main style={{ maxWidth: 400, margin: '4rem auto', padding: '0 1rem', textAlign: 'center' }}>
+        <p style={{ color: '#888780', fontSize: 14 }}>Loading...</p>
+      </main>
+    )
   }
 
   if (success) {
