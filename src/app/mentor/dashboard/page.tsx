@@ -512,7 +512,8 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         >
                           Cancel
                         </button>
-                      )}
+                    )}
+                      </div>
                     </div>
                   ))
                 )}
