@@ -82,9 +82,7 @@ html, body {
   .mentor-layout {
     flex-direction: column !important;
   }
-  div[style*="display: flex"] {
-    flex-wrap: wrap !important;
-  }
+
   .flex-row {
     flex-wrap: wrap !important;
   }
