@@ -98,8 +98,6 @@ html, body {
     max-width: 100%;
     min-width: 0;
   }
-
-  /* Force all flex containers inside cards to wrap */
   div[style*="display: flex"] {
     flex-wrap: wrap !important;
   }
@@ -119,7 +117,6 @@ html, body {
     text-align: center !important;
     box-sizing: border-box !important;
   }
-@media (max-width: 768px) {
   .hamburger-btn {
     display: block !important;
   }
