@@ -111,4 +111,7 @@ html, body {
   .mentor-layout > div:last-child {
     padding-top: 60px !important;
   }
+  .no-wrap-row {
+    flex-wrap: nowrap !important;
+  }
 }

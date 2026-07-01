@@ -24,30 +24,30 @@ export default function HomePage() {
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div style={{
+      <div className="no-wrap-row" style={{
         background: '#534AB7',
         padding: '24px 32px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-     <div style={{ width: '100%' }}>
+        <div>
           <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
             Oakland Tech
           </p>
-          <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: '0 0 8px', whiteSpace: 'nowrap' }}>
+          <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
             College Essay Mentor Program
           </h1>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Link href="/login" style={{
-              background: 'transparent', color: '#EEEDFE',
-              textDecoration: 'none', fontSize: 13,
-              padding: '8px 18px', borderRadius: 8,
-              border: '0.5px solid #EEEDFE',
-            }}>
-              Login
-            </Link>
-          </div>
+        </div>
+        <div style={{ flexShrink: 0 }}>
+          <Link href="/login" style={{
+            background: 'transparent', color: '#EEEDFE',
+            textDecoration: 'none', fontSize: 13,
+            padding: '8px 18px', borderRadius: 8,
+            border: '0.5px solid #EEEDFE',
+          }}>
+            Login
+          </Link>
         </div>
       </div>
 
