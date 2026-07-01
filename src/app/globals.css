@@ -120,7 +120,8 @@ html, body {
   .hamburger-btn {
     display: block !important;
   }
-  .mentor-sidebar {
+ .mentor-sidebar,
+  .admin-sidebar {
     display: none !important;
   }
   .mentor-layout > div:last-child {

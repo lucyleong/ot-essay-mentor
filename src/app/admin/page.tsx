@@ -45,6 +45,7 @@ function shortenLabel(label: string) {
 
 export default function AdminPage() {
     const [activePanel, setActivePanel] = useState('reports')
+    const [menuOpen, setMenuOpen] = useState(false)
  const [mentors,     setMentors]     = useState<Mentor[]>([])
   const [scheduleMentorId, setScheduleMentorId] = useState('')
   const [scheduleDate,     setScheduleDate]     = useState('')
@@ -328,8 +329,55 @@ async function toggleMentorVirtual(mentor: Mentor) {
 
   return (
     <div className="mentor-layout" style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
+     
+     {/* Mobile hamburger button — admin */}
+      <div className="hamburger-btn" style={{ display: 'none' }}>
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+          background: '#ffffff', borderBottom: '0.5px solid #e8e6de',
+          padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>Admin</p>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', padding: '0 4px' }}
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+        {menuOpen && (
+          <div style={{
+            position: 'fixed', top: 49, left: 0, right: 0, bottom: 0,
+            background: '#ffffff', zIndex: 99, overflowY: 'auto',
+            borderTop: '0.5px solid #e8e6de',
+          }}>
+            {navItems.map(item => (
+              <button
+                key={item.key}
+                onClick={() => { setActivePanel(item.key); setMenuOpen(false) }}
+                style={{
+                  display: 'block', width: '100%', textAlign: 'left',
+                  padding: '14px 20px', fontSize: 15, cursor: 'pointer',
+                  background: activePanel === item.key ? '#f5f4f0' : 'transparent',
+                  color: activePanel === item.key ? '#2C2C2A' : '#5F5E5A',
+                  fontWeight: activePanel === item.key ? 500 : 400,
+                  border: 'none', borderBottom: '0.5px solid #e8e6de',
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+            <div style={{ padding: '16px 20px', borderTop: '0.5px solid #e8e6de' }}>
+              <a href="/" style={{ display: 'block', fontSize: 14, color: '#888780', textDecoration: 'none' }}>
+                ← Home
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+     
       {/* Sidebar */}
-     <div className="mentor-sidebar" style={{
+    <div className="admin-sidebar" style={{
         width: 200, flexShrink: 0, background: '#ffffff',
         borderRight: '0.5px solid #e8e6de',
         display: 'flex', flexDirection: 'column', padding: '16px 0',
