@@ -90,3 +90,21 @@ export default function ResetPasswordPage() {
             placeholder="Repeat your new password"
             style={{ width: '100%', boxSizing: 'border-box' }}
           />
+        </div>
+
+        <button
+          onClick={handleReset}
+          disabled={loading}
+          style={{
+            width: '100%', padding: '10px', fontSize: 14, fontWeight: 500,
+            background: password && confirmPassword ? '#534AB7' : undefined,
+            color: password && confirmPassword ? '#ffffff' : undefined,
+            border: password && confirmPassword ? 'none' : undefined,
+          }}
+        >
+          {loading ? 'Updating...' : 'Set new password'}
+        </button>
+      </div>
+    </main>
+  )
+}
