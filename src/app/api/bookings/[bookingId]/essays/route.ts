@@ -51,7 +51,7 @@ async function notifyMentor(bookingId: string, essayType: string, fileName?: str
     console.error('Mentor essay notification failed:', err)
   }
 }
-)
+
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ bookingId: string }> }
