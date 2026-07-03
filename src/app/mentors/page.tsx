@@ -66,6 +66,7 @@ export default async function MentorsPage() {
           {(mentors ?? []).map(mentor => (
             
               key={mentor.id}
+              <a
               href={`#mentor-${mentor.id}`}
               style={{
                 fontSize: 13, color: '#534AB7',
