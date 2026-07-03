@@ -148,11 +148,6 @@ if (bookingError) {
       console.error('Phone duplicate check failed:', phoneCheckErr)
     }
   }
-
-  // Save intake question answers
-  if (body.answers && body.answers.length > 0) {
-
-
   // Save intake question answers
   if (body.answers && body.answers.length > 0) {
     const answersToInsert = body.answers
