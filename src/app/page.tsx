@@ -107,7 +107,7 @@ export default function HomePage() {
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             {[
-              { num: '1', title: 'Sign up online', desc: 'Browse available appointment slots and book the one that works for you. First come, first served. <strong>A personal Gmail address is required.</strong>.' },
+              { num: '1', title: 'Sign up online', desc: 'Browse available appointment slots and book the one that works for you. First come, first served. A personal Gmail address is required.' },
               { num: '2', title: 'Meet your mentor', desc: 'Appointments are available virtually and in person at the College and Career Center on Friday afternoons.' },
               { num: '3', title: 'Work on your essay', desc: 'From brainstorming to final polish — we support Common App Essays, UC PIQs, and other college essays.' },
               { num: '4', title: 'Start early', desc: 'Writing the college essay is an iterative process. The earlier you start, the more time you have to revise.' },
