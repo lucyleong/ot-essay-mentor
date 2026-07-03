@@ -69,6 +69,8 @@ const [endingSession,     setEndingSession]     = useState(false)
 const [sessionEnded,      setSessionEnded]      = useState(false)
 const [showAllComments, setShowAllComments] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
+const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled'>('all')
+const [mentorFilter, setMentorFilter] = useState<string>('all')
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -557,14 +559,52 @@ onClick={() => setActivePanel(item.key)}
             {activePanel === 'bookings' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>All bookings</h1>
-               <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
-                  {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} upcoming ·{' '}
+             <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
+                  {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} active ·{' '}
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) < new Date()).length} completed ·{' '}
                   {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
+                {/* Filters */}
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                  {(['all', 'active', 'completed', 'cancelled'] as const).map(f => (
+                    <button
+                      key={f}
+                      onClick={() => setBookingFilter(f)}
+                      style={{
+                        fontSize: 12, padding: '4px 12px', borderRadius: 20,
+                        background: bookingFilter === f ? '#534AB7' : '#ffffff',
+                        color: bookingFilter === f ? '#ffffff' : '#5F5E5A',
+                        border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
+                      }}
+                    >
+                      {f.charAt(0).toUpperCase() + f.slice(1)}
+                    </button>
+                  ))}
+                  <select
+                    value={mentorFilter}
+                    onChange={e => setMentorFilter(e.target.value)}
+                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
+                  >
+                    <option value="all">All mentors</option>
+                    {mentors.filter(m => m.full_name !== process.env.PROGRAM_ACCOUNT_EMAIL).map(m => (
+                      <option key={m.id} value={m.full_name}>{m.full_name}</option>
+                    ))}
+                  </select>
+                </div>
+
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                 {bookings.map(booking => {
+                 {bookings.filter(booking => {
+                    const startTime = (booking.appointment_slots as any)?.start_time
+                    const isPast = startTime ? new Date(startTime) < new Date() : false
+                    const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name ?? ''
+
+                    if (bookingFilter === 'active' && (booking.cancelled_at || isPast)) return false
+                    if (bookingFilter === 'completed' && (booking.cancelled_at || !isPast)) return false
+                    if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
+                    if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
+                    return true
+                  }).map(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
 
