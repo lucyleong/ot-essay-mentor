@@ -57,7 +57,7 @@ export default async function MentorsPage() {
           marginBottom: 32,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: 4,
+          gap: 0,
         }}>
           {(mentors ?? []).map(mentor => (
             <a
@@ -66,7 +66,7 @@ export default async function MentorsPage() {
               style={{
                 fontSize: 14, color: '#534AB7',
                 textDecoration: 'none',
-                padding: '6px 8px',
+                padding: '2px 8px',
                 borderRadius: 6,
               }}
             >
