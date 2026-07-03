@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 export default function HomePage() {
   const router = useRouter()
 
-  useEffect(() => {
+ useEffect (() => {
     // Handle legacy hash-based recovery flow
     const hash = window.location.hash
     if (hash.includes('type=recovery')) {
@@ -181,8 +181,8 @@ export default function HomePage() {
         color: '#888780',
       }}>
         Oakland Tech College Essay Mentor Program · Questions? Contact{' '}
-        <a href="mailto:otessaymentors@gmail.com" style={{ color: '#534AB7' }}>
-          otessaymentors@gmail.com
+        <a href="mailto:admin@otessaymentors.org" style={{ color: '#534AB7' }}>
+          admin@otessaymentors.org
         </a>
         {' · '}
         <a href="/terms" style={{ color: '#534AB7' }}>

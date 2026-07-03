@@ -70,8 +70,8 @@ export default function TermsPage() {
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: 0 }}>
         Questions? Contact us at{' '}
-        <a href="mailto:otessaymentors@gmail.com" style={{ color: '#534AB7' }}>
-          otessaymentors@gmail.com
+        <a href="mailto:admin@otessaymentors.org" style={{ color: '#534AB7' }}>
+          admin@otessaymentors.org
         </a>
       </p>
     </main>

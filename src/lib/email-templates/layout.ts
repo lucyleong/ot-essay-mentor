@@ -33,7 +33,7 @@ export function emailLayout(content: string, previewText: string = '') {
           <td style="background:#f5f4f0;border:1px solid #e8e6de;border-top:none;border-radius:0 0 12px 12px;padding:20px 32px;">
             <p style="margin:0;font-size:12px;color:#888780;line-height:1.6;">
               This email was sent by the OT College Essay Mentor Program.
-              If you have questions, contact <a href="mailto:otessaymentors@gmail.com" style="color:#534AB7;">otessaymentors@gmail.com</a>.
+              If you have questions, contact <a href="mailto:admin@otessaymentors.org" style="color:#534AB7;">admin@otessaymentors.org</a>.
             </p>
           </td>
         </tr>
