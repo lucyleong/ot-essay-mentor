@@ -11,6 +11,7 @@ type Booking = {
   student_major: string | null
   year_in_school: number | null
   first_gen_student: boolean
+  sms_consent: boolean
   sms_confirmed_at: string | null
   sms_confirm_sent: boolean
   cancelled_at: string | null
@@ -153,7 +154,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
      const start = parseISO(b.appointment_slots.start_time)
      return !isToday(start) && isPast(start) && differenceInDays(new Date(), start) <= 7
    })
-  function statusBadge(booking: Booking) {
+ function statusBadge(booking: Booking) {
     if (booking.sms_confirmed_at) {
       return (
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
@@ -166,10 +167,16 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
           No reply
         </span>
       )
+    } else if (booking.sms_consent) {
+      return (
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#E6F1FB', color: '#0C447C' }}>
+          SMS sent
+        </span>
+      )
     } else {
       return (
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-          No SMS sent
+          No SMS
         </span>
       )
     }
@@ -346,8 +353,8 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                       </div>
 
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                        {booking.appointment_slots.google_meet_link && (
-                        <a
+                    {booking.appointment_slots.google_meet_link && isFuture(parseISO(booking.appointment_slots.start_time)) && (
+                        
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"

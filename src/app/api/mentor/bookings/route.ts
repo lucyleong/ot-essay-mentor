@@ -31,7 +31,7 @@ export async function GET() {
     .from('student_bookings')
     .select(`
       id, student_name, student_email, student_phone,
-      sms_confirmed_at, sms_confirm_sent, cancelled_at, booked_at,
+      sms_confirmed_at, sms_confirm_sent, sms_consent, cancelled_at, booked_at,
       appointment_slots (
         id, start_time, end_time, meeting_type, google_meet_link, mentor_id
       ),
