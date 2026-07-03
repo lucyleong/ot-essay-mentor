@@ -114,6 +114,45 @@ if (bookingError) {
     .update({ is_booked: true })
     .eq('id', body.slotId)
 
+// Check for duplicate phone number across upcoming bookings and alert if found
+  if (body.studentPhone) {
+    try {
+      const { data: phoneMatches } = await supabase
+        .from('student_bookings')
+        .select('id, student_name, student_email, appointment_slots(start_time)')
+        .eq('student_phone', body.studentPhone)
+        .is('cancelled_at', null)
+        .neq('id', booking.id)
+
+      const upcomingPhoneMatches = (phoneMatches ?? []).filter((b: any) => {
+        const slot = b.appointment_slots
+        return slot && new Date(slot.start_time) > new Date()
+      })
+
+      if (upcomingPhoneMatches.length > 0) {
+        const names = upcomingPhoneMatches.map((b: any) => `${b.student_name} (${b.student_email})`).join(', ')
+        await sendEmail({
+          to: process.env.PROGRAM_ACCOUNT_EMAIL!,
+          subject: `⚠️ Duplicate phone number detected — possible double booking`,
+          html: `
+            <p>A student just booked an appointment using a phone number that's already associated with another upcoming booking.</p>
+            <p><strong>New booking:</strong> ${body.firstName} ${body.lastName} (${body.studentEmail})</p>
+            <p><strong>Same phone number also used by:</strong> ${names}</p>
+            <p>This may be a legitimate family phone or an attempt to game the system. Please review.</p>
+          `,
+          notificationType: 'duplicate_phone_alert',
+          recipientType: 'mentor',
+        })
+      }
+    } catch (phoneCheckErr) {
+      console.error('Phone duplicate check failed:', phoneCheckErr)
+    }
+  }
+
+  // Save intake question answers
+  if (body.answers && body.answers.length > 0) {
+
+
   // Save intake question answers
   if (body.answers && body.answers.length > 0) {
     const answersToInsert = body.answers
