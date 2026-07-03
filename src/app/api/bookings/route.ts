@@ -189,8 +189,8 @@ try {
       await sendSMS({
         to:   body.studentPhone,
         body: isReturningStudent
-          ? `Your appointment with your mentor from the OT College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`
-          : `Welcome to the OT College Mentor Program! You have been added to receive appointment reminders. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out.`,
+          ? `Your appointment with the OT College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`
+          : `Welcome to the OT College Mentor Program! You have opted-in to appointment reminders. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out.`,
       })
 
       // If appointment is within 24-49 hours, send reminder immediately
