@@ -1,13 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { addDays, startOfDay, endOfDay } from 'date-fns'
+import { } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const type     = request.nextUrl.searchParams.get('type')
 
-  const now    = new Date()
-  const window = endOfDay(addDays(now, 7))
+  const now = new Date()
+
+  // 10pm PST cutoff — after 10pm, "tomorrow" becomes unavailable
+  // We calculate the cutoff as 10pm PST today
+  const nowPST = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+  const cutoffHour = 22 // 10pm
+  
+  // If it's after 10pm PST, start from day after tomorrow; otherwise start from tomorrow
+  const daysToAdd = nowPST.getHours() >= cutoffHour ? 2 : 1
+  
+  // Window start: beginning of tomorrow (or day after tomorrow if past 10pm)
+  const windowStart = new Date(nowPST)
+  windowStart.setDate(windowStart.getDate() + daysToAdd)
+  windowStart.setHours(0, 0, 0, 0)
+  
+  // Window end: 7 days after window start
+  const windowEnd = new Date(windowStart)
+  windowEnd.setDate(windowEnd.getDate() + 7)
+  windowEnd.setHours(23, 59, 59, 999)
+
+  // Convert back to UTC for database query
+  const windowStartUTC = new Date(windowStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+  const windowEndUTC = new Date(windowEnd.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
 
   let query = supabase
     .from('appointment_slots')
@@ -30,8 +51,8 @@ export async function GET(request: NextRequest) {
     .eq('is_cancelled', false)
     .is('program_session_id', null)
     .eq('mentor_profiles.is_virtual_available', true)
-    .gte('start_time', now.toISOString())
-    .lte('start_time', window.toISOString())
+   .gte('start_time', windowStart.toISOString())
+    .lte('start_time', windowEnd.toISOString())
     .order('start_time', { ascending: true })
 
   const { data, error } = await query

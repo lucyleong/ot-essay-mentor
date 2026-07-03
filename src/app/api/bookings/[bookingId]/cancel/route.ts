@@ -15,9 +15,12 @@ export async function POST(
   const { bookingId } = await context.params
 
   // Get the booking to find the slot
-  const { data: booking } = await supabase
+ const { data: booking } = await supabase
     .from('student_bookings')
-    .select('id, slot_id, cancelled_at')
+    .select(`
+      id, slot_id, cancelled_at,
+      appointment_slots ( start_time )
+    `)
     .eq('id', bookingId)
     .single()
 
@@ -35,11 +38,27 @@ export async function POST(
     .update({ cancelled_at: new Date().toISOString() })
     .eq('id', bookingId)
 
-  // Free up the slot
-  await supabase
-    .from('appointment_slots')
-    .update({ is_booked: false })
-    .eq('id', booking.slot_id)
+ // Free up the slot only if before 10pm PST for next-day appointments
+  const slotStart = new Date((booking as any).appointment_slots?.start_time)
+  const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+  const slotDatePST = new Date(slotStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+
+  // Is the slot tomorrow or later in PST?
+  const tomorrow = new Date(nowPST)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  tomorrow.setHours(0, 0, 0, 0)
+  const isNextDayOrLater = slotDatePST >= tomorrow
+
+  // Only reinstate if it's before 10pm PST (or appointment is more than a day away)
+  const isPast10pm = nowPST.getHours() >= 22
+  const shouldReinstate = !isNextDayOrLater || !isPast10pm
+
+  if (shouldReinstate) {
+    await supabase
+      .from('appointment_slots')
+      .update({ is_booked: false })
+      .eq('id', booking.slot_id)
+  }
 
   // Delete Google Calendar event and clear slot fields
   try {
