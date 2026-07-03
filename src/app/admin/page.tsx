@@ -632,7 +632,7 @@ onClick={() => setActivePanel(item.key)}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <div>
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
-                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
+                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics - if not loading, refresh by pressing Command + R</p>
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {reports && (
