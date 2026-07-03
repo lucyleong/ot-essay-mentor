@@ -121,8 +121,10 @@ export default async function MentorsPage() {
              )}
             </a>
           ))}
+))}
+        </div>
 
-       <div style={{ textAlign: 'center', marginTop: 40 }}>
+        <div style={{ textAlign: 'center', marginTop: 40 }}>
           <Link href="/book" style={{
             display: 'inline-block',
             background: '#534AB7', color: '#ffffff',
