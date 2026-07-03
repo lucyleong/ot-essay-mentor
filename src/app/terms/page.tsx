@@ -25,7 +25,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Gmail requirement</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        A Gmail address is required to book an appointment. This enables the use of Google Meet and sharing documents via Google Docs. You will not be let into the appointment if you are not logged in with the Gmail address that was provided during sign up.
+        A personal Gmail address is required to book an appointment. This enables the use of Google Meet and sharing documents via Google Docs. OUSD's Google accounts restrict the use of Google Meet. You will not be let into the appointment if you are not logged in with the Gmail address that was provided during sign up.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
