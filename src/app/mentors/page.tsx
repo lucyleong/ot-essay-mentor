@@ -48,13 +48,12 @@ export default async function MentorsPage() {
         <h2 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px', color: '#2C2C2A' }}>
           Meet our mentors
         </h2>
-        <p style={{ fontSize: 15, color: '#5F5E5A', margin: '0 0 24px', lineHeight: 1.7 }}>
-          OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
+<p style={{ fontSize: 15, color: '#5F5E5A', margin: '0 0 12px', lineHeight: 1.7 }}>          OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
         </p>
 
       {/* Quick-jump name links - 2 column grid */}
         <div style={{
-          marginBottom: 32,
+          marginBottom: 16,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: 0,
