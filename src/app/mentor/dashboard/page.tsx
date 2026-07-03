@@ -354,7 +354,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
 
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                     {booking.appointment_slots.google_meet_link && isFuture(parseISO(booking.appointment_slots.start_time)) && (
-                        
+                        <a
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
