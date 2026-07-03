@@ -118,8 +118,9 @@ export default async function MentorsPage() {
                 <p style={{ fontSize: 14, color: '#B4B2A9', fontStyle: 'italic', margin: 0 }}>
                   Bio coming soon
                 </p>
-              )}
+            )}
             </div>
+          </div>
           ))}
         </div>
 
