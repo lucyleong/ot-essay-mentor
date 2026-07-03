@@ -101,9 +101,13 @@ export default function BookPage() {
       .then(setQuestions)
   }, [typeFilter])
 
+ const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+  const isPast10pm = nowPST.getHours() >= 22
+  const daysToAdd = isPast10pm ? 2 : 1
+
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
-    d.setDate(d.getDate() + i)
+    d.setDate(d.getDate() + daysToAdd + i)
     return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
   })
 

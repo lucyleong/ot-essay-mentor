@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -21,9 +20,9 @@ export async function GET(request: NextRequest) {
   windowStart.setDate(windowStart.getDate() + daysToAdd)
   windowStart.setHours(0, 0, 0, 0)
   
-  // Window end: 7 days after window start
+// Window end: 6 days after window start (so total = 7 days including start day)
   const windowEnd = new Date(windowStart)
-  windowEnd.setDate(windowEnd.getDate() + 7)
+  windowEnd.setDate(windowEnd.getDate() + 6)
   windowEnd.setHours(23, 59, 59, 999)
 
   // Convert back to UTC for database query
