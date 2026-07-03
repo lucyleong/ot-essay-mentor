@@ -1,9 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendEmail } from '@/lib/email'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+async function notifyMentor(bookingId: string, essayType: string, fileName?: string) {
+  try {
+    const { data: booking } = await supabase
+      .from('student_bookings')
+      .select(`
+        student_name,
+        appointment_slots (
+          start_time,
+          mentor_profiles ( full_name, email )
+        )
+      `)
+      .eq('id', bookingId)
+      .single()
+
+    if (!booking) return
+    const slot = (booking as any).appointment_slots
+    const mentor = slot?.mentor_profiles
+    if (!mentor?.email) return
+
+    const apptDate = new Date(slot.start_time).toLocaleDateString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      weekday: 'long', month: 'long', day: 'numeric',
+      hour: 'numeric', minute: '2-digit',
+    })
+
+    const essayDescription = essayType === 'google_doc'
+      ? 'a Google Doc link'
+      : `a file (${fileName})`
+
+    await sendEmail({
+      to: mentor.email,
+      subject: `${booking.student_name} shared an essay for your appointment`,
+      html: `
+        <p>Hi ${mentor.full_name.split(' ')[0]},</p>
+        <p><strong>${booking.student_name}</strong> has shared ${essayDescription} for your upcoming appointment on ${apptDate}.</p>
+        <p>You can view it in your <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard">mentor dashboard</a> under their student profile.</p>
+      `,
+      notificationType: 'essay_uploaded',
+      recipientType: 'mentor',
+    })
+  } catch (err) {
+    console.error('Mentor essay notification failed:', err)
+  }
+}
 )
 export async function GET(
   _request: NextRequest,
@@ -62,7 +109,8 @@ export async function POST(
       .select()
       .single()
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    await notifyMentor(bookingId, 'google_doc')
     return NextResponse.json(data)
   }
 
@@ -128,7 +176,8 @@ export async function POST(
       .select()
       .single()
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    await notifyMentor(bookingId, 'file_upload', file.name)
     return NextResponse.json(data)
   }
 
