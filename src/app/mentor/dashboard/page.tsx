@@ -331,10 +331,20 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                       padding: '16px 20px',
                       marginBottom: 10,
                     }}>
-                    <div style={{ marginBottom: 10 }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>
-                          {booking.student_name}
-                        </p>
+                   <div style={{ marginBottom: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                          <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
+                            {booking.student_name}
+                          </p>
+                          {booking.student_essays.length > 0 && (
+                            <a
+                              href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
+                              style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
+                            >
+                              {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
+                            </a>
+                          )}
+                        </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                             {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
@@ -343,14 +353,6 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                           </p>
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                             {statusBadge(booking)}
-                          {booking.student_essays.length > 0 && (
-                              <a
-                                href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
-                                style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none' }}
-                              >
-                                {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                              </a>
-                            )}
                           </div>
                         </div>
                       </div>
@@ -524,9 +526,19 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
                         <div>
-                          <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                            {booking.student_name}
-                          </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                            <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
+                              {booking.student_name}
+                            </p>
+                            {booking.student_essays.length > 0 && (
+                              <a
+                                href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
+                                style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
+                              >
+                                {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
+                              </a>
+                            )}
+                          </div>
                           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                             {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')} –{' '}
                             {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')}
@@ -534,17 +546,9 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         </div>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                           {statusBadge(booking)}
-                         {booking.student_essays.length > 0 && (
-                            <a
-                              href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
-                              style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none' }}
-                            >
-                              {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                            </a>
-                          )}
                         </div>
                       </div>
-<div className="card-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>                      <button
+                      <div className="card-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>                      <button
                         onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                         style={{ fontSize: 12, padding: '5px 14px' }}
                       >
