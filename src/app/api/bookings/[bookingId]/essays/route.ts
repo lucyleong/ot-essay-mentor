@@ -9,10 +9,10 @@ const supabase = createClient(
 
 async function notifyMentor(bookingId: string, essayType: string, fileName?: string) {
   try {
-    const { data: booking } = await supabase
+   const { data: booking } = await supabase
       .from('student_bookings')
       .select(`
-        student_name,
+        student_name, student_email,
         appointment_slots (
           start_time,
           mentor_profiles ( full_name, email )
@@ -42,8 +42,7 @@ async function notifyMentor(bookingId: string, essayType: string, fileName?: str
       html: `
         <p>Hi ${mentor.full_name.split(' ')[0]},</p>
         <p><strong>${booking.student_name}</strong> has shared ${essayDescription} for your upcoming appointment on ${apptDate}.</p>
-        <p>You can view it in your <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard">mentor dashboard</a> under their student profile.</p>
-      `,
+<p>You can view it directly on <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/students/${encodeURIComponent((booking as any).student_email)}">their student profile</a>.</p>      `,
       notificationType: 'essay_uploaded',
       recipientType: 'mentor',
     })

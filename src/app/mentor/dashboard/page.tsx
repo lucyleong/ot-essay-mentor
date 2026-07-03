@@ -343,10 +343,13 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                           </p>
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                             {statusBadge(booking)}
-                            {booking.student_essays.length > 0 && (
-                              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
+                          {booking.student_essays.length > 0 && (
+                              <a
+                                href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
+                                style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none' }}
+                              >
                                 {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                              </span>
+                              </a>
                             )}
                           </div>
                         </div>
@@ -531,10 +534,13 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                         </div>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                           {statusBadge(booking)}
-                          {booking.student_essays.length > 0 && (
-                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
+                         {booking.student_essays.length > 0 && (
+                            <a
+                              href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
+                              style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none' }}
+                            >
                               {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                            </span>
+                            </a>
                           )}
                         </div>
                       </div>
