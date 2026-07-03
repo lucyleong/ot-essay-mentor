@@ -84,10 +84,11 @@ export default async function MentorsPage() {
 
         {/* Single column mentor cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {(mentors ?? []).map(mentor => (
-            <div
+         {(mentors ?? []).map(mentor => (
+            <a
               key={mentor.id}
-              id={`mentor-${mentor.id}`}
+              
+              href={`#mentor-${mentor.id}`}
               style={{
                 background: '#ffffff',
                 border: '0.5px solid #e8e6de',
