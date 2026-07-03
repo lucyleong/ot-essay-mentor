@@ -121,7 +121,6 @@ export default async function MentorsPage() {
              )}
             </a>
           ))}
-))}
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 40 }}>
