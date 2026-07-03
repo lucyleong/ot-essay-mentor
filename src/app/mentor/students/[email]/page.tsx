@@ -154,8 +154,8 @@ const email = decodeURIComponent(emailParam)
     <main style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Back button */}
-      <button
-        onClick={() => router.back()}
+    <button
+        onClick={() => router.push('/mentor/dashboard')}
         style={{ fontSize: 13, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 20px', display: 'block' }}
       >
         ← Back to dashboard
