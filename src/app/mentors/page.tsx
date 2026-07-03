@@ -64,7 +64,7 @@ export default async function MentorsPage() {
           gap: 4,
         }}>
           {(mentors ?? []).map(mentor => (
-            
+            <a
               key={mentor.id}
               href={`#mentor-${mentor.id}`}
               style={{
