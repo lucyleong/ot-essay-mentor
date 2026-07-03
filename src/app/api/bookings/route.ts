@@ -148,12 +148,15 @@ try {
   console.error('Calendar update failed:', calErr)
 }
 
-// Send opt-in welcome SMS if student consented
+// Send SMS if student consented
   if (body.studentPhone && body.smsConsent) {
     try {
+      const isReturningStudent = (existingBookings ?? []).length > 0
       await sendSMS({
         to:   body.studentPhone,
-        body: `Welcome to the OT College Mentor Program! You have been added to receive appointment reminders. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out.`,
+        body: isReturningStudent
+          ? `Your appointment with your mentor from the OT College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`
+          : `Welcome to the OT College Mentor Program! You have been added to receive appointment reminders. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out.`,
       })
     } catch (smsErr) {
       console.error('Booking confirmation SMS failed:', smsErr)
