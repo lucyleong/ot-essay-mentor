@@ -52,43 +52,39 @@ export default async function MentorsPage() {
           OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
         </p>
 
-        {/* Quick-jump name links */}
+       {/* Quick-jump name links - 2 column grid */}
         <div style={{
           background: '#ffffff',
           border: '0.5px solid #e8e6de',
           borderRadius: 12,
           padding: '1rem 1.25rem',
           marginBottom: 32,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 8,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 4,
         }}>
           {(mentors ?? []).map(mentor => (
-            <a
+            
               key={mentor.id}
-              
               href={`#mentor-${mentor.id}`}
               style={{
-                fontSize: 13, color: '#534AB7',
+                fontSize: 14, color: '#534AB7',
                 textDecoration: 'none',
-                padding: '4px 12px',
-                borderRadius: 20,
-                background: '#EEEDFE',
-                border: '0.5px solid #C9C5F7',
+                padding: '6px 8px',
+                borderRadius: 6,
               }}
             >
-              {mentor.full_name.split(' ')[0]}
+              {mentor.full_name}
             </a>
           ))}
         </div>
 
         {/* Single column mentor cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-         {(mentors ?? []).map(mentor => (
-            <a
+       {(mentors ?? []).map(mentor => (
+            <div
               key={mentor.id}
-              
-              href={`#mentor-${mentor.id}`}
+              id={`mentor-${mentor.id}`}
               style={{
                 background: '#ffffff',
                 border: '0.5px solid #e8e6de',
@@ -97,6 +93,7 @@ export default async function MentorsPage() {
                 scrollMarginTop: 24,
               }}
             >
+            
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
                 <div style={{
                   width: 48, height: 48, borderRadius: '50%',
@@ -119,7 +116,7 @@ export default async function MentorsPage() {
                   Bio coming soon
                 </p>
              )}
-            </a>
+           </div>
           ))}
         </div>
 
