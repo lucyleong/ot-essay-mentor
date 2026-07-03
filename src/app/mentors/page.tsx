@@ -114,13 +114,12 @@ export default async function MentorsPage() {
                 <p style={{ fontSize: 14, color: '#5F5E5A', lineHeight: 1.7, margin: 0 }}>
                   {mentor.bio}
                 </p>
-              ) : (
+             ) : (
                 <p style={{ fontSize: 14, color: '#B4B2A9', fontStyle: 'italic', margin: 0 }}>
                   Bio coming soon
                 </p>
-            )}
+              )}
             </div>
-          </div>
           ))}
         </div>
 
