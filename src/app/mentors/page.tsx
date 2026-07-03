@@ -46,7 +46,7 @@ export default async function MentorsPage() {
      {/* Content */}
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
         <h2 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px', color: '#2C2C2A' }}>
-          Meet our mentors
+          Meet the team at the Oakland Tech College Essay Mentor Program
         </h2>
 <p style={{ fontSize: 15, color: '#5F5E5A', margin: '0 0 12px', lineHeight: 1.7 }}>          OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
         </p>
