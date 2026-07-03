@@ -52,12 +52,8 @@ export default async function MentorsPage() {
           OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
         </p>
 
-       {/* Quick-jump name links - 2 column grid */}
+      {/* Quick-jump name links - 2 column grid */}
         <div style={{
-          background: '#ffffff',
-          border: '0.5px solid #e8e6de',
-          borderRadius: 12,
-          padding: '1rem 1.25rem',
           marginBottom: 32,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
