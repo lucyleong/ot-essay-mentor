@@ -119,8 +119,33 @@ export async function POST(request: NextRequest) {
       notificationType: 'mentor_transfer',
       recipientType: 'student',
     })
-  } catch (emailErr) {
+ } catch (emailErr) {
     console.error('Transfer notification email failed:', emailErr)
+  }
+
+  // Email the new mentor about the transfer
+  try {
+    const apptDate = new Date(oldSlot.start_time).toLocaleDateString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      weekday: 'long', month: 'long', day: 'numeric',
+      hour: 'numeric', minute: '2-digit',
+    })
+
+    await sendEmail({
+      to: newMentor.email,
+      subject: `New student assigned to your schedule — ${booking.student_name}`,
+      html: `
+        <p>Hi ${newMentor.full_name.split(' ')[0]},</p>
+        <p><strong>${booking.student_name}</strong> has been assigned to you for an appointment on ${apptDate}.</p>
+        <p>You can view their profile and any essays they've shared in your <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard">mentor dashboard</a>.</p>
+        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#534AB7;">Join Google Meet</a></p>` : ''}
+        <p>If you have any questions, contact us at <a href="mailto:admin@otessaymentors.org">admin@otessaymentors.org</a>.</p>
+      `,
+      notificationType: 'mentor_transfer',
+      recipientType: 'mentor',
+    })
+  } catch (mentorEmailErr) {
+    console.error('New mentor transfer notification email failed:', mentorEmailErr)
   }
 
   return NextResponse.json({ ok: true, newMentorName: newMentor.full_name })
