@@ -50,7 +50,7 @@ const [activePanel, setActivePanel] = useState(() => {
       return params.get('panel') ?? 'reports'
     }
     return 'reports'
-  })    const [menuOpen, setMenuOpen] = useState(false)
+ const [menuOpen, setMenuOpen] = useState(false)
  const [mentors,     setMentors]     = useState<Mentor[]>([])
   const [scheduleMentorId, setScheduleMentorId] = useState('')
   const [scheduleDate,     setScheduleDate]     = useState('')
@@ -406,7 +406,8 @@ onClick={() => {
               const url = new URL(window.location.href)
               url.searchParams.set('panel', item.key)
               window.history.pushState({}, '', url)
-            }}            style={{
+            }}
+                        style={{
               display: 'flex', alignItems: 'center',
               padding: '9px 16px', fontSize: 13, cursor: 'pointer',
               background: activePanel === item.key ? '#f5f4f0' : 'transparent',
