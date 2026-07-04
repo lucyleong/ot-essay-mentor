@@ -44,8 +44,13 @@ function shortenLabel(label: string) {
 }
 
 export default function AdminPage() {
-    const [activePanel, setActivePanel] = useState('reports')
-    const [menuOpen, setMenuOpen] = useState(false)
+const [activePanel, setActivePanel] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('panel') ?? 'reports'
+    }
+    return 'reports'
+  })    const [menuOpen, setMenuOpen] = useState(false)
  const [mentors,     setMentors]     = useState<Mentor[]>([])
   const [scheduleMentorId, setScheduleMentorId] = useState('')
   const [scheduleDate,     setScheduleDate]     = useState('')
@@ -396,8 +401,12 @@ async function toggleMentorVirtual(mentor: Mentor) {
         {navItems.map(item => (
           <button
             key={item.key}
-onClick={() => setActivePanel(item.key)}
-            style={{
+onClick={() => {
+              setActivePanel(item.key)
+              const url = new URL(window.location.href)
+              url.searchParams.set('panel', item.key)
+              window.history.pushState({}, '', url)
+            }}            style={{
               display: 'flex', alignItems: 'center',
               padding: '9px 16px', fontSize: 13, cursor: 'pointer',
               background: activePanel === item.key ? '#f5f4f0' : 'transparent',
