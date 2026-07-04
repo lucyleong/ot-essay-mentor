@@ -150,10 +150,12 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
 
 const todayBookings    = allBookings.filter(b => isToday(parseISO(b.appointment_slots.start_time)))   
 const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
-   const recentBookings   = allBookings.filter(b => {
-     const start = parseISO(b.appointment_slots.start_time)
-     return !isToday(start) && isPast(start) && differenceInDays(new Date(), start) <= 7
-   })
+  const recentBookings   = allBookings
+     .filter(b => {
+       const start = parseISO(b.appointment_slots.start_time)
+       return !isToday(start) && isPast(start) && differenceInDays(new Date(), start) <= 7
+     })
+     .sort((a, b) => new Date(b.appointment_slots.start_time).getTime() - new Date(a.appointment_slots.start_time).getTime())
  function statusBadge(booking: Booking) {
     if (booking.sms_confirmed_at) {
       return (
