@@ -173,10 +173,10 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
           SMS sent
         </span>
       )
-    } else {
+   } else {
       return (
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-          No SMS
+          No consent
         </span>
       )
     }
