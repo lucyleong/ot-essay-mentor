@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
-import { format, parseISO, isToday, isFuture, isPast, differenceInDays } from 'date-fns'
+import { format, parseISO, isToday, isFuture, isPast, differenceInDays, differenceInMinutes } from 'date-fns'
 type Booking = {
   id: string
   student_name: string
@@ -148,8 +148,10 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
     router.push('/login')
   }
 
-const todayBookings    = allBookings.filter(b => isToday(parseISO(b.appointment_slots.start_time)))   
-const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
+const todayBookings    = allBookings
+     .filter(b => isToday(parseISO(b.appointment_slots.start_time)))
+     .sort((a, b) => new Date(a.appointment_slots.start_time).getTime() - new Date(b.appointment_slots.start_time).getTime())
+     const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_slots.start_time)))
   const recentBookings   = allBookings
      .filter(b => {
        const start = parseISO(b.appointment_slots.start_time)
@@ -360,8 +362,7 @@ const upcomingBookings = bookings.filter(b => !isToday(parseISO(b.appointment_sl
                       </div>
 
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                    {booking.appointment_slots.google_meet_link && isFuture(parseISO(booking.appointment_slots.start_time)) && (
-                        <a
+{booking.appointment_slots.google_meet_link && differenceInMinutes(new Date(), parseISO(booking.appointment_slots.start_time)) < 60 && (                        <a
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
