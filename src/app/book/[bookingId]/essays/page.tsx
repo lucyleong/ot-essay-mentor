@@ -144,11 +144,15 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
         <button
           onClick={submitGdoc}
           disabled={submitting || !gdocUrl}
-          style={{ width: '100%' }}
+          style={{
+            width: '100%',
+            background: gdocUrl ? '#534AB7' : undefined,
+            color: gdocUrl ? '#ffffff' : undefined,
+            border: gdocUrl ? 'none' : undefined,
+          }}
         >
           {submitting ? 'Sharing...' : 'Share Google Doc'}
         </button>
-      </div>
 
       {/* Divider */}
       <div style={{
@@ -220,10 +224,15 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           />
         </div>
 
-        <button
+       <button
           onClick={submitFile}
           disabled={submitting || !file}
-          style={{ width: '100%' }}
+          style={{
+            width: '100%',
+            background: file ? '#534AB7' : undefined,
+            color: file ? '#ffffff' : undefined,
+            border: file ? 'none' : undefined,
+          }}
         >
           {submitting ? 'Uploading...' : 'Upload essay'}
         </button>
