@@ -56,6 +56,7 @@ export default function StudentProfilePage({
 const [showAllEssays, setShowAllEssays] = useState(false)
   const router   = useRouter()
   const supabase = createClient()
+  const [copied, setCopied] = useState(false)
 const email = decodeURIComponent(emailParam)
   useEffect(() => {
     loadData()
@@ -162,13 +163,14 @@ const email = decodeURIComponent(emailParam)
           ← Back to dashboard
         </button>
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href)
-            alert('Profile link copied!')
+       onClick={async () => {
+            await navigator.clipboard.writeText(window.location.href)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
           }}
-          style={{ fontSize: 12, color: '#534AB7', background: 'none', border: '0.5px solid #C9C5F7', borderRadius: 8, cursor: 'pointer', padding: '5px 12px' }}
+        style={{ fontSize: 12, color: copied ? '#085041' : '#534AB7', background: copied ? '#E1F5EE' : 'none', border: `0.5px solid ${copied ? '#5DCAA5' : '#C9C5F7'}`, borderRadius: 8, cursor: 'pointer', padding: '5px 12px', transition: 'all 0.2s' }}
         >
-          Copy profile link
+          {copied ? '✓ Copied!' : 'Copy profile link'}
         </button>
       </div>
 
