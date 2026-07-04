@@ -154,12 +154,23 @@ const email = decodeURIComponent(emailParam)
     <main style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Back button */}
-    <button
-        onClick={() => router.push('/mentor/dashboard')}
-        style={{ fontSize: 13, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 20px', display: 'block' }}
-      >
-        ← Back to dashboard
-      </button>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <button
+          onClick={() => router.push('/mentor/dashboard')}
+          style={{ fontSize: 13, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+        >
+          ← Back to dashboard
+        </button>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href)
+            alert('Profile link copied!')
+          }}
+          style={{ fontSize: 12, color: '#534AB7', background: 'none', border: '0.5px solid #C9C5F7', borderRadius: 8, cursor: 'pointer', padding: '5px 12px' }}
+        >
+          Copy profile link
+        </button>
+      </div>
 
       {/* Student header */}
       {student && (
