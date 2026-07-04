@@ -50,6 +50,8 @@ const [activePanel, setActivePanel] = useState(() => {
       return params.get('panel') ?? 'reports'
     }
     return 'reports'
+      })
+
  const [menuOpen, setMenuOpen] = useState(false)
  const [mentors,     setMentors]     = useState<Mentor[]>([])
   const [scheduleMentorId, setScheduleMentorId] = useState('')
