@@ -71,6 +71,9 @@ const [showAllComments, setShowAllComments] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
 const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled'>('all')
 const [mentorFilter, setMentorFilter] = useState<string>('all')
+const [transferringId, setTransferringId] = useState<string | null>(null)
+const [transferMentorId, setTransferMentorId] = useState('')
+const [transferring, setTransferring] = useState(false)
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -651,12 +654,70 @@ onClick={() => setActivePanel(item.key)}
                               Never mind
                             </button>
                           </>
-                        ) : (
+                       ) : (
                           <button
                             onClick={() => setCancellingId(booking.id)}
                             style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
                           >
                             Cancel
+                          </button>
+                        )
+                      )}
+
+                      {/* Transfer button */}
+                      {!booking.cancelled_at && !isPast && (
+                        transferringId === booking.id ? (
+                          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+                            <select
+                              value={transferMentorId}
+                              onChange={e => setTransferMentorId(e.target.value)}
+                              style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                            >
+                              <option value="">Select new mentor</option>
+                              {mentors
+                                .filter(m => m.is_active && m.id !== (booking.appointment_slots as any)?.mentor_profiles?.id)
+                                .map(m => (
+                                  <option key={m.id} value={m.id}>{m.full_name}</option>
+                                ))
+                              }
+                            </select>
+                            <button
+                              onClick={async () => {
+                                if (!transferMentorId) return
+                                setTransferring(true)
+                                const res = await fetch('/api/admin/bookings/transfer', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ bookingId: booking.id, newMentorId: transferMentorId }),
+                                })
+                                const data = await res.json()
+                                setTransferring(false)
+                                setTransferringId(null)
+                                setTransferMentorId('')
+                                if (res.ok) {
+                                  loadData()
+                                } else {
+                                  alert(data.error ?? 'Transfer failed')
+                                }
+                              }}
+                              disabled={!transferMentorId || transferring}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#534AB7', color: '#fff', border: 'none' }}
+                            >
+                              {transferring ? 'Transferring...' : 'Confirm'}
+                            </button>
+                            <button
+                              onClick={() => { setTransferringId(null); setTransferMentorId('') }}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setTransferringId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#534AB7', borderColor: '#C9C5F7' }}
+                          >
+                            Transfer
                           </button>
                         )
                       )}
