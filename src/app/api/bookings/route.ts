@@ -195,7 +195,7 @@ try {
 
       // If appointment is within 24-49 hours, send reminder immediately
       const hoursUntil = (new Date(slot.start_time).getTime() - Date.now()) / 3600_000
-      if (hoursUntil >= 24 && hoursUntil <= 49) {
+      if (hoursUntil >= 12 && hoursUntil <= 49) {
         const apptDate = format(
           new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
           'EEEE, MMMM d'
