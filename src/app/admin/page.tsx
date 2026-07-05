@@ -389,8 +389,11 @@ async function toggleMentorVirtual(mentor: Mentor) {
               >
                 Sign out
               </button>
-            </div>
-     
+           </div>
+          </div>
+        )}
+      </div>
+
       {/* Sidebar */}
     <div className="admin-sidebar" style={{
         width: 200, flexShrink: 0, background: '#ffffff',
