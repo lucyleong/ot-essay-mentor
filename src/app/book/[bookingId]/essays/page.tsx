@@ -1,5 +1,5 @@
 'use client'
-import { useState, use } from 'react'
+import { useState, useEffect, use } from 'react'
 
 export default function EssayUploadPage({
   params,
@@ -7,7 +7,7 @@ export default function EssayUploadPage({
   params: Promise<{ bookingId: string }>
 }) {
   const { bookingId } = use(params)
-  const [gdocUrl,    setGdocUrl]    = useState('')
+ const [gdocUrl,    setGdocUrl]    = useState('')
   const [gdocNote,   setGdocNote]   = useState('')
   const [gdocError,  setGdocError]  = useState('')
   const [file,       setFile]       = useState<File | null>(null)
@@ -15,6 +15,18 @@ export default function EssayUploadPage({
   const [fileError,  setFileError]  = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted,  setSubmitted]  = useState<string[]>([])
+  const [mentorName, setMentorName] = useState<string | null>(null)
+  const [mentorEmail, setMentorEmail] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/bookings/${bookingId}/mentor`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.mentorName) setMentorName(data.mentorName)
+        if (data.mentorEmail) setMentorEmail(data.mentorEmail)
+      })
+      .catch(() => {})
+  }, [bookingId])
 
   async function submitGdoc() {
     if (!gdocUrl.includes('docs.google.com/document')) {
@@ -123,8 +135,12 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           {gdocError && (
             <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>{gdocError}</p>
           )}
-          <p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0' }}>
+        <p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0', lineHeight: 1.5 }}>
             Make sure your doc is set to "Anyone with the link can view" before sharing.
+            {mentorEmail && (
+              <> If you'd prefer to keep it private, share it directly with your mentor
+              {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
+            )}
           </p>
         </div>
 
