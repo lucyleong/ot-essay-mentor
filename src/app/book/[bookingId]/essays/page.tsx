@@ -153,6 +153,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
         >
           {submitting ? 'Sharing...' : 'Share Google Doc'}
         </button>
+          </div>
 
       {/* Divider */}
       <div style={{
