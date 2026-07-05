@@ -104,8 +104,10 @@ export async function POST(
         redirect: 'follow',
         headers: { 'User-Agent': 'Mozilla/5.0' },
       })
-      const finalUrl = checkRes.url
+    const finalUrl = checkRes.url
       const bodyText = await checkRes.text()
+      console.log('Google Doc check - status:', checkRes.status, 'finalUrl:', finalUrl)
+      console.log('Google Doc check - body snippet:', bodyText.slice(0, 500))
 
       // Restricted docs redirect to accounts.google.com OR contain sign-in page content
       const isRestricted =
