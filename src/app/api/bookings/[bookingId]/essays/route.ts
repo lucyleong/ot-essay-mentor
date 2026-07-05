@@ -97,29 +97,28 @@ export async function POST(
       )
     }
 
-   // Verify the Google Doc is publicly accessible
+  // Verify the Google Doc is publicly accessible
     try {
       const checkRes = await fetch(body.googleDocUrl, {
         method: 'GET',
         redirect: 'follow',
         headers: { 'User-Agent': 'Mozilla/5.0' },
       })
-    const finalUrl = checkRes.url
-      const bodyText = await checkRes.text()
-console.log('Google Doc check - status:', checkRes.status, 'finalUrl:', finalUrl)
-      console.log('Google Doc check - body snippet:', bodyText.slice(0, 1000))     
+      const finalUrl = checkRes.url
+      await checkRes.text()
 
-      // Restricted docs redirect to accounts.google.com OR contain sign-in page content
-     // Only check status code — body text checks cause false positives on public docs
+      console.log('Google Doc check - status:', checkRes.status, 'finalUrl:', finalUrl)
+
       const isRestricted =
         checkRes.status === 401 ||
         checkRes.status === 403 ||
         finalUrl.includes('accounts.google.com/ServiceLogin')
 
-     console.log('isRestricted:', isRestricted, 'status:', checkRes.status, 'finalUrl includes ServiceLogin:', finalUrl.includes('accounts.google.com/ServiceLogin'))
+      console.log('isRestricted:', isRestricted)
+
       if (isRestricted) {
         return NextResponse.json(
-          { error: 'This Google Doc isn\'t publicly shared...
+          { error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link", then try again.' },
           { status: 422 }
         )
       }
