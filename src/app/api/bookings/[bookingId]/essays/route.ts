@@ -90,11 +90,29 @@ export async function POST(
   if (contentType.includes('application/json')) {
     const body = await request.json()
 
-    if (!body.googleDocUrl?.includes('docs.google.com/document')) {
+  if (!body.googleDocUrl?.includes('docs.google.com/document')) {
       return NextResponse.json(
         { error: 'Please provide a valid Google Docs link.' },
         { status: 422 }
       )
+    }
+
+    // Verify the Google Doc is publicly accessible
+    try {
+      const checkRes = await fetch(body.googleDocUrl, {
+        method: 'GET',
+        redirect: 'follow',
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+      })
+      // If redirected to accounts.google.com, it requires login
+      if (checkRes.url.includes('accounts.google.com') || checkRes.status === 403) {
+        return NextResponse.json(
+          { error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link", then try again.' },
+          { status: 422 }
+        )
+      }
+    } catch {
+      // If fetch fails entirely, let it through — don't block on network issues
     }
 
     const { data, error } = await supabase
