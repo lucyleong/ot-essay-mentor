@@ -85,14 +85,24 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
   return (
     <main style={{ maxWidth: 560, margin: '0 auto', padding: '2rem 1rem' }}>
 
-      <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px' }}>
-        Share your essay
-      </h1>
-      <p style={{ fontSize: 14, color: '#888780', margin: '0 0 24px', lineHeight: 1.6 }}>
+      <p style={{ fontSize: 14, color: '#888780', margin: '0 0 16px', lineHeight: 1.6 }}>
         Please share your essay with your mentor before your appointment so they
         can review it ahead of time. You can share a Google Doc link, upload a
         file, or both.
       </p>
+
+      <div style={{ background: '#FFF8E6', border: '0.5px solid #F4C842', borderRadius: 10, padding: '12px 16px', marginBottom: 24 }}>
+        <p style={{ fontSize: 13, fontWeight: 500, color: '#7A5500', margin: '0 0 4px' }}>
+          📄 If sharing a Google Doc
+        </p>
+        <p style={{ fontSize: 13, color: '#7A5500', margin: 0, lineHeight: 1.6 }}>
+          Make sure to set sharing to <strong>"Anyone with the link can view"</strong> — otherwise your mentor won't be able to open it.
+          {mentorEmail && (
+            <> If you'd prefer to keep it private, share it directly with your mentor
+            {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
+          )}
+        </p>
+      </div>
 
       {/* Success messages */}
       {submitted.length > 0 && (
@@ -135,11 +145,8 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           {gdocError && (
             <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>{gdocError}</p>
           )}
-<p style={{ fontSize: 11, color: '#5F5E5A', margin: '4px 0 0', lineHeight: 1.5 }}>            Make sure your doc is set to "Anyone with the link can view" before sharing.
-            {mentorEmail && (
-              <> If you'd prefer to keep it private, share it directly with your mentor
-              {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
-            )}
+<p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0' }}>
+            Paste your Google Doc link above.
           </p>
         </div>
 
