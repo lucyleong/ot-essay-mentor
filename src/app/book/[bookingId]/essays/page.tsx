@@ -85,7 +85,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
   return (
     <main style={{ maxWidth: 560, margin: '0 auto', padding: '2rem 1rem' }}>
 
-      <p style={{ fontSize: 14, color: '#888780', margin: '0 0 16px', lineHeight: 1.6 }}>
+      <p style={{ fontSize: 15, color: '#2C2C2A', margin: '0 0 16px', lineHeight: 1.6 }}>
         Please share your essay with your mentor before your appointment so they
         can review it ahead of time. You can share a Google Doc link, upload a
         file, or both.
