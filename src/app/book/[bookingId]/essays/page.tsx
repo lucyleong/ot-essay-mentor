@@ -135,8 +135,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           {gdocError && (
             <p style={{ fontSize: 12, color: '#E24B4A', margin: '4px 0 0' }}>{gdocError}</p>
           )}
-        <p style={{ fontSize: 11, color: '#B4B2A9', margin: '4px 0 0', lineHeight: 1.5 }}>
-            Make sure your doc is set to "Anyone with the link can view" before sharing.
+<p style={{ fontSize: 11, color: '#5F5E5A', margin: '4px 0 0', lineHeight: 1.5 }}>            Make sure your doc is set to "Anyone with the link can view" before sharing.
             {mentorEmail && (
               <> If you'd prefer to keep it private, share it directly with your mentor
               {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
