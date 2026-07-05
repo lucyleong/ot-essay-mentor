@@ -116,9 +116,10 @@ console.log('Google Doc check - status:', checkRes.status, 'finalUrl:', finalUrl
         checkRes.status === 403 ||
         finalUrl.includes('accounts.google.com/ServiceLogin')
 
+     console.log('isRestricted:', isRestricted, 'status:', checkRes.status, 'finalUrl includes ServiceLogin:', finalUrl.includes('accounts.google.com/ServiceLogin'))
       if (isRestricted) {
         return NextResponse.json(
-          { error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link", then try again.' },
+          { error: 'This Google Doc isn\'t publicly shared...
           { status: 422 }
         )
       }
