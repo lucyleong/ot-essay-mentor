@@ -25,9 +25,9 @@ export async function getFreshAccessToken(): Promise<string> {
     throw new Error('Program Google account not connected — please connect from admin dashboard')
   }
 
-  // Check if token is still valid (with 60 second buffer)
+  // Check if token is still valid (with 5 minute buffer)
   const isExpired = tokenExpiry
-    ? new Date(tokenExpiry) < new Date(Date.now() + 60_000)
+    ? new Date(tokenExpiry) < new Date(Date.now() + 300_000)
     : true
 
   if (!isExpired && accessToken) return accessToken
