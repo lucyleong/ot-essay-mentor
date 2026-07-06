@@ -361,8 +361,8 @@ const todayBookings    = allBookings
                         </div>
                       </div>
 
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-{booking.appointment_slots.google_meet_link && differenceInMinutes(new Date(), parseISO(booking.appointment_slots.start_time)) < 60 && (                        <a
+<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+  {booking.appointment_slots.google_meet_link && differenceInMinutes(new Date(), parseISO(booking.appointment_slots.start_time)) < 60 && (                        <a
                           href={booking.appointment_slots.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -412,31 +412,32 @@ const todayBookings    = allBookings
                           )
                         )}
 
-                        <button
-                          onClick={() => toggleIssue(booking.id, 'noShow')}
-                          disabled={savingIssue === booking.id}
-                          style={{
-                            fontSize: 12, padding: '5px 14px', borderRadius: 8,
-                            background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
-                            border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
-                            color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
-                            marginLeft: 'auto',
-                          }}
-                        >
-                          {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
-                        </button>
-                        <button
-                          onClick={() => toggleIssue(booking.id, 'meetIssue')}
-                          disabled={savingIssue === booking.id}
-                          style={{
-                            fontSize: 12, padding: '5px 14px', borderRadius: 8,
-                            background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
-                            border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
-                            color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
-                          }}
-                        >
-                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
-                        </button>
+                      <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+                          <button
+                            onClick={() => toggleIssue(booking.id, 'noShow')}
+                            disabled={savingIssue === booking.id}
+                            style={{
+                              fontSize: 12, padding: '5px 14px', borderRadius: 8,
+                              background: bookingIssues[booking.id]?.noShow ? '#FCEBEB' : '#ffffff',
+                              border: `0.5px solid ${bookingIssues[booking.id]?.noShow ? '#E24B4A' : '#D3D1C7'}`,
+                              color: bookingIssues[booking.id]?.noShow ? '#791F1F' : '#5F5E5A',
+                            }}
+                          >
+                            {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
+                          </button>
+                          <button
+                            onClick={() => toggleIssue(booking.id, 'meetIssue')}
+                            disabled={savingIssue === booking.id}
+                            style={{
+                              fontSize: 12, padding: '5px 14px', borderRadius: 8,
+                              background: bookingIssues[booking.id]?.meetIssue ? '#FAEEDA' : '#ffffff',
+                              border: `0.5px solid ${bookingIssues[booking.id]?.meetIssue ? '#C9851A' : '#D3D1C7'}`,
+                              color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
+                            }}
+                          >
+                            {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))
