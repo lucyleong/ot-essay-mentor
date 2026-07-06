@@ -200,7 +200,9 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
           },
         })
       }
-renderPie('pie-mentor-activity', reports.mentorActivity)
+console.log('lgbtq data:', reports.demographics.lgbtq)
+      renderPie('pie-lgbtq', reports.demographics.lgbtq)
+      renderPie('pie-mentor-activity', reports.mentorActivity)
       renderPie('pie-first-gen', reports.demographics.firstGen)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor)
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
@@ -762,11 +764,11 @@ onClick={() => {
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {reports && (
-                      <button
+                    <button
                         onClick={() => {
                           window.location.href = '/api/admin/reports/export'
                         }}
-                        style={{ fontSize: 12 }}
+                        style={{ fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         Export CSV
                       </button>
