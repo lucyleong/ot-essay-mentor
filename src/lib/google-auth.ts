@@ -44,7 +44,6 @@ export async function getFreshAccessToken(): Promise<string> {
     }),
   })
 const refreshed = await res.json()
-  console.log('Token refresh response:', JSON.stringify(refreshed))
   if (!res.ok) {
     // Send alert email - token refresh failed
     try {
