@@ -1,6 +1,7 @@
 'use client'
 import { use, useState } from 'react'
 import { format } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 export default function CancelPage({
   params,
@@ -59,10 +60,10 @@ export default function CancelPage({
 
   const mentorFirstName = booking?.mentor_name?.split(' ')[0] ?? 'your mentor'
   const apptDate = booking?.start_time
-    ? format(new Date(new Date(booking.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'EEEE, MMMM d')
+? formatDatePST(booking.start_time)
     : ''
   const apptTime = booking?.start_time
-    ? format(new Date(new Date(booking.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')
+? formatTimePST(booking.start_time)
     : ''
 
   return (
