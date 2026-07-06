@@ -486,49 +486,53 @@ onClick={() => {
 
                {/* Mentor list */}
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                  {mentors.filter(m => m.is_active).map(mentor => (
+                 {mentors.filter(m => m.is_active).map(mentor => (
                     <div key={mentor.id} style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                     }}>
-                      <div style={{
-                        width: 32, height: 32, borderRadius: '50%',
-                        background: '#EEEDFE', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', fontSize: 11, fontWeight: 500,
-                        color: '#3C3489', flexShrink: 0,
-                      }}>
-                        {mentor.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      {/* Top row: avatar + name/email */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <div style={{
+                          width: 32, height: 32, borderRadius: '50%',
+                          background: '#EEEDFE', display: 'flex', alignItems: 'center',
+                          justifyContent: 'center', fontSize: 11, fontWeight: 500,
+                          color: '#3C3489', flexShrink: 0,
+                        }}>
+                          {mentor.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.full_name}</p>
+                          <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.email}</p>
+                        </div>
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>{mentor.full_name}</p>
-                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{mentor.email}</p>
+                      {/* Bottom row: badges + buttons */}
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={{
+                          fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                          background: mentor.is_virtual_available ? '#EEEDFE' : '#F1EFE8',
+                          color: mentor.is_virtual_available ? '#3C3489' : '#5F5E5A',
+                        }}>
+                          {mentor.is_virtual_available ? 'Virtual' : 'No virtual'}
+                        </span>
+                        <button
+                          onClick={() => toggleMentorVirtual(mentor)}
+                          style={{ fontSize: 12, padding: '4px 10px' }}
+                        >
+                          {mentor.is_virtual_available ? 'Remove from virtual' : 'Add to virtual'}
+                        </button>
+                        <span style={{
+                          fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                          background: '#E1F5EE', color: '#085041',
+                        }}>
+                          Active
+                        </span>
+                        <button
+                          onClick={() => toggleMentorActive(mentor)}
+                          style={{ fontSize: 12, padding: '4px 10px' }}
+                        >
+                          Deactivate
+                        </button>
                       </div>
-                     <span style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: mentor.is_virtual_available ? '#EEEDFE' : '#F1EFE8',
-                        color: mentor.is_virtual_available ? '#3C3489' : '#5F5E5A',
-                      }}>
-                        {mentor.is_virtual_available ? 'Virtual' : 'No virtual'}
-                      </span>
-                      <button
-                        onClick={() => toggleMentorVirtual(mentor)}
-                        style={{ fontSize: 12, padding: '4px 10px' }}
-                      >
-                        {mentor.is_virtual_available ? 'Remove from virtual' : 'Add to virtual'}
-                      </button>
-                      <span style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: mentor.is_active ? '#E1F5EE' : '#F1EFE8',
-                        color: mentor.is_active ? '#085041' : '#5F5E5A',
-                      }}>
-                        {mentor.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                      <button
-                        onClick={() => toggleMentorActive(mentor)}
-                        style={{ fontSize: 12, padding: '4px 10px' }}
-                      >
-                      {mentor.is_active ? 'Deactivate' : 'Activate'}
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -539,35 +543,38 @@ onClick={() => {
                       Inactive Mentors
                     </p>
                     <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                      {mentors.filter(m => !m.is_active).map(mentor => (
+                    {mentors.filter(m => !m.is_active).map(mentor => (
                         <div key={mentor.id} style={{
-                          display: 'flex', alignItems: 'center', gap: 12,
                           padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                         }}>
-                          <div style={{
-                            width: 32, height: 32, borderRadius: '50%',
-                            background: '#EEEDFE', display: 'flex', alignItems: 'center',
-                            justifyContent: 'center', fontSize: 11, fontWeight: 500,
-                            color: '#3C3489', flexShrink: 0,
-                          }}>
-                            {mentor.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                            <div style={{
+                              width: 32, height: 32, borderRadius: '50%',
+                              background: '#EEEDFE', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', fontSize: 11, fontWeight: 500,
+                              color: '#3C3489', flexShrink: 0,
+                            }}>
+                              {mentor.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.full_name}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.email}</p>
+                            </div>
                           </div>
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>{mentor.full_name}</p>
-                            <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{mentor.email}</p>
+                          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                            <span style={{
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                              background: '#FCEBEB', color: '#791F1F',
+                            }}>
+                              Inactive
+                            </span>
+                            <button
+                              onClick={() => toggleMentorActive(mentor)}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Activate
+                            </button>
                           </div>
-                          <span style={{
-                            fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                            background: '#FCEBEB', color: '#791F1F',
-                          }}>
-                            Inactive
-                          </span>
-                          <button
-                            onClick={() => toggleMentorActive(mentor)}
-                            style={{ fontSize: 12, padding: '4px 10px' }}
-                          >
-                            Activate
-                          </button>
                         </div>
                       ))}
                     </div>
