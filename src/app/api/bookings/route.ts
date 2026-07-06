@@ -6,6 +6,7 @@ import { studentConfirmationEmail } from '@/lib/email-templates/student-confirma
 import { format, parseISO } from 'date-fns'
 import { addStudentToCalendarEvent } from '@/lib/calendar'
 import { sendSMS } from '@/lib/sms'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient(
@@ -196,14 +197,8 @@ try {
       // If appointment is within 24-49 hours, send reminder immediately
       const hoursUntil = (new Date(slot.start_time).getTime() - Date.now()) / 3600_000
       if (hoursUntil >= 12 && hoursUntil <= 49) {
-        const apptDate = format(
-          new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-          'EEEE, MMMM d'
-        )
-        const apptTime = format(
-          new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-          'h:mm a'
-        )
+      const apptDate = formatDatePST(slot.start_time)
+        const apptTime = formatTimePST(slot.start_time)
         await sendSMS({
           to:   body.studentPhone,
           body: `Hi, your appointment with your mentor from the OT College Mentor Program is coming up on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
