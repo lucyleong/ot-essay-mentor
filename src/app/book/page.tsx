@@ -68,6 +68,12 @@ export default function BookPage() {
     (window as any).onTurnstileSuccess = (token: string) => {
       console.log('Turnstile token received:', token ? 'yes' : 'no')
       setTurnstileToken(token)
+      const errEl = document.getElementById('turnstile-error')
+      if (errEl) errEl.style.display = 'none'
+    }
+    ;(window as any).onTurnstileError = () => {
+      const errEl = document.getElementById('turnstile-error')
+      if (errEl) errEl.style.display = 'block'
     }
   }, [])
 
@@ -635,12 +641,18 @@ const isOptional = !q.is_required
               </div>
             )}
 <div
-             className="cf-turnstile"
+              className="cf-turnstile"
               data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               data-callback="onTurnstileSuccess"
               data-refresh-expired="auto"
+              data-retry="auto"
+              data-retry-interval="5000"
+              data-error-callback="onTurnstileError"
               style={{ marginBottom: 12 }}
             />
+            <p id="turnstile-error" style={{ display: 'none', fontSize: 12, color: '#791F1F', marginBottom: 8 }}>
+              Security check failed. <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }} style={{ color: '#534AB7' }}>Click here to refresh the page and try again.</a>
+            </p>
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <button
