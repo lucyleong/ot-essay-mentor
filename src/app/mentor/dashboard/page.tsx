@@ -551,7 +551,9 @@ const todayBookings    = allBookings
                           {statusBadge(booking)}
                         </div>
                       </div>
-<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>                        onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
+<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <button
+                          onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                         style={{ fontSize: 12, padding: '5px 14px' }}
                       >
                         Profile
