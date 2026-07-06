@@ -51,13 +51,13 @@ export async function GET(request: NextRequest) {
   console.log('Access token exists:', !!tokens.access_token)
   console.log('Refresh token exists:', !!tokens.refresh_token)
 
-  const { error: tokenError } = await supabase
+ const { error: tokenError } = await supabase
     .from('program_settings')
     .upsert([
       { key: 'google_access_token',  value: tokens.access_token },
       { key: 'google_refresh_token', value: tokens.refresh_token },
       { key: 'google_token_expiry',  value: expiry },
-    ])
+    ], { onConflict: 'key' })
 
   console.log('Token save error:', JSON.stringify(tokenError))
 
