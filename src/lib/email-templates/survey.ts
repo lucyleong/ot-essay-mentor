@@ -1,5 +1,6 @@
 import { emailLayout, divider } from './layout'
 import { format } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 type SurveyEmailData = {
   recipientName: string
@@ -10,14 +11,8 @@ type SurveyEmailData = {
 }
 
 export function surveyEmail(d: SurveyEmailData) {
-  const date = format(
-    new Date(new Date(d.startTime).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-    'EEEE, MMMM d'
-  )
-  const time = format(
-    new Date(new Date(d.startTime).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-    'h:mm a'
-  )
+ const date = formatDatePST(d.startTime)
+  const time = formatTimePST(d.startTime)
 
   const isStudent = d.recipientType === 'student'
 
