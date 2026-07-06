@@ -379,7 +379,7 @@ const todayBookings    = allBookings
                           onClick={() => router.push(`/mentor/students/${encodeURIComponent(booking.student_email)}`)}
                           style={{ fontSize: 12, padding: '5px 14px' }}
                         >
-                         Student profile
+                         View profile
                         </button>
 
                         {isFuture(parseISO(booking.appointment_slots.start_time)) && (
