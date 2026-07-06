@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 export default function MentorSurveyPage({
   params,
@@ -73,10 +74,10 @@ export default function MentorSurveyPage({
 
   const studentName = booking?.student_name ?? 'your student'
   const apptDate = booking?.start_time
-    ? format(new Date(new Date(booking.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'EEEE, MMMM d')
+? formatDatePST(booking.start_time)
     : ''
   const apptTime = booking?.start_time
-    ? format(new Date(new Date(booking.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')
+? formatTimePST(booking.start_time)
     : ''
 
   function YesNoButtons({ value, onChange }: { value: string | null; onChange: (v: string) => void }) {
