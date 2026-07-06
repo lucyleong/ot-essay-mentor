@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendSMS } from '@/lib/sms'
 import { format, parseISO } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,14 +44,8 @@ export async function POST(request: NextRequest) {
 
   for (const booking of inWindow) {
     const slot = (booking as any).appointment_slots
-   const apptDate = format(
-      new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-      'EEEE, MMMM d'
-    )
-    const apptTime = format(
-      new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-      'h:mm a'
-    )
+  const apptDate = formatDatePST(slot.start_time)
+    const apptTime = formatTimePST(slot.start_time)
 
     try {
       await sendSMS({
