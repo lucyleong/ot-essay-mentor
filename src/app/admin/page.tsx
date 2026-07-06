@@ -200,7 +200,6 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
           },
         })
       }
-console.log('lgbtq data:', reports.demographics.lgbtq)
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
       renderPie('pie-mentor-activity', reports.mentorActivity)
       renderPie('pie-first-gen', reports.demographics.firstGen)
