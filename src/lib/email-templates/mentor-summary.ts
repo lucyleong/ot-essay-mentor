@@ -1,5 +1,6 @@
 import { emailLayout, detailRow, divider } from './layout'
 import { format } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 type Appointment = {
   studentName:  string
@@ -45,22 +46,16 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
     </div>`
 
   const apptCards = d.appointments.map(a => {
-    const start = format(
-      new Date(new Date(a.startTime).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-      'h:mm a'
-    )
-    const end = format(
-      new Date(new Date(a.endTime).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })),
-      'h:mm a'
-    )
+   const start = formatTimePST(a.startTime)
+    const end   = formatTimePST(a.endTime)
 
     const statusColor =
       a.smsStatus === 'confirmed' ? '#085041' :
       a.smsStatus === 'no_reply'  ? '#854F0B' : '#5F5E5A'
 
-    const statusLabel =
+   const statusLabel =
       a.smsStatus === 'confirmed' ? 'Confirmed' :
-      a.smsStatus === 'no_reply'  ? 'No reply' : 'No SMS sent'
+      a.smsStatus === 'no_reply'  ? 'No reply' : 'No consent'
 
     const statusBg =
       a.smsStatus === 'confirmed' ? '#E1F5EE' :
