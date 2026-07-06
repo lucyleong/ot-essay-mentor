@@ -89,7 +89,7 @@ const [howHeard,      setHowHeard]      = useState('')
 ? formatDatePST(booking.start_time)
     : ''
   const apptTime = booking?.start_time
-    ? format(new Date(new Date(booking.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')
+? formatTimePST(booking.start_time)
     : ''
 
   function RatingButtons({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {
