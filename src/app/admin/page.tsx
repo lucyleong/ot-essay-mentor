@@ -518,7 +518,7 @@ onClick={() => {
                           onClick={() => toggleMentorVirtual(mentor)}
                           style={{ fontSize: 12, padding: '4px 10px' }}
                         >
-                          {mentor.is_virtual_available ? 'Remove from virtual' : 'Add to virtual'}
+                          {mentor.is_virtual_available ? 'No virtual' : 'Add to virtual'}
                         </button>
                         <span style={{
                           fontSize: 11, padding: '2px 8px', borderRadius: 20,
