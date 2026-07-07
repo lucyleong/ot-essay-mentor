@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendEmail } from '@/lib/email'
+import { formatDateTimePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,11 +27,7 @@ async function notifyMentor(bookingId: string, essayType: string, fileName?: str
     const mentor = slot?.mentor_profiles
     if (!mentor?.email) return
 
-    const apptDate = new Date(slot.start_time).toLocaleDateString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      weekday: 'long', month: 'long', day: 'numeric',
-      hour: 'numeric', minute: '2-digit',
-    })
+   const apptDate = formatDateTimePST(slot.start_time)
 
     const essayDescription = essayType === 'google_doc'
       ? 'a Google Doc link'
@@ -107,14 +104,10 @@ export async function POST(
       const finalUrl = checkRes.url
       await checkRes.text()
 
-      console.log('Google Doc check - status:', checkRes.status, 'finalUrl:', finalUrl)
-
       const isRestricted =
         checkRes.status === 401 ||
         checkRes.status === 403 ||
         finalUrl.includes('accounts.google.com/ServiceLogin')
-
-      console.log('isRestricted:', isRestricted)
 
       if (isRestricted) {
         return NextResponse.json(
