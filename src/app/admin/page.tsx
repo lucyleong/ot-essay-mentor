@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
+import { formatDateTimePST } from '@/lib/utils'
 
 type Mentor = {
   id: string
