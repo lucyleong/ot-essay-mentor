@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendEmail } from '@/lib/email'
+import { formatDateTimePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -100,11 +101,7 @@ export async function POST(request: NextRequest) {
 
   // Email the student about the mentor change
   try {
-    const apptDate = new Date(oldSlot.start_time).toLocaleDateString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      weekday: 'long', month: 'long', day: 'numeric',
-      hour: 'numeric', minute: '2-digit',
-    })
+   const apptDate = formatDateTimePST(oldSlot.start_time)
 
     await sendEmail({
       to: booking.student_email,
@@ -125,11 +122,7 @@ export async function POST(request: NextRequest) {
 
   // Email the new mentor about the transfer
   try {
-    const apptDate = new Date(oldSlot.start_time).toLocaleDateString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      weekday: 'long', month: 'long', day: 'numeric',
-      hour: 'numeric', minute: '2-digit',
-    })
+   const apptDate = formatDateTimePST(oldSlot.start_time)
 
     await sendEmail({
       to: newMentor.email,
