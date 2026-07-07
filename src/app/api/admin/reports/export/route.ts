@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { formatShortDateNumericPST, formatLocaleTimePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -97,12 +98,8 @@ export async function GET() {
       }
     })
 
-    const apptDate = slot?.start_time
-      ? new Date(slot.start_time).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })
-      : ''
-    const apptTime = slot?.start_time
-      ? new Date(slot.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
-      : ''
+  const apptDate = slot?.start_time ? formatShortDateNumericPST(slot.start_time) : ''
+    const apptTime = slot?.start_time ? formatLocaleTimePST(slot.start_time) : ''
 
     const survey = surveyByBooking.get(b.id) ?? {}
 
@@ -111,7 +108,7 @@ export async function GET() {
       b.student_email,
       b.student_phone ?? '',
       b.confirmation_code,
-      new Date(b.booked_at).toLocaleDateString('en-US'),
+formatShortDateNumericPST(b.booked_at),
       b.cancelled_at ? 'Yes' : 'No',
       apptDate,
       apptTime,

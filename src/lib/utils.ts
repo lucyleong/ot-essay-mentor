@@ -53,3 +53,12 @@ export function formatLocaleTimePST(dateString: string): string {
     timeZone: 'America/Los_Angeles',
   })
 }
+/**
+ * Formats a UTC date string as a short numeric date in Pacific time
+ * e.g. "7/5/2026"
+ */
+export function formatShortDateNumericPST(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    timeZone: 'America/Los_Angeles',
+  })
+}
