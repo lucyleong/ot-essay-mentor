@@ -62,3 +62,13 @@ export function formatShortDateNumericPST(dateString: string): string {
     timeZone: 'America/Los_Angeles',
   })
 }
+/**
+ * Formats a UTC date string as a short date with year in Pacific time
+ * e.g. "Jul 5, 2026"
+ */
+export function formatShortDateWithYearPST(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    timeZone: 'America/Los_Angeles',
+  })
+}

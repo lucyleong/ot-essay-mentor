@@ -261,7 +261,7 @@ const email = decodeURIComponent(emailParam)
                 <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>
                   {essay.essay_type === 'google_doc' ? 'Google Doc' : essay.file_name}
                   <span style={{ fontSize: 11, color: '#888780', fontWeight: 400, marginLeft: 8 }}>
-                    {new Date(essay.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+{formatShortDateWithYearPST(essay.uploaded_at)}
                   </span>
                 </p>
                 {essay.note_to_mentor && (

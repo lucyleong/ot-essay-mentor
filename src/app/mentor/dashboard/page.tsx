@@ -969,8 +969,7 @@ style={{
                           {entry.student_email}
                           {entry.student_phone ? ` · ${entry.student_phone}` : ''}
                           {' · Checked in '}
-                          {new Date(entry.checked_in_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })}
-                        </p>
+{formatLocaleTimePST(entry.checked_in_at)}                        </p>
                       </div>
                       <button
                         onClick={async () => {
