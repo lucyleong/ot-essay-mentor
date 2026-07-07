@@ -1,5 +1,6 @@
 import { emailLayout, detailRow, divider } from './layout'
 import { format, parseISO } from 'date-fns'
+import { formatDatePST, formatTimePST } from '@/lib/utils'
 
 type ConfirmationData = {
   cancelUrl:        string
@@ -15,10 +16,9 @@ type ConfirmationData = {
 }
 
 export function studentConfirmationEmail(d: ConfirmationData) {
-  const toLA = (iso: string) => new Date(iso).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
-const date  = format(new Date(toLA(d.startTime)), 'EEEE, MMMM d, yyyy')
-const start = format(new Date(toLA(d.startTime)), 'h:mm a')
-const end   = format(new Date(toLA(d.endTime)),   'h:mm a')
+ const date  = formatDatePST(d.startTime, 'EEEE, MMMM d, yyyy')
+const start = formatTimePST(d.startTime)
+const end   = formatTimePST(d.endTime)
 
   const content = `
     <h1 style="margin:0 0 20px;font-size:22px;font-weight:500;color:#2C2C2A;">
