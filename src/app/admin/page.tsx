@@ -651,13 +651,18 @@ onClick={() => {
                     }}>
                       <div style={{ flex: 1 }}>
                         <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>{booking.student_name}</p>
-                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {booking.student_email} ·{' '}
                           {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
                           {(booking.appointment_slots as any)?.start_time
                             ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
                             : 'No slot'}
                         </p>
+                        {booking.cancelled_at && (
+                          <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
+                            Canceled {formatDateTimePST(booking.cancelled_at)}
+                          </p>
+                        )}
                       </div>
                     <span style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,

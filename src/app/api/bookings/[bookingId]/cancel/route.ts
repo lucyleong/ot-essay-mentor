@@ -30,7 +30,7 @@ export async function POST(
   }
 
   if (booking.cancelled_at) {
-    return NextResponse.json({ error: 'Booking already cancelled' }, { status: 400 })
+    return NextResponse.json({ error: 'Booking already canceled' }, { status: 400 })
   }
 
   // Cancel the booking
@@ -116,9 +116,9 @@ export async function POST(
 
       await sendEmail({
       to:               process.env.PROGRAM_ACCOUNT_EMAIL!,
-        subject:          `Cancellation: ${cancelledBooking.student_name} cancelled their appointment`,
+        subject:          `Cancellation: ${cancelledBooking.student_name} canceled their appointment`,
         html:             `
-          <p>A student has cancelled their appointment.</p>
+          <p>A student has canceled their appointment.</p>
           <p><strong>Student:</strong> ${cancelledBooking.student_name} (${cancelledBooking.student_email})</p>
           <p><strong>Mentor:</strong> ${mentor?.full_name ?? 'Unknown'}</p>
           <p><strong>Appointment:</strong> ${apptDate}</p>
