@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-
 /**
  * Converts a UTC date string to Pacific time (handles PST/PDT automatically)
  */
@@ -21,4 +20,15 @@ export function formatDatePST(dateString: string, formatStr: string = 'EEEE, MMM
  */
 export function formatTimePST(dateString: string, formatStr: string = 'h:mm a'): string {
   return format(toPST(dateString), formatStr)
+}
+/**
+ * Formats a UTC date string as a full date + time string in Pacific time
+ * e.g. "Monday, July 5 at 3:30 PM"
+ */
+export function formatDateTimePST(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric',
+    hour: 'numeric', minute: '2-digit',
+    timeZone: 'America/Los_Angeles',
+  })
 }

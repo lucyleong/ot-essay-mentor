@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getFreshAccessToken } from '@/lib/google-auth'
 import { sendEmail } from '@/lib/email'
+import { formatDateTimePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -109,12 +110,7 @@ export async function POST(
     if (cancelledBooking) {
       const slot       = cancelledBooking.appointment_slots as any
       const mentor     = slot?.mentor_profiles
-      const apptDate   = slot?.start_time
-        ? new Date(slot.start_time).toLocaleDateString('en-US', {
-            weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
-            timeZone: 'America/Los_Angeles',
-          })
-        : 'unknown date'
+     const apptDate = slot?.start_time ? formatDateTimePST(slot.start_time) : 'unknown date'
 
       await sendEmail({
       to:               process.env.PROGRAM_ACCOUNT_EMAIL!,
