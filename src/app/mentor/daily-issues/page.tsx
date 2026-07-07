@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
+import { formatTimePST } from '@/lib/utils'
 
 type DayBooking = {
   bookingId: string
