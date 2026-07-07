@@ -93,8 +93,11 @@ export async function addStudentToCalendarEvent(bookingId: string) {
 
 if (!slot.google_calendar_event_id) {
     // No calendar event exists for this slot — create one now
-    const { eventId, meetLink: newMeetLink } = await createSlotOnCalendar(slot.id)
+   const { eventId, meetLink: newMeetLink } = await createSlotOnCalendar(slot.id)
     console.log('Created new calendar event, eventId:', eventId, 'meetLink:', newMeetLink ? 'yes' : 'no')
+    
+    // Brief delay to avoid Google Calendar API rate limit
+    await new Promise(resolve => setTimeout(resolve, 1500))
     
     // Now add the student as an attendee to the newly created event
     const accessToken = await getFreshAccessToken()
