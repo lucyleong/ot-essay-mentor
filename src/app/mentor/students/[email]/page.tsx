@@ -3,6 +3,7 @@ import { useEffect, useState, use } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
+import { formatShortDateWithYearPST } from '@/lib/utils'
 
 type BookingWithAnswers = {
   id: string

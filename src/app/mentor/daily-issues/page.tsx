@@ -77,7 +77,7 @@ export default function DailyIssuesPage() {
               {b.studentName}
             </p>
             <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
-              {format(new Date(new Date(b.startTime).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')}
+{formatTimePST(b.startTime)}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
               <button
