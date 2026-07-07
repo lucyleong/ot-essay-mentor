@@ -32,3 +32,24 @@ export function formatDateTimePST(dateString: string): string {
     timeZone: 'America/Los_Angeles',
   })
 }
+/**
+ * Formats a UTC date string as a short date in Pacific time
+ * e.g. "Mon, Jul 5"
+ */
+export function formatShortDatePST(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric',
+    timeZone: 'America/Los_Angeles',
+  })
+}
+
+/**
+ * Formats a UTC date string as a time in Pacific time using toLocaleTimeString
+ * e.g. "3:30 PM"
+ */
+export function formatLocaleTimePST(dateString: string): string {
+  return new Date(dateString).toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit',
+    timeZone: 'America/Los_Angeles',
+  })
+}

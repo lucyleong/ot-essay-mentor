@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import { format, parseISO, isToday, isFuture, isPast, differenceInDays, differenceInMinutes } from 'date-fns'
+import { formatShortDatePST, formatLocaleTimePST } from '@/lib/utils'
+
 type Booking = {
   id: string
   student_name: string
@@ -899,9 +901,9 @@ style={{
                     }}>
                       <div style={{ flex: 1 }}>
                         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                          {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' })}
+                        {formatShortDatePST(slot.start_time)}
                           {' · '}
-                          {new Date(slot.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })}
+                          {formatLocaleTimePST(slot.start_time)}
                         </p>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           20 min · {slot.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
