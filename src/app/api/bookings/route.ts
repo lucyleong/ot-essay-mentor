@@ -51,11 +51,7 @@ const { data: existingBookings } = await supabase
   if (existingBooking) {
     const slot        = existingBooking.appointment_slots as any
     const mentorName  = slot?.mentor_profiles?.full_name ?? 'your mentor'
-    const apptDate    = slot?.start_time
-      ? new Date(slot.start_time).toLocaleDateString('en-US', {
-          weekday: 'long', month: 'long', day: 'numeric',
-        })
-      : 'a future date'
+   const apptDate = slot?.start_time ? formatDatePST(slot.start_time) : 'a future date'
 
     return NextResponse.json(
       {
