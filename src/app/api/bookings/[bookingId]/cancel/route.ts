@@ -44,15 +44,17 @@ export async function POST(
   const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const slotDatePST = new Date(slotStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
 
-  // Is the slot tomorrow or later in PST?
+  // Is the slot specifically tomorrow in PST?
   const tomorrow = new Date(nowPST)
   tomorrow.setDate(tomorrow.getDate() + 1)
   tomorrow.setHours(0, 0, 0, 0)
-  const isNextDayOrLater = slotDatePST >= tomorrow
+  const dayAfterTomorrow = new Date(tomorrow)
+  dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1)
+  const isTomorrow = slotDatePST >= tomorrow && slotDatePST < dayAfterTomorrow
 
-  // Only reinstate if it's before 10pm PST (or appointment is more than a day away)
+  // Only block reinstatement if it's past 10pm PST AND the appointment is tomorrow
   const isPast10pm = nowPST.getHours() >= 22
-  const shouldReinstate = !isNextDayOrLater || !isPast10pm
+  const shouldReinstate = !(isTomorrow && isPast10pm)
 
   if (shouldReinstate) {
     await supabase
