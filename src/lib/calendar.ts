@@ -94,7 +94,6 @@ export async function addStudentToCalendarEvent(bookingId: string) {
 if (!slot.google_calendar_event_id) {
     // No calendar event exists for this slot — create one now
    const { eventId, meetLink: newMeetLink } = await createSlotOnCalendar(slot.id)
-    console.log('Created new calendar event, eventId:', eventId, 'meetLink:', newMeetLink ? 'yes' : 'no')
     
     // Brief delay to avoid Google Calendar API rate limit
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -118,9 +117,6 @@ const patchRes = await fetch(
         }),
       }
     )
-    console.log('Attendee patch status:', patchRes.status)
-    const patchBody = await patchRes.json()
-    console.log('Attendee patch response:', JSON.stringify(patchBody).slice(0, 200))
     
     return { meetLink: newMeetLink }
     return { meetLink: newMeetLink }
