@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import Script from 'next/script'
+import { formatTimePST } from '@/lib/utils'
 
 type Slot = {
   id: string
@@ -343,8 +344,9 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
 {slot.mentor_profiles?.full_name?.split(' ')[0] ?? 'Mentor'}
                     </p>
                     <p style={{ margin: 0, fontSize: 12, color: '#888780' }}>
-                   {format(new Date(new Date(slot.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')} –{' '}
-                      {format(new Date(new Date(slot.end_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })), 'h:mm a')}
+                  {formatTimePST(slot.start_time)} –{' '}
+                      {formatTimePST(slot.end_time)}
+
                       {slot.mentor_profiles?.department ? ` · ${slot.mentor_profiles.department}` : ''}
                     </p>
                   </div>
