@@ -15,6 +15,7 @@ export async function GET(_request: NextRequest) {
     `)
     .eq('is_booked', false)
     .eq('is_cancelled', false)
+    .gte('start_time', new Date().toISOString())
     .order('start_time', { ascending: true })
 
   return NextResponse.json(slots ?? [])
