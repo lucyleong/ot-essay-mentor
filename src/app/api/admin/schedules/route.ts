@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { addDays, addWeeks, addMonths } from 'date-fns'
 import { sendEmail } from '@/lib/email'
+import { formatDatePST } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -82,9 +83,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (mentor?.email) {
-      const firstDate = inserted?.[0]?.start_time
-        ? new Date(inserted[0].start_time).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'long', day: 'numeric' })
-        : 'an upcoming date'
+    const firstDate = inserted?.[0]?.start_time ? formatDatePST(inserted[0].start_time) : 'an upcoming date'
 
       await sendEmail({
         to:               mentor.email,
