@@ -94,12 +94,13 @@ export async function addStudentToCalendarEvent(bookingId: string) {
 if (!slot.google_calendar_event_id) {
     // No calendar event exists for this slot — create one now
     const { eventId, meetLink: newMeetLink } = await createSlotOnCalendar(slot.id)
+    console.log('Created new calendar event, eventId:', eventId, 'meetLink:', newMeetLink ? 'yes' : 'no')
     
     // Now add the student as an attendee to the newly created event
     const accessToken = await getFreshAccessToken()
     
-    await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?conferenceDataVersion=1&sendUpdates=all`,
+const patchRes = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?conferenceDataVersion=1&sendUpdates=all`,
       {
         method: 'PATCH',
         headers: {
@@ -114,8 +115,13 @@ if (!slot.google_calendar_event_id) {
         }),
       }
     )
+    console.log('Attendee patch status:', patchRes.status)
+    const patchBody = await patchRes.json()
+    console.log('Attendee patch response:', JSON.stringify(patchBody).slice(0, 200))
     
     return { meetLink: newMeetLink }
+    return { meetLink: newMeetLink }
+
   }
   const accessToken = await getFreshAccessToken()
 
