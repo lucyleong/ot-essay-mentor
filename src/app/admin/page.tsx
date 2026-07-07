@@ -629,7 +629,7 @@ onClick={() => {
                   </select>
                 </div>
 
-                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+               {bookingFilter !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                  {bookings.filter(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
@@ -756,7 +756,7 @@ onClick={() => {
                       )}
                    </div>
                   )})}
-               </div>
+             </div>}
 
                 {bookingFilter === 'available' && (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
