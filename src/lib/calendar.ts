@@ -88,8 +88,9 @@ export async function addStudentToCalendarEvent(bookingId: string) {
 
   if (!booking) throw new Error('Booking not found')
 
-  const slot   = booking.appointment_slots
-  const mentor = slot.mentor_profiles
+  const slot   = booking.appointment_slots as any
+  const mentor = (slot as any).mentor_profiles
+  console.log('addStudentToCalendarEvent - mentor email:', mentor?.email, 'slot calendar id:', slot?.google_calendar_event_id)
 
 if (!slot.google_calendar_event_id) {
     // No calendar event exists for this slot — create one now
