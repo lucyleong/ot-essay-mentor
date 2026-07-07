@@ -76,7 +76,8 @@ const [endingSession,     setEndingSession]     = useState(false)
 const [sessionEnded,      setSessionEnded]      = useState(false)
 const [showAllComments, setShowAllComments] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
-const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled'>('all')
+const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled' | 'available'>('all')
+const [availableSlots, setAvailableSlots] = useState<any[]>([])
 const [mentorFilter, setMentorFilter] = useState<string>('all')
 const [transferringId, setTransferringId] = useState<string | null>(null)
 const [transferMentorId, setTransferMentorId] = useState('')
@@ -261,9 +262,14 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
       return a.is_active ? -1 : 1
     })
     setMentors(sortedMentors)
-    const bookingRes  = await fetch('/api/admin/bookings')
+   const bookingRes  = await fetch('/api/admin/bookings')
     const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
+
+    const slotsRes  = await fetch('/api/admin/slots/available')
+    const slotsData = await slotsRes.json()
+    setAvailableSlots(slotsData ?? [])
+
     setLoading(false)
   }
 
@@ -596,8 +602,8 @@ onClick={() => {
 
                 {/* Filters */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                  {(['all', 'active', 'completed', 'cancelled'] as const).map(f => (
-                    <button
+{(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
+                      <button
                       key={f}
                       onClick={() => setBookingFilter(f)}
                       style={{
@@ -749,7 +755,41 @@ onClick={() => {
                       )}
                    </div>
                   )})}
-                </div>
+               </div>
+
+                {bookingFilter === 'available' && (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                    {availableSlots.length === 0 ? (
+                      <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
+                    ) : (
+                      availableSlots.map((slot: any) => {
+                        const isPast = new Date(slot.start_time) < new Date()
+                        return (
+                          <div key={slot.id} style={{
+                            display: 'flex', alignItems: 'center', gap: 12,
+                            padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
+                          }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
+                                {slot.mentor_profiles?.full_name}
+                              </p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                                {formatDateTimePST(slot.start_time)}
+                              </p>
+                            </div>
+                            <span style={{
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                              background: isPast ? '#F1EFE8' : '#E1F5EE',
+                              color: isPast ? '#5F5E5A' : '#085041',
+                            }}>
+                              {isPast ? 'Past' : 'Available'}
+                            </span>
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
