@@ -16,11 +16,12 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await serviceSupabase.auth.getUser(token)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   // Find mentor profile by email with no auth_user_id
-  const { data: profile } = await serviceSupabase
+ const { data: profile } = await serviceSupabase
     .from('mentor_profiles')
     .select('id')
     .eq('email', user.email)
     .is('auth_user_id', null)
+    .neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
     .single()
 
   if (!profile) return NextResponse.json({ linked: false })
