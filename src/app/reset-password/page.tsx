@@ -150,13 +150,21 @@ if (!ready) {
           <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
             Confirm new password
           </label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            placeholder="Repeat your new password"
-            style={{ width: '100%', boxSizing: 'border-box' }}
-          />
+         <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              placeholder="Repeat your new password"
+              style={{ width: '100%', boxSizing: 'border-box', paddingRight: 60 }}
+            />
+            <button
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', fontSize: 12, color: '#888780', cursor: 'pointer', padding: '2px 6px' }}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
         </div>
 
         <button
