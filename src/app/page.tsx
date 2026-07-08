@@ -6,10 +6,14 @@ import { useRouter } from 'next/navigation'
 export default function HomePage() {
   const router = useRouter()
 
- useEffect (() => {
-    // Handle legacy hash-based recovery flow
+ useEffect(() => {
     const hash = window.location.hash
+    // Handle password recovery flow
     if (hash.includes('type=recovery')) {
+      router.push(`/reset-password${hash}`)
+    }
+    // Handle invite flow — redirect to reset password page to set initial password
+    if (hash.includes('type=invite')) {
       router.push(`/reset-password${hash}`)
     }
     // Handle PKCE code-based recovery flow
