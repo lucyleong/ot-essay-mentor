@@ -22,7 +22,8 @@ export async function GET(
   console.log('Student profile request - mentor:', !!mentor, 'isAdmin:', isAdmin, 'email:', studentEmail)
 
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
-
+console.log('Fetching bookings for:', studentEmail)
+  
   const { data: bookings, error: bookingsError } = await supabase
     .from('student_bookings')
     .select(`
