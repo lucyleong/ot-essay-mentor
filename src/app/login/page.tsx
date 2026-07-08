@@ -30,11 +30,30 @@ export default function LoginPage() {
       return
     }
 
-    const { data: mentor } = await supabase
+   let { data: mentor } = await supabase
       .from('mentor_profiles')
       .select('id')
       .eq('auth_user_id', data.user.id)
       .single()
+
+    // If no profile found by auth_user_id, try linking by email
+    if (!mentor) {
+      const { data: profileByEmail } = await supabase
+        .from('mentor_profiles')
+        .select('id')
+        .eq('email', data.user.email)
+        .is('auth_user_id', null)
+        .single()
+
+      if (profileByEmail) {
+        // Link the auth user to the mentor profile
+        await supabase
+          .from('mentor_profiles')
+          .update({ auth_user_id: data.user.id })
+          .eq('id', profileByEmail.id)
+        mentor = profileByEmail
+      }
+    }
 
     if (data.user.app_metadata?.role === 'admin') {
       router.push('/admin')
