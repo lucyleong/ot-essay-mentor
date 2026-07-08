@@ -38,8 +38,12 @@ export default function LoginPage() {
 
    // If no profile found by auth_user_id, try linking by email via API
     if (!mentor) {
-      const linkRes = await fetch('/api/admin/mentors/link', { method: 'POST' })
-      const linkData = await linkRes.json()
+const { data: { session } } = await supabase.auth.getSession()
+      const linkRes = await fetch('/api/admin/mentors/link', { 
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session?.access_token}` }
+      })
+            const linkData = await linkRes.json()
       if (linkData.linked) {
         mentor = { id: linkData.profileId }
       }

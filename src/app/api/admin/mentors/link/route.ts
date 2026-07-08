@@ -8,10 +8,13 @@ const serviceSupabase = createClient(
 )
 
 export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Get the auth token from the request header
+  const authHeader = request.headers.get('Authorization')
+  if (!authHeader) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  
+  const token = authHeader.replace('Bearer ', '')
+  const { data: { user } } = await serviceSupabase.auth.getUser(token)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
   // Find mentor profile by email with no auth_user_id
   const { data: profile } = await serviceSupabase
     .from('mentor_profiles')
