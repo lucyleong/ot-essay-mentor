@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
+
+const serviceSupabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(
   request: NextRequest,
@@ -24,7 +30,7 @@ export async function GET(
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
   console.log('Fetching bookings for:', studentEmail)
 
-  const { data: bookings, error: bookingsError } = await supabase
+  const { data: bookings, error: bookingsError } = await serviceSupabase
     .from('student_bookings')
     .select(`
       id, student_name, student_email, student_phone,
@@ -48,7 +54,7 @@ export async function GET(
 
   console.log('Bookings fetched:', bookings?.length, 'error:', bookingsError?.message)
 
-  const { data: notes } = await supabase
+  const { data: notes } = await serviceSupabase
     .from('mentor_student_notes')
     .select('id, body, is_private, created_at, mentor_id, mentor_profiles(full_name)')
     .eq('student_email', studentEmail)
@@ -58,7 +64,7 @@ export async function GET(
   const bookingsWithUrls = await Promise.all((bookings ?? []).map(async (booking: any) => {
     const essaysWithUrls = await Promise.all((booking.student_essays ?? []).map(async (essay: any) => {
       if (essay.essay_type === 'file_upload' && essay.file_path) {
-        const { data: signed } = await supabase.storage
+        const { data: signed } = await serviceSupabase.storage
           .from('essays')
           .createSignedUrl(essay.file_path, 60 * 60)
         return { ...essay, signed_url: signed?.signedUrl ?? null }
