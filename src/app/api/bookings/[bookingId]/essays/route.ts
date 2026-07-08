@@ -110,9 +110,9 @@ export async function POST(
         finalUrl.includes('accounts.google.com/ServiceLogin')
 
       if (isRestricted) {
-        return NextResponse.json(
-{ error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link can edit", then try again.' }          
-{ status: 422 }
+       return NextResponse.json(
+          { error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link can edit", then try again.' },
+          { status: 422 }
         )
       }
     } catch {
