@@ -37,7 +37,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
       </div>
       <div style="background:#F1EFE8;border-radius:8px;padding:10px 16px;flex:1;min-width:80px;text-align:center;">
         <div style="font-size:22px;font-weight:500;color:#5F5E5A;">${noSms}</div>
-        <div style="font-size:12px;color:#5F5E5A;margin-top:2px;">No SMS sent</div>
+        <div style="font-size:12px;color:#5F5E5A;margin-top:2px;">No SMS consent</div>
       </div>
       <div style="background:#EEEDFE;border-radius:8px;padding:10px 16px;flex:1;min-width:80px;text-align:center;">
         <div style="font-size:22px;font-weight:500;color:#3C3489;">${count}</div>
@@ -53,9 +53,9 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
       a.smsStatus === 'confirmed' ? '#085041' :
       a.smsStatus === 'no_reply'  ? '#854F0B' : '#5F5E5A'
 
-   const statusLabel =
+  const statusLabel =
       a.smsStatus === 'confirmed' ? 'Confirmed' :
-      a.smsStatus === 'no_reply'  ? 'No reply' : 'No consent'
+      a.smsStatus === 'no_reply'  ? 'No reply' : 'No SMS consent'
 
     const statusBg =
       a.smsStatus === 'confirmed' ? '#E1F5EE' :
