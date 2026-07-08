@@ -25,10 +25,8 @@ export async function GET(
     .single()
 
  const isAdmin = user.app_metadata?.role === 'admin'
-  console.log('Student profile request - mentor:', !!mentor, 'isAdmin:', isAdmin, 'email:', studentEmail)
 
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
-  console.log('Fetching bookings for:', studentEmail)
 
   const { data: bookings, error: bookingsError } = await serviceSupabase
     .from('student_bookings')
@@ -51,8 +49,6 @@ export async function GET(
     .eq('student_email', studentEmail)
     .is('cancelled_at', null)
     .order('booked_at', { ascending: false })
-
-  console.log('Bookings fetched:', bookings?.length, 'error:', bookingsError?.message)
 
   const { data: notes } = await serviceSupabase
     .from('mentor_student_notes')
