@@ -14,14 +14,17 @@ export default function ResetPasswordPage() {
   const router   = useRouter()
 
  useEffect(() => {
-    async function setupSession() {
+   async function setupSession() {
       // Handle hash-based tokens (recovery and invite flows)
       const hash = window.location.hash
+      console.log('Hash:', hash.slice(0, 50))
       if (hash.includes('access_token')) {
-        const { data, error } = await supabase.auth.setSession({
-          access_token: new URLSearchParams(hash.slice(1)).get('access_token') ?? '',
-          refresh_token: new URLSearchParams(hash.slice(1)).get('refresh_token') ?? '',
-        })
+        const params = new URLSearchParams(hash.slice(1))
+        const accessToken = params.get('access_token') ?? ''
+        const refreshToken = params.get('refresh_token') ?? ''
+        console.log('Access token exists:', !!accessToken, 'Refresh token exists:', !!refreshToken)
+        const { data, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+        console.log('setSession result - session:', !!data.session, 'error:', error?.message)
         if (data.session) {
           setReady(true)
           return
