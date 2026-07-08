@@ -36,22 +36,12 @@ export default function LoginPage() {
       .eq('auth_user_id', data.user.id)
       .single()
 
-    // If no profile found by auth_user_id, try linking by email
+   // If no profile found by auth_user_id, try linking by email via API
     if (!mentor) {
-      const { data: profileByEmail } = await supabase
-        .from('mentor_profiles')
-        .select('id')
-        .eq('email', data.user.email)
-        .is('auth_user_id', null)
-        .single()
-
-      if (profileByEmail) {
-        // Link the auth user to the mentor profile
-        await supabase
-          .from('mentor_profiles')
-          .update({ auth_user_id: data.user.id })
-          .eq('id', profileByEmail.id)
-        mentor = profileByEmail
+      const linkRes = await fetch('/api/admin/mentors/link', { method: 'POST' })
+      const linkData = await linkRes.json()
+      if (linkData.linked) {
+        mentor = { id: linkData.profileId }
       }
     }
 
