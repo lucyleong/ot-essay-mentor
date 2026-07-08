@@ -96,7 +96,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           📄 If sharing a Google Doc
         </p>
         <p style={{ fontSize: 13, color: '#7A5500', margin: 0, lineHeight: 1.6 }}>
-          Make sure to set sharing to <strong>"Anyone with the link can view"</strong> — otherwise your mentor won't be able to open it.
+          Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
           {mentorEmail && (
             <> If you'd prefer to keep it private, share it directly with your mentor
             {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
