@@ -12,6 +12,7 @@ export default function ResetPasswordPage() {
   const [ready,           setReady]           = useState(false)
   const supabase = createClient()
   const router   = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
 
  useEffect(() => {
    async function setupSession() {
@@ -128,13 +129,21 @@ if (!ready) {
           <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
             New password
           </label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="At least 8 characters"
-            style={{ width: '100%', boxSizing: 'border-box' }}
-          />
+        <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="At least 8 characters"
+              style={{ width: '100%', boxSizing: 'border-box', paddingRight: 60 }}
+            />
+            <button
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', fontSize: 12, color: '#888780', cursor: 'pointer', padding: '2px 6px' }}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
         </div>
 
         <div style={{ marginBottom: 20 }}>

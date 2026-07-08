@@ -83,6 +83,7 @@ const [mentorFilter, setMentorFilter] = useState<string>('all')
 const [transferringId, setTransferringId] = useState<string | null>(null)
 const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
+const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -573,7 +574,7 @@ onClick={() => {
                               <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.email}</p>
                             </div>
                           </div>
-                          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                             <span style={{
                               fontSize: 11, padding: '2px 8px', borderRadius: 20,
                               background: '#FCEBEB', color: '#791F1F',
@@ -586,6 +587,37 @@ onClick={() => {
                             >
                               Activate
                             </button>
+                            {deletingMentorId === mentor.id ? (
+                              <>
+                                <button
+                                  onClick={async () => {
+                                    await fetch(`/api/admin/mentors/delete`, {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ mentorId: mentor.id }),
+                                    })
+                                    setDeletingMentorId(null)
+                                    loadData()
+                                  }}
+                                  style={{ fontSize: 12, padding: '4px 10px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                                >
+                                  Confirm delete
+                                </button>
+                                <button
+                                  onClick={() => setDeletingMentorId(null)}
+                                  style={{ fontSize: 12, padding: '4px 10px' }}
+                                >
+                                  Never mind
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => setDeletingMentorId(mentor.id)}
+                                style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                              >
+                                Delete
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
