@@ -8,9 +8,6 @@ const serviceSupabase = createClient(
 )
 
 export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { mentorId } = await request.json()
   if (!mentorId) return NextResponse.json({ error: 'Missing mentorId' }, { status: 400 })
