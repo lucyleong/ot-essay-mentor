@@ -288,9 +288,13 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     setAddError('')
     setAddSuccess('')
 
-    const { error } = await supabase
-      .from('mentor_profiles')
-      .insert({ full_name: newName.trim(), email: newEmail.trim().toLowerCase(), is_active: true })
+   const res = await fetch('/api/admin/mentors/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName: newName.trim(), email: newEmail.trim().toLowerCase() }),
+    })
+    const data = await res.json()
+    const error = res.ok ? null : { message: data.error }
 
     setAdding(false)
 
