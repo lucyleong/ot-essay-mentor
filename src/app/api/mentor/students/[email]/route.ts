@@ -18,7 +18,9 @@ export async function GET(
     .eq('auth_user_id', user.id)
     .single()
 
-  if (!mentor) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
+  const isAdmin = user.app_metadata?.role === 'admin'
+
+  if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
 
   const { data: bookings, error: bookingsError } = await supabase
     .from('student_bookings')
@@ -62,9 +64,10 @@ export async function GET(
     return { ...booking, student_essays: essaysWithUrls }
   }))
 
+
   return NextResponse.json({
     bookings: bookingsWithUrls,
     notes:    notes ?? [],
-    mentorId: mentor.id,
+    mentorId: mentor?.id ?? null,
   })
 }

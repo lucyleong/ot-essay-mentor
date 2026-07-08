@@ -58,6 +58,7 @@ const [showAllEssays, setShowAllEssays] = useState(false)
   const router   = useRouter()
   const supabase = createClient()
   const [copied, setCopied] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 const email = decodeURIComponent(emailParam)
   useEffect(() => {
     loadData()
@@ -80,6 +81,7 @@ const email = decodeURIComponent(emailParam)
 
     if (!mentor && !isAdmin) { router.push('/login'); return }
     if (mentor) setMentorId(mentor.id)
+    setIsAdmin(isAdmin)
 
     // Get all bookings for this student
     const res = await fetch(`/api/mentor/students/${encodeURIComponent(email)}`)
@@ -162,8 +164,8 @@ const email = decodeURIComponent(emailParam)
 
       {/* Back button */}
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <button
-          onClick={() => router.push('/mentor/dashboard')}
+       <button
+        onClick={() => router.push(isAdmin ? '/admin?panel=bookings' : '/mentor/dashboard')}
           style={{ fontSize: 13, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
         >
           ← Back to dashboard
