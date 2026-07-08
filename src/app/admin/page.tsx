@@ -691,8 +691,7 @@ onClick={() => {
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                     }}>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>{booking.student_name}</p>
-                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+<a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: '#534AB7', textDecoration: 'none', display: 'block' }}>{booking.student_name}</a>                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {booking.student_email} ·{' '}
                           {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
                           {(booking.appointment_slots as any)?.start_time

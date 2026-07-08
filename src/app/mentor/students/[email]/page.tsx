@@ -67,14 +67,19 @@ const email = decodeURIComponent(emailParam)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
 
+   // Check if user is a mentor
     const { data: mentor } = await supabase
       .from('mentor_profiles')
       .select('id')
       .eq('auth_user_id', user.id)
       .single()
 
-    if (!mentor) { router.push('/login'); return }
-    setMentorId(mentor.id)
+    // Check if user is an admin
+    const { data: { user: fullUser } } = await supabase.auth.getUser()
+    const isAdmin = fullUser?.app_metadata?.role === 'admin'
+
+    if (!mentor && !isAdmin) { router.push('/login'); return }
+    if (mentor) setMentorId(mentor.id)
 
     // Get all bookings for this student
     const res = await fetch(`/api/mentor/students/${encodeURIComponent(email)}`)
