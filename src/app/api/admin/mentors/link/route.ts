@@ -15,7 +15,10 @@ export async function POST(request: NextRequest) {
   const token = authHeader.replace('Bearer ', '')
   const { data: { user } } = await serviceSupabase.auth.getUser(token)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  // Find mentor profile by email with no auth_user_id
+ 
+ console.log('Link attempt - user email:', user.email, 'program account:', process.env.PROGRAM_ACCOUNT_EMAIL)
+ 
+    // Find mentor profile by email with no auth_user_id
  const { data: profile } = await serviceSupabase
     .from('mentor_profiles')
     .select('id')
