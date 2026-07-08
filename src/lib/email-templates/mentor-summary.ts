@@ -73,7 +73,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
             <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:#EEEDFE;color:#3C3489;font-weight:500;">
               Essay shared
             </span>` : ''}
-            <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:${statusBg};color:${statusColor};font-weight:500;">
+         <span style="font-size:11px;padding:2px 10px;border-radius:20px;background:${statusBg};color:${statusColor};font-weight:500;display:inline-block;text-align:center;white-space:nowrap;">
               ${statusLabel}
             </span>
           </div>
