@@ -491,7 +491,12 @@ onClick={() => {
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Email</label>
                       <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="mentor@email.com" style={{ width: '100%', boxSizing: 'border-box' }} />
                     </div>
-                    <button onClick={addMentor} disabled={adding} style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+                   <button onClick={addMentor} disabled={adding} style={{ 
+                        fontSize: 12, whiteSpace: 'nowrap',
+                        background: newName && newEmail ? '#534AB7' : undefined,
+                        color: newName && newEmail ? '#ffffff' : undefined,
+                        border: newName && newEmail ? 'none' : undefined,
+                      }}>
                       {adding ? 'Adding...' : 'Add mentor'}
                     </button>
                   </div>
