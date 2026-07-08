@@ -18,7 +18,8 @@ export async function GET(
     .eq('auth_user_id', user.id)
     .single()
 
-  const isAdmin = user.app_metadata?.role === 'admin'
+ const isAdmin = user.app_metadata?.role === 'admin'
+  console.log('Student profile request - mentor:', !!mentor, 'isAdmin:', isAdmin, 'email:', studentEmail)
 
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
 
