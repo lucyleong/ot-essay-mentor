@@ -15,8 +15,21 @@ export default function ResetPasswordPage() {
 
  useEffect(() => {
     async function setupSession() {
+      // Handle hash-based tokens (recovery and invite flows)
+      const hash = window.location.hash
+      if (hash.includes('access_token')) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: new URLSearchParams(hash.slice(1)).get('access_token') ?? '',
+          refresh_token: new URLSearchParams(hash.slice(1)).get('refresh_token') ?? '',
+        })
+        if (data.session) {
+          setReady(true)
+          return
+        }
+      }
+
       // For implicit flow — Supabase auto-parses the hash token
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const { data: { session } } = await supabase.auth.getSession()
 
       if (session) {
         setReady(true)
