@@ -111,7 +111,8 @@ export async function POST(
 
       if (isRestricted) {
         return NextResponse.json(
-{ error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link can edit", then try again.' }          { status: 422 }
+{ error: 'This Google Doc isn\'t publicly shared. Please open your doc, click Share, change "General access" to "Anyone with the link can edit", then try again.' }          
+{ status: 422 }
         )
       }
     } catch {
