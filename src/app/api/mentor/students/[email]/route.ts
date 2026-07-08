@@ -22,11 +22,31 @@ export async function GET(
   console.log('Student profile request - mentor:', !!mentor, 'isAdmin:', isAdmin, 'email:', studentEmail)
 
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
-console.log('Fetching bookings for:', studentEmail)
+  console.log('Fetching bookings for:', studentEmail)
 
   const { data: bookings, error: bookingsError } = await supabase
     .from('student_bookings')
-    console.log('Bookings fetched:', bookings?.length, 'error:', bookingsError?.message)
+    .select(`
+      id, student_name, student_email, student_phone,
+      booked_at, confirmation_code,
+      appointment_slots (
+        start_time, end_time, meeting_type, google_meet_link,
+        mentor_profiles ( full_name )
+      ),
+      booking_question_answers (
+        answer_text,
+        intake_questions ( question_text, sort_order )
+      ),
+      student_essays (
+        id, essay_type, google_doc_url, file_name, file_path,
+        note_to_mentor, uploaded_at
+      )
+    `)
+    .eq('student_email', studentEmail)
+    .is('cancelled_at', null)
+    .order('booked_at', { ascending: false })
+
+  console.log('Bookings fetched:', bookings?.length, 'error:', bookingsError?.message)
     .select(`
       id, student_name, student_email, student_phone,
       booked_at, confirmation_code,
