@@ -232,20 +232,28 @@ const email = decodeURIComponent(emailParam)
           marginBottom: 16,
         }}>
           <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 12px' }}>Intake info</h2>
-       {[...firstBooking.booking_question_answers]
-            .filter((a: any) => !['I Want Help With', 'I am also working with a private counselor hired by my family'].includes(a.intake_questions.question_text))
-            .sort((a: any, b: any) => a.intake_questions.sort_order - b.intake_questions.sort_order)
-            .map((answer, i) => (
+      {Object.values(
+              [...firstBooking.booking_question_answers]
+                .filter((a: any) => !['I Want Help With', 'I am also working with a private counselor hired by my family'].includes(a.intake_questions.question_text))
+                .reduce((groups: any, a: any) => {
+                  const key = a.intake_questions.question_text
+                  if (!groups[key]) groups[key] = { question: a.intake_questions, answers: [] }
+                  groups[key].answers.push(a.answer_text)
+                  return groups
+                }, {})
+            )
+              .sort((a: any, b: any) => a.question.sort_order - b.question.sort_order)
+              .map((group: any, i: number) => (
               <div key={i} style={{
                 display: 'flex', gap: 12,
                 padding: '7px 0',
                 borderBottom: '0.5px solid #e8e6de',
               }}>
                 <p style={{ fontSize: 12, color: '#888780', margin: 0, width: 200, flexShrink: 0 }}>
-                  {answer.intake_questions.question_text}
+                  {group.question.question_text}
                 </p>
-               <p style={{ fontSize: 13, color: '#2C2C2A', margin: 0 }}>
-                  {shortenLabel(answer.answer_text)}
+                <p style={{ fontSize: 13, color: '#2C2C2A', margin: 0 }}>
+                  {group.answers.map((a: string) => shortenLabel(a)).join(', ')}
                 </p>
               </div>
             ))}
