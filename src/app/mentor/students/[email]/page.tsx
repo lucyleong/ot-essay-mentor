@@ -39,7 +39,11 @@ type BookingWithAnswers = {
 
 
 function shortenLabel(label: string) {
+  // Only shorten labels that have standard parenthetical options (Yes/No/etc)
+  // Don't shorten "Other" free-text answers
+  if (label.toLowerCase().startsWith('other')) return label
   return label.split(' (')[0]
+}
 }
 export default function StudentProfilePage({
   params,
