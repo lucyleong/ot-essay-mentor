@@ -1055,12 +1055,17 @@ onClick={() => {
                         </div>
                       </div>
 
-                    {/* Ethnicity - full width */}
+                  {/* Ethnicity - full width */}
                       <div style={{ gridColumn: '1 / -1' }}>
                           <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Ethnicity</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(reports.demographics.ethnicity.length * 40 + 60, 160) }}>
                           <canvas id="bar-ethnicity" role="img" aria-label="Horizontal bar chart of ethnicity responses, students may select multiple"></canvas>
                         </div>
+                        {reports.demographics.ethnicityOther?.length > 0 && (
+                          <p style={{ fontSize: 12, color: '#5F5E5A', margin: '8px 0 0' }}>
+                            <strong>Other responses:</strong> {reports.demographics.ethnicityOther.join(', ')}
+                          </p>
+                        )}
                       </div>
 
                    </div>

@@ -68,11 +68,28 @@ const bookedAt = a.booked_at
   const map: Record<string, number> = {}
   byStudent.forEach(({ answers }) => {
     answers.forEach(answer => {
-      map[answer] = (map[answer] ?? 0) + 1
+      // Group "Other: xxx" entries under "Other" for chart display
+      const key = answer.startsWith('Other:') ? 'Other' : answer
+      map[key] = (map[key] ?? 0) + 1
     })
   })
 
   return Object.entries(map).sort((a, b) => b[1] - a[1])
+
+function getOtherResponses(answers: any[], questionKey: string): string[] {
+  const otherResponses: string[] = []
+  answers
+    .filter((a: any) => a.intake_questions?.question_key === questionKey)
+    .forEach((a: any) => {
+      const answer = a.answer_text?.trim()
+      if (answer?.startsWith('Other:')) {
+        const text = answer.replace('Other:', '').trim()
+        if (text && !otherResponses.includes(text)) {
+          otherResponses.push(text)
+        }
+      }
+    })
+  return otherResponses
 }
 
 function countAllAnswers(answers: any[], questionKey: string) {
@@ -244,6 +261,7 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
     demographics: {
      firstGen:        firstGenEntries,
 ethnicity:       countMultiselect(answersWithEmail, 'ethnicity'),
+     ethnicityOther:  getOtherResponses(answersWithEmail, 'ethnicity'),
       helpWith:        countAllAnswers(answersWithEmail, 'help_with'),
       teachers:        countUnique(answersWithEmail, 'teacher'),
       privateCounselor: countUnique(answersWithEmail, 'private_counselor'),
