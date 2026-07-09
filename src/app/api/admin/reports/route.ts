@@ -77,22 +77,6 @@ const bookedAt = a.booked_at
  return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
-function getOtherResponses(answers: any[], questionKey: string): string[] {
-  const otherResponses: string[] = []
-  answers
-    .filter((a: any) => a.intake_questions?.question_key === questionKey)
-    .forEach((a: any) => {
-      const answer = a.answer_text?.trim()
-      if (answer?.startsWith('Other:')) {
-        const text = answer.replace('Other:', '').trim()
-        if (text && !otherResponses.includes(text)) {
-          otherResponses.push(text)
-        }
-      }
-    })
-  return otherResponses
-}
-
 function countAllAnswers(answers: any[], questionKey: string) {
   // Count every distinct answer a student has ever given (not just most recent)
   const byStudent = new Map<string, Set<string>>()
