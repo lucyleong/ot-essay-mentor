@@ -643,8 +643,8 @@ onClick={() => {
                   {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
-             {/* Filters */}
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', maxWidth: 800 }}>
+           {/* Filters */}
+                <div className="no-wrap-row" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center' }}>
 {(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
                       <button
                       key={f}
