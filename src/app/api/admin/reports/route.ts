@@ -117,6 +117,22 @@ function countAllAnswers(answers: any[], questionKey: string) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
+function getOtherResponses(answers: any[], questionKey: string): string[] {
+  const otherResponses: string[] = []
+  answers
+    .filter((a: any) => a.intake_questions?.question_key === questionKey)
+    .forEach((a: any) => {
+      const answer = a.answer_text?.trim()
+      if (answer?.startsWith('Other:')) {
+        const text = answer.replace('Other:', '').trim()
+        if (text && !otherResponses.includes(text)) {
+          otherResponses.push(text)
+        }
+      }
+    })
+  return otherResponses
+}
+
 export async function GET() {
   // Total bookings
   const { count: totalBookings } = await supabase
