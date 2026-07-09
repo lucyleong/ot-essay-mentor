@@ -190,14 +190,17 @@ export default function BookPage() {
         if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false
         return true
       })
-      .flatMap(q => {
+    .flatMap(q => {
         const value = answers[q.id]
         if (Array.isArray(value)) {
           // Multiselect — create one answer entry per selected option
-          return value.map((v: string) => ({
-            questionId: q.id,
-            answer: v,
-          }))
+          return value.map((v: string) => {
+            // If "Other" is selected, append the free text
+            if (v === 'Other' && answers[`${q.id}_other`]) {
+              return { questionId: q.id, answer: `Other: ${answers[`${q.id}_other`]}` }
+            }
+            return { questionId: q.id, answer: v }
+          })
         }
         return [{
           questionId: q.id,
