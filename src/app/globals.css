@@ -112,4 +112,9 @@ html, body {
   .no-wrap-row {
     flex-wrap: nowrap !important;
   }
+  @media (min-width: 769px) {
+  .no-wrap-row {
+    flex-wrap: nowrap !important;
+  }
+}
 }
