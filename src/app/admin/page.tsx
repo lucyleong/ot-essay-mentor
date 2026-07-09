@@ -704,8 +704,7 @@ onClick={() => {
                       const bTime = (b.appointment_slots as any)?.start_time ?? ''
                       return bTime.localeCompare(aTime)
                     }
-                    return new Date(b.booked_at).getTime() - new Date(a.booked_at).getTime()
-                  })
+                return new Date(b.booked_at).getTime() - new Date(a.booked_at).getTime()
                   }).map(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
