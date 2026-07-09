@@ -424,7 +424,6 @@ async function toggleMentorVirtual(mentor: Mentor) {
           <button
             key={item.key}
 onClick={() => {
-              console.log('Setting active panel to:', item.key)
               setActivePanel(item.key)
               const url = new URL(window.location.href)
               url.searchParams.set('panel', item.key)
