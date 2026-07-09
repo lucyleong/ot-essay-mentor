@@ -714,31 +714,36 @@ onClick={() => {
                     const isPast = startTime ? new Date(startTime) < new Date() : false
 
                     return (
-                    <div key={booking.id} style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
+                   <div key={booking.id} style={{
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                     }}>
-                      <div style={{ flex: 1 }}>
-<a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: '#534AB7', textDecoration: 'none', display: 'block' }}>{booking.student_name}</a>                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
-                          {booking.student_email} ·{' '}
-                          {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
-                          {(booking.appointment_slots as any)?.start_time
-                            ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
-                            : 'No slot'}
-                        </p>
-                        {booking.cancelled_at && (
-                          <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
-                            Canceled {formatDateTimePST(booking.cancelled_at)}
-                          </p>
-                        )}
+                      {/* Top row: name + status badge */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
+                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
+                        <span style={{
+                          fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
+                          background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
+                          color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
+                        }}>
+                          {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
+                        </span>
                       </div>
-                    <span style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
-                        color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
-                      }}>
-                        {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
-                      </span>
+                      {/* Second row: email */}
+                      <p style={{ fontSize: 12, color: '#888780', margin: '0 0 1px' }}>
+                        {booking.student_email}
+                      </p>
+                      {/* Third row: mentor · date · time */}
+                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                        {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
+                        {(booking.appointment_slots as any)?.start_time
+                          ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
+                          : 'No slot'}
+                      </p>
+                      {booking.cancelled_at && (
+                        <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
+                          Canceled {formatDateTimePST(booking.cancelled_at)}
+                        </p>
+                      )}
 
                       {!booking.cancelled_at && !isPast && (
                         cancellingId === booking.id ? (
