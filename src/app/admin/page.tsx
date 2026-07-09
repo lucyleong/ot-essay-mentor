@@ -645,7 +645,7 @@ onClick={() => {
 
           {/* Filters */}
                 <div className="no-wrap-row" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flexShrink: 0 }}>
                     {(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
                       <button
                         key={f}
