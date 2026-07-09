@@ -74,7 +74,8 @@ const bookedAt = a.booked_at
     })
   })
 
-  return Object.entries(map).sort((a, b) => b[1] - a[1])
+ return Object.entries(map).sort((a, b) => b[1] - a[1])
+}
 
 function getOtherResponses(answers: any[], questionKey: string): string[] {
   const otherResponses: string[] = []
