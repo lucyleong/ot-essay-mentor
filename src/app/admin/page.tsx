@@ -741,7 +741,7 @@ onClick={() => {
                       </p>
                       {booking.cancelled_at && (
                         <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
-                          Canceled {formatDateTimePST(booking.cancelled_at)}
+                          Cancelled {formatDateTimePST(booking.cancelled_at)}
                         </p>
                       )}
 
