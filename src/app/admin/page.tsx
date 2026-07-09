@@ -659,20 +659,20 @@ onClick={() => {
                       {f.charAt(0).toUpperCase() + f.slice(1)}
                     </button>
                   ))}
-                <select
+               <select
                     value={mentorFilter}
                     onChange={e => setMentorFilter(e.target.value)}
-                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
+                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
                   >
                     <option value="all">All mentors</option>
                     {mentors.filter(m => m.full_name !== process.env.PROGRAM_ACCOUNT_EMAIL).map(m => (
                       <option key={m.id} value={m.full_name}>{m.full_name}</option>
                     ))}
                   </select>
-                <select
+               <select
                     value={bookingSort}
                     onChange={e => setBookingSort(e.target.value as any)}
-                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
+                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
                   >
                     <option value="booked_at">Most recent booking</option>
                     <option value="start_time_asc">Appointment date ↑</option>
