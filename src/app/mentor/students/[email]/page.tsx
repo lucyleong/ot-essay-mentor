@@ -44,7 +44,7 @@ function shortenLabel(label: string) {
   if (label.toLowerCase().startsWith('other')) return label
   return label.split(' (')[0]
 }
-}
+
 export default function StudentProfilePage({
   params,
 }: {
