@@ -643,42 +643,46 @@ onClick={() => {
                   {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
-           {/* Filters */}
-                <div className="no-wrap-row" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center' }}>
-{(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
+          {/* Filters */}
+                <div className="no-wrap-row" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
                       <button
-                      key={f}
-                      onClick={() => setBookingFilter(f)}
-                      style={{
-                        fontSize: 12, padding: '4px 12px', borderRadius: 20,
-                        background: bookingFilter === f ? '#534AB7' : '#ffffff',
-                        color: bookingFilter === f ? '#ffffff' : '#5F5E5A',
-                        border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
-                      }}
-                    >
-                      {f.charAt(0).toUpperCase() + f.slice(1)}
-                    </button>
-                  ))}
-               <select
-                    value={mentorFilter}
-                    onChange={e => setMentorFilter(e.target.value)}
-                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
-                  >
-                    <option value="all">All mentors</option>
-                    {mentors.filter(m => m.full_name !== process.env.PROGRAM_ACCOUNT_EMAIL).map(m => (
-                      <option key={m.id} value={m.full_name}>{m.full_name}</option>
+                        key={f}
+                        onClick={() => setBookingFilter(f)}
+                        style={{
+                          fontSize: 12, padding: '4px 12px', borderRadius: 20,
+                          background: bookingFilter === f ? '#534AB7' : '#ffffff',
+                          color: bookingFilter === f ? '#ffffff' : '#5F5E5A',
+                          border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
+                        }}
+                      >
+                        {f.charAt(0).toUpperCase() + f.slice(1)}
+                      </button>
                     ))}
-                  </select>
-               <select
-                    value={bookingSort}
-                    onChange={e => setBookingSort(e.target.value as any)}
-                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
-                  >
-                    <option value="booked_at">Most recent booking</option>
-                    <option value="start_time_asc">Appointment date ↑</option>
-                    <option value="start_time_desc">Appointment date ↓</option>
-                    <option value="student_name">Student name</option>
-                  </select>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <select
+                      value={mentorFilter}
+                      onChange={e => setMentorFilter(e.target.value)}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                    >
+                      <option value="all">All mentors</option>
+                      {mentors.filter(m => m.full_name !== process.env.PROGRAM_ACCOUNT_EMAIL).map(m => (
+                        <option key={m.id} value={m.full_name}>{m.full_name}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={bookingSort}
+                      onChange={e => setBookingSort(e.target.value as any)}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                    >
+                      <option value="booked_at">Most recent booking</option>
+                      <option value="start_time_asc">Appointment date ↑</option>
+                      <option value="start_time_desc">Appointment date ↓</option>
+                      <option value="student_name">Student name</option>
+                    </select>
+                  </div>
                 </div>
 
                {bookingFilter !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
