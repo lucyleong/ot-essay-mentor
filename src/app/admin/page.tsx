@@ -84,6 +84,7 @@ const [transferringId, setTransferringId] = useState<string | null>(null)
 const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
 const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
+const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time' | 'student_name'>('booked_at')
 
   // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -658,7 +659,7 @@ onClick={() => {
                       {f.charAt(0).toUpperCase() + f.slice(1)}
                     </button>
                   ))}
-                  <select
+                <select
                     value={mentorFilter}
                     onChange={e => setMentorFilter(e.target.value)}
                     style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
@@ -668,10 +669,19 @@ onClick={() => {
                       <option key={m.id} value={m.full_name}>{m.full_name}</option>
                     ))}
                   </select>
+                  <select
+                    value={bookingSort}
+                    onChange={e => setBookingSort(e.target.value as any)}
+                    style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
+                  >
+                    <option value="booked_at">Most recent booking</option>
+                    <option value="start_time">Appointment date</option>
+                    <option value="student_name">Student name</option>
+                  </select>
                 </div>
 
                {bookingFilter !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                 {bookings.filter(booking => {
+              {bookings.filter(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
                     const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name ?? ''
@@ -681,6 +691,14 @@ onClick={() => {
                     if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                     return true
+                  }).sort((a, b) => {
+                    if (bookingSort === 'student_name') return a.student_name.localeCompare(b.student_name)
+                    if (bookingSort === 'start_time') {
+                      const aTime = (a.appointment_slots as any)?.start_time ?? ''
+                      const bTime = (b.appointment_slots as any)?.start_time ?? ''
+                      return aTime.localeCompare(bTime)
+                    }
+                    return new Date(b.booked_at).getTime() - new Date(a.booked_at).getTime()
                   }).map(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
