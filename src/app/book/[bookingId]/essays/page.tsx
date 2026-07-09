@@ -83,7 +83,14 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
   }
 
   return (
-    <main style={{ maxWidth: 560, margin: '0 auto', padding: '2rem 1rem' }}>
+   <main style={{ maxWidth: 560, margin: '0 auto', padding: '2rem 1rem' }}>
+
+      <p style={{ fontSize: 11, fontWeight: 500, color: '#888780', letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
+        Oakland Tech
+      </p>
+      <h1 style={{ fontSize: 22, fontWeight: 500, color: '#2C2C2A', margin: '0 0 20px' }}>
+        College Essay Mentor Program
+      </h1>
 
       <p style={{ fontSize: 15, color: '#2C2C2A', margin: '0 0 16px', lineHeight: 1.6 }}>
         Please share your essay with your mentor before your appointment so they
