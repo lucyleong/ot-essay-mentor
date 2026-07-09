@@ -858,8 +858,8 @@ onClick={() => {
                             }}>
                               {isPast ? 'Past' : 'Available'}
                             </span>
-                          </div>
-                      )
+                         </div>
+                        )
                       })}
                     )}
                   </div>
