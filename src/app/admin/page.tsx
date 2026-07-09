@@ -691,9 +691,8 @@ onClick={() => {
                     if (bookingFilter === 'completed' && (booking.cancelled_at || !isPast)) return false
                     if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
-                    return true
-                
-                .sort((a, b) => {
+               return true
+                  }).sort((a, b) => {
                     if (bookingSort === 'student_name') return a.student_name.localeCompare(b.student_name)
                     if (bookingSort === 'start_time_asc') {
                       const aTime = (a.appointment_slots as any)?.start_time ?? ''
