@@ -22,18 +22,24 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect mentor routes
+ // Protect mentor routes
   if (pathname.startsWith('/mentor')) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-   const { data: mentor } = await supabase
+
+    // Allow admins through mentor routes
+    if (user.app_metadata?.role === 'admin') {
+      return response
+    }
+
+    const { data: mentor } = await supabase
       .from('mentor_profiles')
       .select('id, is_active')
       .eq('auth_user_id', user.id)
       .single()
 
-if (!mentor || !mentor.is_active) {
+    if (!mentor || !mentor.is_active) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
   }
