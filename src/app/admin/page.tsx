@@ -84,9 +84,9 @@ const [transferringId, setTransferringId] = useState<string | null>(null)
 const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
 const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
-const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time' | 'student_name'>('booked_at')
+const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 
-  // Add mentor form
+// Add mentor form
   const [newName,     setNewName]     = useState('')
   const [newEmail,    setNewEmail]    = useState('')
   const [adding,      setAdding]      = useState(false)
@@ -669,13 +669,14 @@ onClick={() => {
                       <option key={m.id} value={m.full_name}>{m.full_name}</option>
                     ))}
                   </select>
-                  <select
+                <select
                     value={bookingSort}
                     onChange={e => setBookingSort(e.target.value as any)}
                     style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28 }}
                   >
                     <option value="booked_at">Most recent booking</option>
-                    <option value="start_time">Appointment date</option>
+                    <option value="start_time_asc">Appointment date ↑</option>
+                    <option value="start_time_desc">Appointment date ↓</option>
                     <option value="student_name">Student name</option>
                   </select>
                 </div>
@@ -691,14 +692,21 @@ onClick={() => {
                     if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                     return true
-                  }).sort((a, b) => {
+                
+                .sort((a, b) => {
                     if (bookingSort === 'student_name') return a.student_name.localeCompare(b.student_name)
-                    if (bookingSort === 'start_time') {
+                    if (bookingSort === 'start_time_asc') {
                       const aTime = (a.appointment_slots as any)?.start_time ?? ''
                       const bTime = (b.appointment_slots as any)?.start_time ?? ''
                       return aTime.localeCompare(bTime)
                     }
+                    if (bookingSort === 'start_time_desc') {
+                      const aTime = (a.appointment_slots as any)?.start_time ?? ''
+                      const bTime = (b.appointment_slots as any)?.start_time ?? ''
+                      return bTime.localeCompare(aTime)
+                    }
                     return new Date(b.booked_at).getTime() - new Date(a.booked_at).getTime()
+                  })
                   }).map(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
