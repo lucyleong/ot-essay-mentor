@@ -13,6 +13,16 @@ export async function POST(
   const { bookingId } = await context.params
   const body = await request.json()
 
+ // Check for existing survey response to prevent duplicates
+  const { data: existing } = await supabase
+    .from('survey_responses')
+    .select('id')
+    .eq('booking_id', bookingId)
+    .eq('respondent_type', 'mentor')
+    .single()
+
+  if (existing) return NextResponse.json({ ok: true }) // Already submitted, silently succeed
+
   const { error } = await supabase
     .from('survey_responses')
     .insert({

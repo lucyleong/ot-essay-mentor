@@ -13,6 +13,7 @@ export default function StudentSurveyPage({
   const [loading,   setLoading]   = useState(true)
   const [submitted, setSubmitted] = useState(false)
   const [error,     setError]     = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   // Answers
   const [sessionEase,   setSessionEase]   = useState<number | null>(null)
@@ -41,8 +42,9 @@ const [howHeard,      setHowHeard]      = useState('')
     init()
   }, [])
 
-  async function handleSubmit() {
-   if (!sessionEase || !mentorOnTime || !nextSteps || !workAgain) {
+async function handleSubmit() {
+    setSubmitting(true)
+       if (!sessionEase || !mentorOnTime || !nextSteps || !workAgain) {
       setError('Please answer all required questions before submitting.')
       return
     }
@@ -213,9 +215,10 @@ const [howHeard,      setHowHeard]      = useState('')
 
       <button
         onClick={handleSubmit}
-disabled={!sessionEase || !mentorOnTime || !nextSteps || !workAgain}
-style={{ width: '100%', fontSize: 14, background: '#534AB7', color: '#ffffff', border: 'none' }}      >
-        Submit feedback
+        disabled={!sessionEase || !mentorOnTime || !nextSteps || !workAgain || submitting}
+        style={{ width: '100%', fontSize: 14, background: '#534AB7', color: '#ffffff', border: 'none' }}
+      >
+        {submitting ? 'Submitting...' : 'Submit feedback'}
       </button>
 
     </main>
