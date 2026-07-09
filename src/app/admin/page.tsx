@@ -643,8 +643,8 @@ onClick={() => {
                   {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
-                {/* Filters */}
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+             {/* Filters */}
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', maxWidth: 800 }}>
 {(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
                       <button
                       key={f}
@@ -832,7 +832,11 @@ onClick={() => {
                     {availableSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
-                      availableSlots.map((slot: any) => {
+                    [...availableSlots].sort((a, b) => {
+                          if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
+                          if (bookingSort === 'student_name') return 0
+                          return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+                        }).map((slot: any) => {
                         const isPast = new Date(slot.start_time) < new Date()
                         return (
                           <div key={slot.id} style={{
@@ -855,8 +859,8 @@ onClick={() => {
                               {isPast ? 'Past' : 'Available'}
                             </span>
                           </div>
-                        )
-                      })
+                      )
+                      })}
                     )}
                   </div>
                 )}
