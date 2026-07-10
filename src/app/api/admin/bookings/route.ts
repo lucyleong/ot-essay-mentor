@@ -10,7 +10,7 @@ export async function GET() {
  const { data: bookings } = await supabase
     .from('student_bookings')
     .select(`
-      id, student_name, student_email, booked_at, cancelled_at, confirmation_code,
+      id, student_name, student_email, booked_at, cancelled_at, confirmation_code, sms_consent, sms_confirm_sent, sms_confirmed_at,
       appointment_slots (
         start_time, meeting_type,
         mentor_profiles ( full_name )

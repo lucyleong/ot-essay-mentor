@@ -744,6 +744,19 @@ onClick={() => {
                           Canceled {formatDateTimePST(booking.cancelled_at)}
                         </p>
                       )}
+{booking.sms_consent ? (
+                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, marginRight: 4,
+                          background: booking.sms_confirmed_at ? '#E1F5EE' : (booking.sms_confirm_sent ? '#FAEEDA' : '#F1EFE8'),
+                          color: booking.sms_confirmed_at ? '#085041' : (booking.sms_confirm_sent ? '#854F0B' : '#5F5E5A'),
+                        }}>
+                          {booking.sms_confirmed_at ? 'SMS confirmed' : (booking.sms_confirm_sent ? 'No reply' : 'No reply')}
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A', marginRight: 4 }}>
+                          No SMS consent
+                        </span>
+                      )}
+
 {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F', marginRight: 4 }}>
                           No-show
                         </span>
