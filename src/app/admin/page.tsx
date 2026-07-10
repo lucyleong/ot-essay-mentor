@@ -739,10 +739,20 @@ onClick={() => {
                           ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
                           : 'No slot'}
                       </p>
-                      {booking.cancelled_at && (
+                     {booking.cancelled_at && (
                         <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
-                          Cancelled {formatDateTimePST(booking.cancelled_at)}
+                          Canceled {formatDateTimePST(booking.cancelled_at)}
                         </p>
+                      )}
+                      {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === true) && (
+                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F', marginRight: 4 }}>
+                          No-show
+                        </span>
+                      )}
+                      {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === true) && (
+                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                          Connection issue
+                        </span>
                       )}
 
                       {!booking.cancelled_at && !isPast && (

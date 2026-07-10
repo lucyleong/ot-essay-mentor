@@ -7,13 +7,16 @@ const supabase = createClient(
 )
 
 export async function GET() {
-  const { data: bookings } = await supabase
+ const { data: bookings } = await supabase
     .from('student_bookings')
     .select(`
       id, student_name, student_email, booked_at, cancelled_at, confirmation_code,
       appointment_slots (
         start_time, meeting_type,
         mentor_profiles ( full_name )
+      ),
+      survey_responses (
+        additional_answers
       )
     `)
     .order('booked_at', { ascending: false })
