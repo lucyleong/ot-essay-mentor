@@ -21,7 +21,11 @@ type Booking = {
   booked_at: string
   cancelled_at: string | null
   confirmation_code: string
+  sms_consent: boolean
+  sms_confirm_sent: boolean
+  sms_confirmed_at: string | null
   appointment_slots: any
+  survey_responses: any[]
 }
 
 function generateTimeOptions(startAfter?: string) {
@@ -756,7 +760,6 @@ onClick={() => {
                           No SMS consent
                         </span>
                       )}
-
 {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F', marginRight: 4 }}>
                           No-show
                         </span>
