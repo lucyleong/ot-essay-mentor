@@ -22,6 +22,7 @@ export async function POST() {
     }
 
     // Delete in order to avoid foreign key errors
+    await supabase.from('walkin_queue').delete().neq('id', '00000000-0000-0000-0000-000000000000')
    await supabase.from('survey_responses').delete().neq('id', '00000000-0000-0000-0000-000000000000')
     await supabase.from('mentor_daily_summaries').delete().neq('id', '00000000-0000-0000-0000-000000000000')
     await supabase.from('notifications_log').delete().neq('id', '00000000-0000-0000-0000-000000000000')
