@@ -419,7 +419,7 @@ Booking Virtual Appointment with {selectedSlot.mentor_profiles?.full_name?.split
               </p>
               {isReturning && (
                 <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginTop: 8, fontSize: 12, color: '#085041' }}>
-                  Welcome back, {firstName}! We've filled in most of the info from your last booking. Please update us with any changes.
+                  Welcome back, {firstName}! We've filled in info from your last booking. Please update us with any changes.
                 </div>
               )}
             </div>
