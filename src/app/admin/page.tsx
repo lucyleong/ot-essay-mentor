@@ -49,13 +49,13 @@ function shortenLabel(label: string) {
 }
 
 export default function AdminPage() {
-const [activePanel, setActivePanel] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      return params.get('panel') ?? 'reports'
-    }
-    return 'reports'
-      })
+const [activePanel, setActivePanel] = useState('reports')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const panel = params.get('panel')
+    if (panel) setActivePanel(panel)
+  }, [])
 
  const [menuOpen, setMenuOpen] = useState(false)
  const [mentors,     setMentors]     = useState<Mentor[]>([])
