@@ -421,7 +421,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
       }}>
         <div style={{ padding: '12px 16px 16px', borderBottom: '0.5px solid #e8e6de', marginBottom: 8 }}>
           <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>Admin</p>
-          <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>Oakland Tech CollegeEssay Mentor Program</p>
+          <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>Oakland Tech College Essay Mentor Program</p>
         </div>
 
         {navItems.map(item => (
