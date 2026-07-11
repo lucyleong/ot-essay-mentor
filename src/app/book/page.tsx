@@ -496,7 +496,7 @@ placeholder="(510)555-5555"
                     style={{ width: 'auto', marginTop: 2, flexShrink: 0 }}
                   />
                   <span>
-                    By signing up, you agree to receive SMS messages from the Oakland Tech College Mentor Program. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
+                    By signing up, you agree to receive SMS messages from the Oakland Tech College Essay Mentor Program. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
                     <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
                       Terms, Conditions & Privacy Policy
                     </a>.
