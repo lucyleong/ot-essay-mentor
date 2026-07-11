@@ -190,7 +190,7 @@ redirectTo: `${window.location.origin}/reset-password`,
 
         {!resetMode && (
           <p style={{ fontSize: 12, color: '#888780', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
-            Don't have an account? Contact your program coordinator to get access.
+            Don't have an account? Contact admin@otessaymentors.org to request access.
           </p>
         )}
       </div>
