@@ -101,8 +101,8 @@ redirectTo: `${window.location.origin}/reset-password`,
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4f0', padding: '1rem' }}>
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400 }}>
 
-        <div style={{ marginBottom: 24, textAlign: 'center' }}>
-       <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', color: '#888780', margin: '0 0 4px' }}>
+<div style={{ marginBottom: 24 }}>
+         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', color: '#888780', margin: '0 0 4px' }}>
             Oakland Tech
           </p>
           <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
