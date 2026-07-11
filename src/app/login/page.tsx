@@ -102,8 +102,11 @@ redirectTo: `${window.location.origin}/reset-password`,
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400 }}>
 
         <div style={{ marginBottom: 24, textAlign: 'center' }}>
-        <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
-            Oakland Tech<br />College Essay Mentor Program
+       <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', color: '#888780', margin: '0 0 4px' }}>
+            Oakland Tech
+          </p>
+          <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
+            College Essay Mentor Program
           </h1>
           <p style={{ fontSize: 14, color: '#888780', margin: 0 }}>
             {resetMode ? 'Reset your password' : 'Sign in to your account'}
@@ -186,6 +189,7 @@ redirectTo: `${window.location.origin}/reset-password`,
               Back to sign in
             </button>
           )}
+
         </form>
 
         {!resetMode && (
