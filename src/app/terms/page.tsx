@@ -15,7 +15,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Program eligibility</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        The OT College Essay Mentor Program is available to all current Oakland Tech seniors who are preparing college applications. Student can reserve as many appointments as needed but must only hold one appointment at a time. Appointments are available on a first-come, first-served basis.
+        The Oakland Tech College Essay Mentor Program is available to all current Oakland Tech seniors who are preparing college applications. Student can reserve as many appointments as needed but must only hold one appointment at a time. Appointments are available on a first-come, first-served basis.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Appointments</h3>
@@ -30,7 +30,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text message consent</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        By providing your phone number and checking the SMS consent box, you agree to receive text messages from the OT College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation upon receipt of your response. If you have not canceled your appointment and not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Carriers are not liable for any delayed or undelivered messages. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
+        By providing your phone number and checking the SMS consent box, you agree to receive text messages from the Oakland Tech College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation upon receipt of your response. If you have not canceled your appointment and not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Carriers are not liable for any delayed or undelivered messages. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out at any time.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}> Conduct</h3>
@@ -40,7 +40,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Limitation of liability</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
-        The OT College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide brainstorming, writing and editing support only.
+        The Oakland Tech College Essay Mentor Program is a volunteer program. We make no guarantees regarding college admission outcomes. Mentors provide brainstorming, writing and editing support only.
       </p>
 
       <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 16px' }} />
@@ -59,7 +59,7 @@ export default function TermsPage() {
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Text messages</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
-        If you provide your phone number and consent to SMS, you agree to receive text messages from the OT College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation upon receipt of your response. If you have not canceled your appointment and have not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Message frequency varies. Message and data rates may apply. You can reply HELP for help or STOP to opt-out at any time. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
+        If you provide your phone number and consent to SMS, you agree to receive text messages from the Oakland Tech College Essay Mentor Program. You will receive a text to confirm that your opt-in was successful. You will receive a text 48 hours before your appointment asking to confirm or cancel your appointment. You will receive a confirmation upon receipt of your response. If you have not canceled your appointment and have not logged in, you may receive a text from a mentor to help troubleshoot log in issues. Message frequency varies. Message and data rates may apply. You can reply HELP for help or STOP to opt-out at any time. No mobile information will be shared with third party / affiliates for marketing or promotional purposes.
       </p>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Data retention</h3>

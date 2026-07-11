@@ -97,7 +97,7 @@ export default function HomePage() {
             We work with students from their earliest brainstorming sessions to the final polishing of their work for submission.
           </p>
           <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: 0 }}>
-            The OT College Essay Mentor program is an equity program serving college-bound seniors since 2016. We help students set themselves apart by telling the authentic story only they can tell.
+            The Oakland Tech College Essay Mentor program is an equity program that has beenserving college-bound seniors since 2016. We help students set themselves apart by telling the authentic story only they can tell.
           </p>
         </div>
 

@@ -103,7 +103,7 @@ redirectTo: `${window.location.origin}/reset-password`,
 
         <div style={{ marginBottom: 24, textAlign: 'center' }}>
           <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
-            OT College Essay Mentor Program
+            Oakland Tech College Essay Mentor Program
           </h1>
           <p style={{ fontSize: 14, color: '#888780', margin: 0 }}>
             {resetMode ? 'Reset your password' : 'Sign in to your account'}

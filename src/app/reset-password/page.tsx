@@ -116,7 +116,7 @@ if (!ready) {
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem' }}>
         <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reset your password</h1>
         <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
-          OT College Essay Mentor Program
+          Oakland Tech College Essay Mentor Program
         </p>
 
         {error && (
