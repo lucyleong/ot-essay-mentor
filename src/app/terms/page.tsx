@@ -8,7 +8,7 @@ export default function TermsPage() {
       </Link>
       <h1 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px' }}>Terms, Conditions & Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#888780', margin: '0 0 40px' }}>
-        Oakland Tech College Essay Mentor Program · Last updated: June 2026
+        Oakland Tech College Essay Mentor Program · Last updated: July 2026
       </p>
 
       <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Terms & Conditions</h2>
