@@ -192,7 +192,7 @@ try {
         const apptTime = formatTimePST(slot.start_time)
         await sendSMS({
           to:   body.studentPhone,
-          body: `Hi, your appointment with your mentor from the Oakland Tech College Mentor Program is coming up on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
+          body: `Hi, your appointment with the Oakland Tech College Mentor Program is coming up on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
         })
         await supabase
           .from('student_bookings')
