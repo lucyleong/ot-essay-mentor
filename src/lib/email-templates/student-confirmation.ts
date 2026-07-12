@@ -30,7 +30,7 @@ const end   = formatTimePST(d.endTime)
     </p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#2C2C2A;line-height:1.6;">
-      Thank you for signing up for an appointment with an OT College Essay Mentor.
+      Thank you for signing up for an appointment with an Oakland Tech College Essay Mentor.
       Here are your appointment details:
     </p>
 
