@@ -115,19 +115,19 @@ const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 
 
       if (bookingEl) {
         bookingEl.innerHTML = ''
-        new (window as any).QRCode(bookingEl, {
+       new (window as any).QRCode(bookingEl, {
           text: `https://www.otessaymentors.org/book?code=${process.env.NEXT_PUBLIC_BOOKING_CODE}`,
-          width: 160,
-          height: 160,
+          width: 500,
+          height: 500,
         })
       }
 
       if (checkinEl) {
         checkinEl.innerHTML = ''
-        new (window as any).QRCode(checkinEl, {
-         text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
-          width: 160,
-          height: 160,
+       new (window as any).QRCode(checkinEl, {
+          text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
+          width: 500,
+          height: 500,
         })
       }
     }
