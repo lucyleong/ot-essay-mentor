@@ -655,8 +655,11 @@ const isOptional = !q.is_required
               data-error-callback="onTurnstileError"
               style={{ marginBottom: 12 }}
             />
-            <p id="turnstile-error" style={{ display: 'none', fontSize: 12, color: '#791F1F', marginBottom: 8 }}>
+           <p id="turnstile-error" style={{ display: 'none', fontSize: 12, color: '#791F1F', marginBottom: 8 }}>
               Security check failed. <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }} style={{ color: '#534AB7' }}>Click here to refresh the page and try again.</a>
+            </p>
+            <p style={{ fontSize: 11, color: '#B4B2A9', marginBottom: 8 }}>
+              If the security check gets stuck, wait 5 seconds for it to refresh automatically.
             </p>
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
