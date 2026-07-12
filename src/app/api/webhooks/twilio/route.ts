@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     await sendSMS({
       to:   from,
-      body: `Your appointment with the OT College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`,
+      body: `Your appointment with the Oakland Tech College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`,
     })
 
   } else if (body === '9') {
@@ -77,14 +77,14 @@ export async function POST(request: NextRequest) {
 
     await sendSMS({
       to:   from,
-      body: `Your appointment with the OT College Mentor Program has been canceled. Reply HELP for help or STOP to opt-out.`,
+      body: `Your appointment with the Oakland Tech College Mentor Program has been canceled. Reply HELP for help or STOP to opt-out.`,
     })
 
   } else {
     // Unrecognized reply
     await sendSMS({
       to:   from,
-      body: `Reply 1 to confirm or 9 to cancel your OT College Mentor Programappointment on ${apptDate} at ${apptTime}.`,
+      body: `Reply 1 to confirm or 9 to cancel your Oakland Tech College Mentor Programappointment on ${apptDate} at ${apptTime}.`,
     })
   }
 

@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendSMS({
         to:   booking.student_phone,
-        body: `Hi, your appointment with your mentor from the OT College Mentor Program is in 2 days on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
+        body: `Hi, your appointment with your mentor from the Oakland Tech College Mentor Program is in 2 days on ${apptDate} at ${apptTime}. Please press 1 to CONFIRM or 9 to CANCEL. Reply HELP for help or STOP to opt-out.`,
       })
 
       // Mark reminder as sent
