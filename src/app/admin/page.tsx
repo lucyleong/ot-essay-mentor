@@ -1209,20 +1209,10 @@ onClick={() => {
             {/* QR CODES */}
             {activePanel === 'qrcodes' && (
               <div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-                  <div>
-                    <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>QR Codes</h1>
-                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
-                      Print these for students to scan and skip typing the access code
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => window.print()}
-                    style={{ fontSize: 13, padding: '8px 16px', background: '#534AB7', color: '#ffffff', border: 'none', borderRadius: 8, cursor: 'pointer' }}
-                  >
-                    🖨️ Print QR Codes
-                  </button>
-                </div>
+            <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>QR Codes</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Print these for students to scan and skip typing the access code
+                </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
