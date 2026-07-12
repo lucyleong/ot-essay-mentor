@@ -117,4 +117,13 @@ html, body {
     flex-wrap: nowrap !important;
   }
 }
+@media print {
+  .admin-sidebar,
+  .hamburger-btn,
+  button:not(.print-keep) {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
 }
