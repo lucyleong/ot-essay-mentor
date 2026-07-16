@@ -60,6 +60,7 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
 const [bookingIssues, setBookingIssues] = useState<Record<string, { noShow: boolean; meetIssue: boolean }>>({})
 const [savingIssue, setSavingIssue] = useState<string | null>(null)
 const [menuOpen, setMenuOpen] = useState(false)
+const [isAdmin, setIsAdmin] = useState(false)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -84,6 +85,7 @@ const timeOptions = generateTimeOptions()
   async function loadData() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
+    if (user?.app_metadata?.role === 'admin') setIsAdmin(true)
 
     const { data: mentorData } = await supabase
       .from('mentor_profiles')
@@ -235,10 +237,18 @@ const todayBookings    = allBookings
                 {item.label}
               </button>
             ))}
-            <div style={{ padding: '16px 20px', borderTop: '0.5px solid #e8e6de' }}>
+          <div style={{ padding: '16px 20px', borderTop: '0.5px solid #e8e6de' }}>
               <a href="/" style={{ display: 'block', fontSize: 14, color: '#888780', textDecoration: 'none', marginBottom: 12 }}>
                 ← Home
               </a>
+              {isAdmin && (
+                <button
+                  onClick={() => router.push('/admin')}
+                  style={{ fontSize: 14, color: '#534AB7', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 12 }}
+                >
+                  Admin view →
+                </button>
+              )}
               <button
                 onClick={handleSignOut}
                 style={{ fontSize: 14, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -294,10 +304,18 @@ const todayBookings    = allBookings
           </button>
         ))}
 
-        <div style={{ padding: '12px 16px', borderTop: '0.5px solid #e8e6de', marginTop: 16 }}>
+       <div style={{ padding: '12px 16px', borderTop: '0.5px solid #e8e6de', marginTop: 16 }}>
           <a href="/" style={{ display: 'block', fontSize: 12, color: '#888780', textDecoration: 'none', marginBottom: 8 }}>
             ← Home
           </a>
+          {isAdmin && (
+            <button
+              onClick={() => router.push('/admin')}
+              style={{ fontSize: 12, color: '#534AB7', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 8 }}
+            >
+              Admin view →
+            </button>
+          )}
           <button
             onClick={handleSignOut}
             style={{ fontSize: 12, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
