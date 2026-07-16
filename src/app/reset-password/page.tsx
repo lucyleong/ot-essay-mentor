@@ -149,7 +149,7 @@ if (!ready) {
             </button>
           </div>
           <p style={{ fontSize: 11, color: '#888780', margin: '4px 0 0' }}>
-  Password must contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)
+  Password must contain 8 characters with at least one uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)
 </p>
         </div>
 
