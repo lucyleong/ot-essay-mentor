@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
 
    if (error) {
       if (error.message.toLowerCase().includes('password')) {
-        setError('Password must contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)')
+        setError('Password must have 8 characters and contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)')
       } else {
         setError(error.message)
       }
