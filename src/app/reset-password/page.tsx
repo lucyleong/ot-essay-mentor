@@ -83,8 +83,12 @@ export default function ResetPasswordPage() {
 
     const { error } = await supabase.auth.updateUser({ password })
 
-    if (error) {
-      setError(error.message)
+   if (error) {
+      if (error.message.toLowerCase().includes('password')) {
+        setError('Password must contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)')
+      } else {
+        setError(error.message)
+      }
       setLoading(false)
       return
     }
