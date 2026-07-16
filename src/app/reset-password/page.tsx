@@ -144,6 +144,9 @@ if (!ready) {
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
+          <p style={{ fontSize: 11, color: '#888780', margin: '4px 0 0' }}>
+  Password must contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)
+</p>
         </div>
 
         <div style={{ marginBottom: 20 }}>
