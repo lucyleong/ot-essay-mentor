@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
 
    if (error) {
       if (error.message.toLowerCase().includes('password')) {
-        setError('Password must be at least 8 characters and contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)')
+        setError('Password must be at least 8 characters and contain uppercase, lowercase, number, and special character')
       } else {
         setError(error.message)
       }
@@ -149,7 +149,7 @@ if (!ready) {
             </button>
           </div>
           <p style={{ fontSize: 11, color: '#888780', margin: '4px 0 0' }}>
-  Password must be at least 8 characters and contain uppercase, lowercase, a number, and a special character (e.g. Oakland$2026)
+  Password must be at least 8 characters and contain uppercase, lowercase, number, and special character
 </p>
         </div>
 
