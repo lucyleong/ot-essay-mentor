@@ -89,6 +89,7 @@ const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
 const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
+const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -107,6 +108,9 @@ const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 
     loadData()
     loadReports()
   }, [])
+  useEffect(() => {
+    if (activePanel === 'reports') loadReports()
+  }, [reportsMeetingType])
 
   useEffect(() => {
     if (activePanel === 'qrcodes' && typeof window !== 'undefined' && (window as any).QRCode) {
@@ -341,7 +345,8 @@ async function toggleMentorVirtual(mentor: Mentor) {
   }
   async function loadReports() {
     setReportsLoading(true)
-    const res  = await fetch('/api/admin/reports')
+    const params = reportsMeetingType !== 'all' ? `?type=${reportsMeetingType}` : ''
+    const res  = await fetch(`/api/admin/reports${params}`)
     const data = await res.json()
     setReports(data)
     setReportsLoading(false)
@@ -913,9 +918,23 @@ onClick={() => {
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
                     <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics - if not loading, refresh by pressing Command + R</p>
                   </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    {(['all', 'virtual', 'in_person'] as const).map(t => (
+                      <button
+                        key={t}
+                        onClick={() => setReportsMeetingType(t)}
+                        style={{
+                          fontSize: 12, padding: '4px 12px', borderRadius: 20,
+                          background: reportsMeetingType === t ? '#534AB7' : '#ffffff',
+                          color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
+                          border: `0.5px solid ${reportsMeetingType === t ? '#534AB7' : '#D3D1C7'}`,
+                        }}
+                      >
+                        {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
+                      </button>
+                    ))}
                     {reports && (
-                    <button
+                      <button
                         onClick={() => {
                           window.location.href = '/api/admin/reports/export'
                         }}

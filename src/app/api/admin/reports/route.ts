@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -118,11 +118,17 @@ function getOtherResponses(answers: any[], questionKey: string): string[] {
   return otherResponses
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const meetingType = request.nextUrl.searchParams.get('type') // 'virtual', 'in_person', or null for all
+
   // Total bookings
-  const { count: totalBookings } = await supabase
+  let bookingsQuery = supabase
     .from('student_bookings')
     .select('*', { count: 'exact', head: true })
+  
+  if (meetingType) bookingsQuery = bookingsQuery.eq('meeting_type', meetingType)
+  
+  const { count: totalBookings } = await bookingsQuery
 
   const { count: activeBookings } = await supabase
     .from('student_bookings')
@@ -157,18 +163,25 @@ export async function GET() {
   const meetIssues = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes').length
 
   // Intake answers joined with student email for deduplication
-  const { data: intakeAnswers } = await supabase
+ let intakeQuery = supabase
     .from('booking_question_answers')
     .select(`
       answer_text,
       intake_questions ( question_text, sort_order, question_key ),
       booking_id,
-      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at, cancelled_at )
+      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at, cancelled_at, meeting_type )
     `)
+
+  if (meetingType) {
+    intakeQuery = intakeQuery.eq('student_bookings.meeting_type', meetingType)
+  }
+
+  const { data: intakeAnswers } = await intakeQuery
 
   // Flatten with student email
   const answersWithEmail = (intakeAnswers ?? [])
     .filter((a: any) => !a.student_bookings?.cancelled_at)
+    .filter((a: any) => !meetingType || a.student_bookings?.meeting_type === meetingType)
     .map((a: any) => ({
       answer_text:      a.answer_text,
       student_email:    a.student_bookings?.student_email,

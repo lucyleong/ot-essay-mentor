@@ -67,9 +67,24 @@ export async function POST(request: NextRequest) {
     .select()
     .single()
 
-  if (bookingError) {
+ if (bookingError) {
     console.error('Booking insert error:', bookingError)
     // Don't fail the check-in if booking fails — queue entry is more important
+  }
+
+  // Also save intake answers to booking_question_answers so they show in student profile
+  if (booking && body.answers && body.answers.length > 0) {
+    const bookingAnswers = body.answers
+      .filter((a: any) => a.answer && a.answer.trim())
+      .map((a: any) => ({
+        booking_id:  booking.id,
+        question_id: a.questionId,
+        answer_text: a.answer,
+      }))
+
+    if (bookingAnswers.length > 0) {
+      await supabase.from('booking_question_answers').insert(bookingAnswers)
+    }
   }
 
   return NextResponse.json({ ok: true, queueId: queueEntry.id, bookingId: booking?.id })
