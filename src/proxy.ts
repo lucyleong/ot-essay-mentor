@@ -50,10 +50,15 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
   }
-
+// Protect CCC routes
+  if (pathname.startsWith('/ccc')) {
+    if (!user || user.app_metadata?.role !== 'ccc') {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
   return response
 }
 
 export const config = {
-  matcher: ['/mentor/:path*', '/admin/:path*'],
+  matcher: ['/mentor/:path*', '/admin/:path*', '/ccc/:path*'],
 }

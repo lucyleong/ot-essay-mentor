@@ -49,8 +49,10 @@ const { data: { session } } = await supabase.auth.getSession()
       }
     }
 
-    if (data.user.app_metadata?.role === 'admin') {
+  if (data.user.app_metadata?.role === 'admin') {
       router.push('/admin')
+    } else if (data.user.app_metadata?.role === 'ccc') {
+      router.push('/ccc')
     } else if (mentor) {
       router.push('/mentor/dashboard')
     } else {
