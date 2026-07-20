@@ -186,9 +186,10 @@ export default function BookPage() {
    const formattedAnswers = questions
       .filter(q => {
         if (q.sort_order <= 4) return false
-        if (q.question_text === 'I have worked with a College Essay Mentor before through this program' && isReturning) return false
-if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false        return true
-      })
+if (q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program' && isReturning) return false
+if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false
+        return true
+            })
     .flatMap(q => {
         const value = answers[q.id]
         if (Array.isArray(value)) {
