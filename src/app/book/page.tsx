@@ -154,10 +154,10 @@ export default function BookPage() {
     }
   }
 
-  function handleAnswerChange(questionId: string, value: any) {
+ function handleAnswerChange(questionId: string, value: any) {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
-const mentorPrevQuestion = questions.find(q => q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program')    
-if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
+    const mentorPrevQuestion = questions.find(q => q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program')
+    if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       setShowMentor(value === 'Yes')
     }
   }
