@@ -130,6 +130,20 @@ export async function GET(request: NextRequest) {
   
   const { count: totalBookings } = await bookingsQuery
 
+ // Virtual bookings (non-cancelled, non-no-show)
+  const { data: virtualData } = await supabase
+    .from('student_bookings')
+    .select(`
+      id,
+      survey_responses ( additional_answers )
+    `)
+    .eq('meeting_type', 'virtual')
+    .is('cancelled_at', null)
+
+  const virtualBookings = (virtualData ?? []).filter(b => 
+    !(b as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
+  ).length
+
   const { count: inPersonBookings } = await supabase
     .from('student_bookings')
     .select('*', { count: 'exact', head: true })
@@ -268,10 +282,11 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
     totalIssues: data.lateCount + data.wouldNotWorkAgainCount + data.noNextStepsCount,
   })).sort((a, b) => b.totalIssues - a.totalIssues)
 
-  return NextResponse.json({
+ return NextResponse.json({
     bookings: {
       total:     totalBookings ?? 0,
       active:    activeBookings ?? 0,
+      virtual:   virtualBookings,
       cancelled: cancelledBookings ?? 0,
       inPerson:  inPersonBookings ?? 0,
       noShows,
