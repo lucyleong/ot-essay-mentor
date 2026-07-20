@@ -997,9 +997,21 @@ style={{
                               </span>
                             )}
                           </div>
-                          <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                        <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
                             {entry.student_email} · Checked in {formatLocaleTimePST(entry.checked_in_at)}
                           </p>
+                          {(() => {
+                            const answers = (entry as any).walkin_queue_answers ?? []
+                            const helpWith = answers.find((a: any) => a.intake_questions?.question_text === 'I Want Help With')?.answer_text
+                            const counselor = answers.find((a: any) => a.intake_questions?.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
+                            return (helpWith || counselor) ? (
+                              <p style={{ fontSize: 12, color: '#2C2C2A', margin: '2px 0 0' }}>
+                                {helpWith && `Help: ${helpWith}`}
+                                {helpWith && counselor && ' · '}
+                                {counselor && `Private counselor: ${counselor}`}
+                              </p>
+                            ) : null
+                          })()}
                         </div>
                       <div style={{ display: 'flex', gap: 6 }}>
                           <button
