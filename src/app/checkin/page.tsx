@@ -253,7 +253,6 @@ placeholder="you@example.com"
                   {q.options.map((opt: string) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
-                  }
                 </select>
               )}
 
