@@ -130,6 +130,12 @@ export async function GET(request: NextRequest) {
   
   const { count: totalBookings } = await bookingsQuery
 
+  const { count: inPersonBookings } = await supabase
+    .from('student_bookings')
+    .select('*', { count: 'exact', head: true })
+    .eq('meeting_type', 'in_person')
+    .is('cancelled_at', null)
+
   const { count: activeBookings } = await supabase
     .from('student_bookings')
     .select('*', { count: 'exact', head: true })
@@ -267,6 +273,7 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
       total:     totalBookings ?? 0,
       active:    activeBookings ?? 0,
       cancelled: cancelledBookings ?? 0,
+      inPerson:  inPersonBookings ?? 0,
       noShows,
       meetIssues,
       totalSlots:    totalSlots ?? 0,
