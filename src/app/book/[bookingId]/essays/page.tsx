@@ -101,7 +101,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
          ⚠️ Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
           {mentorEmail && (
             <> If you'd rather keep this private, you can add your mentor with 'Commenter' access instead:
-            <br />{mentorName ? ` ${mentorName}` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a>.</>
+            <br />{mentorName ? ` ${mentorName}` : ''} | <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a>.</>
           )}
         </p>
       </div>
@@ -141,7 +141,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
             type="url"
             value={gdocUrl}
             onChange={e => { setGdocUrl(e.target.value); setGdocError('') }}
-            placeholder="https://docs.google.com/document/d/..."
+            placeholder="https://docs.google.com/..."
             style={{ width: '100%', boxSizing: 'border-box' }}
           />
           {gdocError && (
@@ -160,7 +160,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
             value={gdocNote}
             onChange={e => setGdocNote(e.target.value)}
             rows={2}
-            placeholder="e.g. This is my UC personal insight draft — I'm struggling with question 1..."
+            placeholder="e.g. This is my UC PIQ draft. I'm struggling with question 1..."
             style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
           />
         </div>
