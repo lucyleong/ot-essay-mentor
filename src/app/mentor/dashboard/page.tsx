@@ -1001,25 +1001,36 @@ style={{
                             {entry.student_email} · Checked in {formatLocaleTimePST(entry.checked_in_at)}
                           </p>
                         </div>
-                        <div style={{ display: 'flex', gap: 6 }}>
+                      <div style={{ display: 'flex', gap: 6 }}>
                           <button
                             onClick={() => router.push(`/mentor/students/${encodeURIComponent(entry.student_email)}`)}
                             style={{ fontSize: 12, padding: '5px 14px' }}
                           >
                             Profile
                           </button>
-                          {entry.status !== 'walked_out' && (
-                            <button
-                              onClick={async () => {
-                                await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
-                                loadData()
-                              }}
-                              style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
-                            >
-                              Helped
-                            </button>
+                          {entry.status === 'waiting' && (
+                            <>
+                              <button
+                                onClick={async () => {
+                                  await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                              >
+                                Helped
+                              </button>
+                              <button
+                                onClick={async () => {
+                                  await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                              >
+                                Walked out
+                              </button>
+                            </>
                           )}
-                          {entry.status !== 'helped' && (
+                          {entry.status === 'helped' && (
                             <button
                               onClick={async () => {
                                 await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
