@@ -93,8 +93,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
       </h1>
 
       <p style={{ fontSize: 15, color: '#2C2C2A', margin: '0 0 16px', lineHeight: 1.6 }}>
-        Please share your essay via a Google Doc link with your mentor before your appointment so they
-        can review it ahead of time.
+        Please share your essay via a Google Doc link before your appointment.
       </p>
 
      <div style={{ background: '#FFF8E6', border: '0.5px solid #F4C842', borderRadius: 10, padding: '12px 16px', marginBottom: 24 }}>
