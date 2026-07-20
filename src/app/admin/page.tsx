@@ -945,7 +945,7 @@ onClick={() => {
                   <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 8, marginBottom: 20 }}>
                       {[
                      { label: 'Total',     value: reports.bookings.total },
-                        { label: 'Active Virtual',    value: reports.bookings.active },
+                        { label: 'Virtual',    value: reports.bookings.active },
                         { label: 'In person', value: reports.bookings.inPerson },
                         { label: 'Canceled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
