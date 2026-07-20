@@ -945,9 +945,9 @@ onClick={() => {
                   <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 8, marginBottom: 20 }}>
                       {[
                      { label: 'Total',     value: reports.bookings.total },
-                        { label: 'Active',    value: reports.bookings.active },
+                        { label: 'Active Virtual',    value: reports.bookings.active },
                         { label: 'In person', value: reports.bookings.inPerson },
-                        { label: 'Cancelled', value: reports.bookings.cancelled },
+                        { label: 'Canceled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Meet issues', value: reports.bookings.meetIssues },
                         { label: 'Expired slots', value: reports.bookings.unbookedSlots },
@@ -963,7 +963,7 @@ onClick={() => {
                     {/* Survey stats */}
                     {reports.surveys.totalResponses > 0 && (
                       <div style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 12, padding: '1rem', marginBottom: 20 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys ({reports.surveys.totalResponses} responses)</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys from virtual appointments ({reports.surveys.totalResponses} responses)</p>
                      {/* Mentor issues - full width, moved to top */}
                       {reports.surveys.mentorIssues?.length > 0 && (
                         <div style={{ marginBottom: 20 }}>
@@ -1065,7 +1065,6 @@ onClick={() => {
 
                     </div>
                     )}
-
                     
                {/* Demographics */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
