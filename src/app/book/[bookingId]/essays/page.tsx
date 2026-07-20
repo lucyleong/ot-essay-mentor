@@ -94,12 +94,12 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
 
       <p style={{ fontSize: 15, color: '#2C2C2A', margin: '0 0 16px', lineHeight: 1.6 }}>
         Please share your essay via a Google Doc link with your mentor before your appointment so they
-        can review it ahead of time and comment.
+        can review it ahead of time.
       </p>
 
      <div style={{ background: '#FFF8E6', border: '0.5px solid #F4C842', borderRadius: 10, padding: '12px 16px', marginBottom: 24 }}>
-        <p style={{ fontSize: 13, color: '#7A5500', margin: 0, lineHeight: 1.6 }}>
-          Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
+       <p style={{ fontSize: 13, color: '#7A5500', margin: 0, lineHeight: 1.6 }}>
+          📄 Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
           {mentorEmail && (
             <> If you'd prefer to keep it private, share it directly with your mentor
             {mentorName ? ` (${mentorName})` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a> instead.</>
