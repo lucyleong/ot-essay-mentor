@@ -233,9 +233,17 @@ placeholder="you@example.com"
           </div>
         )}
 
-        {!isReturning && questions
-          .filter(q => q.sort_order > 4)
-          .filter(q => q.question_text !== 'Which mentor(s) have you worked with?' || showMentor)
+      {questions
+          .filter(q => {
+            if (q.sort_order <= 4) return false
+            if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
+            // Always show these questions even for returning students
+            if (q.question_text === 'I Want Help With') return true
+            if (q.question_text === 'I am also working with a private counselor hired by my family') return true
+            // Hide demographic questions for returning students
+            if (isReturning) return false
+            return true
+          })
           .sort((a, b) => a.sort_order - b.sort_order)
           .map(q => (
             <div key={q.id} style={{ marginBottom: 14 }}>
