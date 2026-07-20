@@ -965,39 +965,84 @@ style={{
                     <p style={{ color: '#888780', margin: 0 }}>No one is waiting right now.</p>
                   </div>
                 ) : (
-                  walkinQueue.map((entry, index) => (
+                walkinQueue.map((entry, index) => (
                     <div key={entry.id} style={{
                       background: '#ffffff', border: '0.5px solid #e8e6de',
                       borderRadius: 12, padding: '14px 20px', marginBottom: 8,
-                      display: 'flex', alignItems: 'center', gap: 12,
                     }}>
-                      <div style={{
-                        width: 28, height: 28, borderRadius: '50%',
-                        background: '#EEEDFE', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', fontSize: 12, fontWeight: 500,
-                        color: '#3C3489', flexShrink: 0,
-                      }}>
-                        {index + 1}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{
+                          width: 28, height: 28, borderRadius: '50%',
+                          background: entry.status === 'helped' ? '#E1F5EE' : entry.status === 'walked_out' ? '#F1EFE8' : '#EEEDFE',
+                          display: 'flex', alignItems: 'center',
+                          justifyContent: 'center', fontSize: 12, fontWeight: 500,
+                          color: entry.status === 'helped' ? '#085041' : entry.status === 'walked_out' ? '#5F5E5A' : '#3C3489',
+                          flexShrink: 0,
+                        }}>
+                          {index + 1}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
+                              {entry.student_name}
+                            </p>
+                            {entry.status === 'helped' && (
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                                Helped by {(entry as any).mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
+                              </span>
+                            )}
+                            {entry.status === 'walked_out' && (
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                                Walked out
+                              </span>
+                            )}
+                          </div>
+                          <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                            {entry.student_email} · Checked in {formatLocaleTimePST(entry.checked_in_at)}
+                          </p>
+                        </div>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button
+                            onClick={() => router.push(`/mentor/students/${encodeURIComponent(entry.student_email)}`)}
+                            style={{ fontSize: 12, padding: '5px 14px' }}
+                          >
+                            Profile
+                          </button>
+                          {entry.status !== 'walked_out' && (
+                            <button
+                              onClick={async () => {
+                                await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                            >
+                              Helped
+                            </button>
+                          )}
+                          {entry.status !== 'helped' && (
+                            <button
+                              onClick={async () => {
+                                await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                            >
+                              Walked out
+                            </button>
+                          )}
+                          {entry.status === 'walked_out' && (
+                            <button
+                              onClick={async () => {
+                                await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                            >
+                              Helped
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                          {entry.student_name}
-                        </p>
-                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
-                          {entry.student_email}
-                          {entry.student_phone ? ` · ${entry.student_phone}` : ''}
-                          {' · Checked in '}
-{formatLocaleTimePST(entry.checked_in_at)}                        </p>
-                      </div>
-                      <button
-                        onClick={async () => {
-                          await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
-                          setWalkinQueue(prev => prev.filter(e => e.id !== entry.id))
-                        }}
-                        style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
-                      >
-                        Start session
-                      </button>
                     </div>
                   ))
                 )}
