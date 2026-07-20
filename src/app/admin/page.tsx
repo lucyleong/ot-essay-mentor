@@ -919,20 +919,6 @@ onClick={() => {
                     <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics - if not loading, refresh by pressing Command + R</p>
                   </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    {(['all', 'virtual', 'in_person'] as const).map(t => (
-                      <button
-                        key={t}
-                        onClick={() => setReportsMeetingType(t)}
-                        style={{
-                          fontSize: 12, padding: '4px 12px', borderRadius: 20,
-                          background: reportsMeetingType === t ? '#534AB7' : '#ffffff',
-                          color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
-                          border: `0.5px solid ${reportsMeetingType === t ? '#534AB7' : '#D3D1C7'}`,
-                        }}
-                      >
-                        {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
-                      </button>
-                    ))}
                     {reports && (
                       <button
                         onClick={() => {
@@ -1081,8 +1067,26 @@ onClick={() => {
                     )}
 
                     
-                  {/* Demographics */}
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Intake form responses</p>
+               {/* Demographics */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                      <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>Intake form responses</p>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        {(['all', 'virtual', 'in_person'] as const).map(t => (
+                          <button
+                            key={t}
+                            onClick={() => setReportsMeetingType(t)}
+                            style={{
+                              fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                              background: reportsMeetingType === t ? '#534AB7' : '#ffffff',
+                              color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
+                              border: `0.5px solid ${reportsMeetingType === t ? '#534AB7' : '#D3D1C7'}`,
+                            }}
+                          >
+                            {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
                  {/* Mentor activity */}
