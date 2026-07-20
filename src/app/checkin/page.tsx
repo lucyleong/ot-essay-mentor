@@ -34,6 +34,8 @@ export default function CheckInPage() {
   const [submitted,  setSubmitted]  = useState(false)
   const [error,      setError]      = useState('')
   const [showMentor, setShowMentor] = useState(false)
+  const [isReturning, setIsReturning] = useState(false)
+const [returningName, setReturningName] = useState('')
 
   useEffect(() => {
     fetch('/api/bookings/questions')
@@ -164,7 +166,27 @@ export default function CheckInPage() {
           <input
             type="email"
             value={email}
-            onChange={e => { setEmail(e.target.value); validateEmail(e.target.value) }}
+onChange={e => { 
+  setEmail(e.target.value)
+  validateEmail(e.target.value)
+  // Check if returning student after valid email entered
+  if (e.target.value.includes('@')) {
+    fetch(`/api/checkin/returning?email=${encodeURIComponent(e.target.value)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.isReturning) {
+          setIsReturning(true)
+          setReturningName(data.name)
+          setFirstName(data.name.split(' ')[0])
+          setLastName(data.name.split(' ').slice(1).join(' '))
+        } else {
+          setIsReturning(false)
+          setReturningName('')
+        }
+      })
+      .catch(() => {})
+  }
+}}
 placeholder="you@example.com"
             required
             style={{ borderColor: emailError ? '#E24B4A' : undefined }}
@@ -205,7 +227,13 @@ placeholder="you@example.com"
           />
         </div>
 
-       {questions
+     {isReturning && (
+          <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#085041' }}>
+            Welcome back, {returningName.split(' ')[0]}! We already have your information on file.
+          </div>
+        )}
+
+        {!isReturning && questions
           .filter(q => q.sort_order > 4)
           .filter(q => q.question_text !== 'Which mentor(s) have you worked with?' || showMentor)
           .sort((a, b) => a.sort_order - b.sort_order)
@@ -225,6 +253,7 @@ placeholder="you@example.com"
                   {q.options.map((opt: string) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
+                  }
                 </select>
               )}
 
