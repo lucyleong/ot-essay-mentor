@@ -509,9 +509,9 @@ placeholder="(510)555-5555"
               .filter(q => {
                 if (q.sort_order <= 4) return false
                 if (q.question_text === 'I have worked with a College Essay Mentor before through this program' && isReturning) return false
-                if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor && !isReturning) return false
-               if (isReturning) {
-                  const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
+if (q.question_text === 'Which mentor(s) have you worked with?') return false
+             if (isReturning) {
+                  const alwaysAskKeys = ['help_with', 'private_counselor']
                   if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
                 }
 
@@ -659,7 +659,7 @@ const isOptional = !q.is_required
               Security check failed. <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }} style={{ color: '#534AB7' }}>Click here to refresh the page and try again.</a>
             </p>
             <p style={{ fontSize: 11, color: '#B4B2A9', marginBottom: 8 }}>
-              If the security check gets stuck, wait 5 seconds for it to refresh automatically.
+              If the security check gets stuck, please wait 5 seconds for it to refresh automatically.
             </p>
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
