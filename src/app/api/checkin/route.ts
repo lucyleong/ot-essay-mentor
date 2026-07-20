@@ -6,6 +6,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+function generateCode(length = 6) {
+  return Math.random().toString(36).toUpperCase().slice(2, 2 + length)
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json()
 
@@ -13,12 +17,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 422 })
   }
 
+  const studentName  = `${body.firstName} ${body.lastName}`
+  const studentEmail = body.studentEmail.toLowerCase().trim()
+
   // Create the queue entry
   const { data: queueEntry, error: queueError } = await supabase
     .from('walkin_queue')
     .insert({
-      student_name:  `${body.firstName} ${body.lastName}`,
-      student_email: body.studentEmail.toLowerCase().trim(),
+      student_name:  studentName,
+      student_email: studentEmail,
       student_phone: body.studentPhone ?? null,
     })
     .select()
@@ -29,7 +36,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: queueError.message }, { status: 500 })
   }
 
-  // Save intake answers
+  // Save intake answers to walkin_queue_answers
   if (body.answers && body.answers.length > 0) {
     const answersToInsert = body.answers
       .filter((a: any) => a.answer && a.answer.trim())
@@ -44,5 +51,26 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, queueId: queueEntry.id })
+  // Create permanent student_bookings record
+  const { data: booking, error: bookingError } = await supabase
+    .from('student_bookings')
+    .insert({
+      slot_id:           null,
+      student_name:      studentName,
+      student_email:     studentEmail,
+      student_phone:     body.studentPhone ?? null,
+      sms_consent:       false,
+      confirmation_code: generateCode(),
+      meeting_type:      'in_person',
+      queue_id:          queueEntry.id,
+    })
+    .select()
+    .single()
+
+  if (bookingError) {
+    console.error('Booking insert error:', bookingError)
+    // Don't fail the check-in if booking fails — queue entry is more important
+  }
+
+  return NextResponse.json({ ok: true, queueId: queueEntry.id, bookingId: booking?.id })
 }
