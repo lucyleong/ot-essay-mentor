@@ -507,13 +507,14 @@ placeholder="(510)555-5555"
 
          {questions
               .filter(q => {
-                if (q.sort_order <= 4) return false
-if (q.question_text === 'I have worked with a College Essay Mentor before through this program' && isReturning) return false
-if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
-const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
-                  if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false                }
-
-                return true
+              if (q.sort_order <= 4) return false
+        if (q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program' && isReturning) return false
+        if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
+        if (isReturning) {
+          const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
+          if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
+        }
+        return true
               })
               .map(q => {
 const isOptional = !q.is_required
