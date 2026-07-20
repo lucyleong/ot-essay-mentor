@@ -100,7 +100,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
        <p style={{ fontSize: 13, color: '#7A5500', margin: 0, lineHeight: 1.6 }}>
          ⚠️ Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
           {mentorEmail && (
-            <>If you'd rather keep this private, you can add your mentor with 'Commenter' access instead:
+            <> If you'd rather keep this private, you can add your mentor with 'Commenter' access instead:
             <br />{mentorName ? ` ${mentorName}` : ''} at <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a>.</>
           )}
         </p>
