@@ -157,7 +157,6 @@ export default function BookPage() {
  function handleAnswerChange(questionId: string, value: any) {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
    const mentorPrevQuestion = questions.find(q => q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program')
-    console.log('mentorPrevQuestion:', mentorPrevQuestion?.id, 'questionId:', questionId, 'value:', value)
     if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       setShowMentor(value === 'Yes')
     }
@@ -512,7 +511,6 @@ placeholder="(510)555-5555"
                 if (q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program' && isReturning) return false
 if (q.question_text === 'Which mentor have you worked with?' && !showMentor) 
   return false                
-console.log('question:', q.question_text, 'showMentor:', showMentor, 'isReturning:', isReturning)
         if (isReturning) {
           const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
           if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
