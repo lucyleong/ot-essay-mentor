@@ -966,11 +966,11 @@ style={{
                   </div>
                 ) : (
                 walkinQueue.map((entry, index) => (
-                    <div key={entry.id} style={{
+                   <div key={entry.id} style={{
                       background: '#ffffff', border: '0.5px solid #e8e6de',
                       borderRadius: 12, padding: '14px 20px', marginBottom: 8,
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
                         <div style={{
                           width: 28, height: 28, borderRadius: '50%',
                           background: entry.status === 'helped' ? '#E1F5EE' : entry.status === 'walked_out' ? '#F1EFE8' : '#EEEDFE',
@@ -1013,7 +1013,7 @@ style={{
                             ) : null
                           })()}
                         </div>
-                      <div style={{ display: 'flex', gap: 6 }}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', width: '100%', marginTop: 8 }}>
                           <button
                             onClick={() => router.push(`/mentor/students/${encodeURIComponent(entry.student_email)}`)}
                             style={{ fontSize: 12, padding: '5px 14px' }}
