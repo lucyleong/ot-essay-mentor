@@ -666,8 +666,8 @@ onClick={() => {
        {/* Filters */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-{(['all', 'active', 'completed', 'cancelled', 'in_person', 'available'] as const).map(f => (
-                        <button
+{(['all', 'active', 'completed', 'cancelled', 'available', 'in_person'] as const).map(f => (
+                          <button
                         key={f}
                         onClick={() => setBookingFilter(f)}
                         style={{
@@ -677,7 +677,7 @@ onClick={() => {
                           border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
                         }}
                       >
-{f === 'cancelled' ? 'Canceled' : f === 'in_person' ? 'In Person' : f.charAt(0).toUpperCase() + f.slice(1)}
+{f === 'cancelled' ? 'Canceled' : f === 'active' ? 'Virtual' : f === 'in_person' ? 'In Person' : f.charAt(0).toUpperCase() + f.slice(1)}
                       </button>
                     ))}
                   </div>
