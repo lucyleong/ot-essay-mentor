@@ -64,8 +64,7 @@ const [returningName, setReturningName] = useState('')
   }
  function handleAnswerChange(questionId: string, value: any) {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
-    const mentorPrevQuestion = questions.find(q => q.question_text === 'I have worked with a College Essay Mentor before through this program')
-    if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
+const mentorPrevQuestion = questions.find(q => q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program')    if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       setShowMentor(value === 'Yes')
     }
   }
@@ -236,8 +235,7 @@ placeholder="you@example.com"
       {questions
           .filter(q => {
             if (q.sort_order <= 4) return false
-            if (q.question_text === 'Which mentor(s) have you worked with?' && !showMentor) return false
-            // Always show these questions even for returning students
+if (q.question_text === 'Which mentor have you worked with?' && !showMentor) return false            // Always show these questions even for returning students
             if (q.question_text === 'I Want Help With') return true
             if (q.question_text === 'I am also working with a private counselor hired by my family') return true
             // Hide demographic questions for returning students
