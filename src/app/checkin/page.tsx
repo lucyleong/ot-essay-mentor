@@ -236,7 +236,7 @@ placeholder="you@example.com"
       {questions
           .filter(q => {
             if (q.sort_order <= 4) return false
-if (q.question_text === 'Which mentor have you worked with?' && !showMentor) return false            // Always show these questions even for returning students
+if (q.question_text === 'Which mentor did you work with?' && !showMentor) return false            // Always show these questions even for returning students
             if (q.question_text === 'I Want Help With') return true
             if (q.question_text === 'I am also working with a private counselor hired by my family') return true
             // Hide demographic questions for returning students
