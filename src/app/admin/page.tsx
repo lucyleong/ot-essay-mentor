@@ -90,6 +90,7 @@ const [transferring, setTransferring] = useState(false)
 const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
+const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -280,6 +281,9 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     const slotsRes  = await fetch('/api/admin/slots/available')
     const slotsData = await slotsRes.json()
     setAvailableSlots(slotsData ?? [])
+const walkinRes = await fetch('/api/ccc/queue')
+    const walkinData = await walkinRes.json()
+    setWalkinQueue(walkinData.queue ?? [])
 
     setLoading(false)
   }
@@ -352,9 +356,10 @@ async function toggleMentorVirtual(mentor: Mentor) {
     setReportsLoading(false)
   }
 
- const navItems = [
+const navItems = [
     { key: 'reports',   label: 'Reports' },
     { key: 'bookings',  label: 'Bookings' },
+    { key: 'walkin',    label: 'Walk-in Queue' },
     { key: 'mentors',   label: 'Mentors' },
     { key: 'schedules', label: 'Scheduling' },
     { key: 'qrcodes',   label: 'QR Codes' },
@@ -1156,6 +1161,59 @@ onClick={() => {
                       </div>
 
                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+{/* WALK-IN QUEUE */}
+            {activePanel === 'walkin' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Walk-in Queue</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Today's in-person walk-in students
+                </p>
+                {walkinQueue.length === 0 ? (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', margin: 0 }}>No walk-in students today.</p>
+                  </div>
+                ) : (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                    {walkinQueue.map((entry: any, index: number) => (
+                      <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                        <div style={{
+                          width: 28, height: 28, borderRadius: '50%',
+                          background: entry.status === 'helped' ? '#E1F5EE' : entry.status === 'walked_out' ? '#F1EFE8' : '#EEEDFE',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 12, fontWeight: 500, flexShrink: 0,
+                          color: entry.status === 'helped' ? '#085041' : entry.status === 'walked_out' ? '#5F5E5A' : '#3C3489',
+                        }}>
+                          {index + 1}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <p style={{ fontWeight: 500, fontSize: 13, margin: 0 }}>{entry.student_name}</p>
+                            {entry.status === 'helped' && (
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                                Helped by {entry.mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
+                              </span>
+                            )}
+                            {entry.status === 'walked_out' && (
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                                Walked out
+                              </span>
+                            )}
+                            {entry.status === 'waiting' && (
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
+                                Waiting
+                              </span>
+                            )}
+                          </div>
+                          <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                            {entry.student_email} · Checked in {formatDateTimePST(entry.checked_in_at)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
