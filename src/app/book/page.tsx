@@ -512,7 +512,7 @@ placeholder="(510)555-5555"
 if (q.question_text === 'Which mentor have you worked with?' && !showMentor) 
   return false                
         if (isReturning) {
-          const alwaysAskKeys = ['which_mentor', 'help_with', 'private_counselor']
+const alwaysAskKeys = ['help_with', 'private_counselor']
           if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
         }
         return true
