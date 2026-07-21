@@ -91,6 +91,8 @@ const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
+const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled' | 'in_person' | 'available'>('all')
+
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -665,8 +667,8 @@ onClick={() => {
        {/* Filters */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    {(['all', 'active', 'completed', 'cancelled', 'available'] as const).map(f => (
-                      <button
+{(['all', 'active', 'completed', 'cancelled', 'in_person', 'available'] as const).map(f => (
+                        <button
                         key={f}
                         onClick={() => setBookingFilter(f)}
                         style={{
@@ -676,7 +678,7 @@ onClick={() => {
                           border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
                         }}
                       >
-                        {f.charAt(0).toUpperCase() + f.slice(1)}
+{f === 'cancelled' ? 'Canceled' : f === 'in_person' ? 'In Person' : f.charAt(0).toUpperCase() + f.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -710,9 +712,10 @@ onClick={() => {
                     const isPast = startTime ? new Date(startTime) < new Date() : false
                     const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name ?? ''
 
-                    if (bookingFilter === 'active' && (booking.cancelled_at || isPast)) return false
+                  if (bookingFilter === 'active' && (booking.cancelled_at || isPast)) return false
                     if (bookingFilter === 'completed' && (booking.cancelled_at || !isPast)) return false
                     if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
+                    if (bookingFilter === 'in_person' && (booking as any).meeting_type !== 'in_person') return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                return true
                   }).sort((a, b) => {
