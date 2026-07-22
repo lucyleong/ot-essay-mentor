@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       )
     `)
     .is('cancelled_at', null)
+    .neq('meeting_type', 'in_person')
     .lte('appointment_slots.end_time', now.toISOString())
     .gte('appointment_slots.end_time', tenMinutesAgo)
 
