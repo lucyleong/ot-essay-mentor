@@ -1,12 +1,27 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function VerifyPage() {
   const [code,    setCode]    = useState('')
   const [error,   setError]   = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const urlCode = searchParams.get('code')
+    if (urlCode) {
+      const entered = urlCode.trim().toUpperCase()
+      if (entered === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
+        sessionStorage.setItem('booking_verified', 'true')
+        router.push('/book')
+      } else if (entered === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
+        sessionStorage.setItem('checkin_verified', 'true')
+        router.push('/checkin')
+      }
+    }
+  }, [])
 
  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
