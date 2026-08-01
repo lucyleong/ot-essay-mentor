@@ -51,7 +51,7 @@ const [returningName, setReturningName] = useState('')
       return
     }
 
-    const verified = localStorage.getItem('checkin_verified')
+const verified = localStorage.getItem('checkin_verified') === process.env.NEXT_PUBLIC_CHECKIN_CODE
     if (!verified) {
       router.push('/verify')
       return

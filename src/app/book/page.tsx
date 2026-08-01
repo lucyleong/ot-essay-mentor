@@ -87,7 +87,7 @@ export default function BookPage() {
       return
     }
 
-    const verified = localStorage.getItem('booking_verified')
+const verified = localStorage.getItem('booking_verified') === process.env.NEXT_PUBLIC_BOOKING_CODE
     if (!verified) {
       router.push('/verify')
       return

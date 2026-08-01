@@ -14,10 +14,10 @@ function VerifyContent() {
     if (urlCode) {
       const entered = urlCode.trim().toUpperCase()
       if (entered === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
-        localStorage.setItem('booking_verified', 'true')
+localStorage.setItem('booking_verified', process.env.NEXT_PUBLIC_BOOKING_CODE!)
         router.push('/book')
       } else if (entered === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
-        localStorage.setItem('checkin_verified', 'true')
+localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
         router.push('/checkin')
       }
     }
