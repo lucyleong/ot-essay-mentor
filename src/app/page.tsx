@@ -35,13 +35,16 @@ export default function HomePage() {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        <div>
-          <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
-            Oakland Tech
-          </p>
-          <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
-            College Essay Mentor Program
-          </h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
+          <div>
+            <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
+              Oakland Tech
+            </p>
+            <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
+              College Essay Mentor Program
+            </h1>
+          </div>
         </div>
         <div style={{ flexShrink: 0 }}>
           <Link href="/login" style={{
