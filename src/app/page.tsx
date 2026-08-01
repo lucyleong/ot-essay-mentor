@@ -47,10 +47,10 @@ export default function HomePage() {
           </div>
         </div>
         <div style={{ flexShrink: 0 }}>
-          <Link href="/login" style={{
+         <Link href="/login" style={{
             background: 'transparent', color: '#EEEDFE',
-            textDecoration: 'none', fontSize: 13,
-            padding: '8px 18px', borderRadius: 8,
+            textDecoration: 'none', fontSize: 12,
+            padding: '6px 12px', borderRadius: 8,
             border: '0.5px solid #EEEDFE',
           }}>
             Login
