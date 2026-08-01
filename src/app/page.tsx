@@ -36,7 +36,7 @@ export default function HomePage() {
         alignItems: 'center',
       }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
+<img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 80, height: 80, objectFit: 'contain' }} />
           <div>
             <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
               Oakland Tech
