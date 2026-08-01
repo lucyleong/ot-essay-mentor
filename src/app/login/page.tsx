@@ -201,6 +201,7 @@ redirectTo: `${window.location.origin}/reset-password`,
                 Don't have an account? Contact admin@otessaymentors.org to request access.
           </p>
         )}
+     </div>
       </div>
     </main>
   )
