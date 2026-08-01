@@ -103,12 +103,12 @@ redirectTo: `${window.location.origin}/reset-password`,
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
-        <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 100, marginBottom: 16 }} />
+       <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
         
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: '#ffffff', margin: '0 0 8px' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 700, color: '#ffffff', margin: '0 0 8px' }}>
           Oakland Tech
         </h1>
-        <p style={{ fontSize: 16, color: '#EEEDFE', margin: '0 0 24px' }}>
+        <p style={{ fontSize: 18, color: '#EEEDFE', margin: '0 0 24px' }}>
           College Essay Mentor Program
         </p>
 
