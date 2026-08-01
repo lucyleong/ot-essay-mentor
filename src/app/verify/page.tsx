@@ -28,44 +28,57 @@ export default function VerifyPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4f0', padding: '1rem' }}>
-      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400 }}>
-        <div style={{ marginBottom: 24 }}>
-          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', color: '#888780', margin: '0 0 4px' }}>
-            Oakland Tech
-          </p>
-          <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 8px' }}>College Essay Mentor Program</h1>
-          <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0, lineHeight: 1.6 }}>
-            Please enter the access code provided by your teacher to book an appointment.
-          </p>
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
+      <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
+        
+        {/* Bulldog image placeholder - we'll add this when you find the image */}
+        
+        {/* Headline */}
+        <h1 style={{ fontSize: 36, fontWeight: 700, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.2 }}>
+          Got College Essays?<br />Get Help!
+        </h1>
+
+        {/* Subtext */}
+        <p style={{ fontSize: 16, color: '#EEEDFE', margin: '0 0 32px', lineHeight: 1.6 }}>
+          Tech Seniors, sign up here for a free, online appointment with a Tech College Essay Mentor.
+        </p>
+
+        {/* Form */}
+        <div style={{ background: '#ffffff', borderRadius: 12, padding: '2rem' }}>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#5F5E5A', marginBottom: 8, letterSpacing: '.1em', textTransform: 'uppercase' }}>
+                Sign Up Code
+              </label>
+              <input
+                type="text"
+                value={code}
+                onChange={e => setCode(e.target.value)}
+                placeholder="Enter your code"
+                required
+                autoFocus
+                style={{ width: '100%', boxSizing: 'border-box', textTransform: 'uppercase', letterSpacing: '.1em', fontSize: 18, textAlign: 'center' }}
+              />
+            </div>
+
+            {error && (
+              <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#791F1F' }}>
+                {error}
+              </div>
+            )}
+
+            <button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 16, padding: '12px' }}>
+              {loading ? 'Verifying...' : 'Enter'}
+            </button>
+          </form>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
-              Access code
-            </label>
-            <input
-              type="text"
-              value={code}
-              onChange={e => setCode(e.target.value)}
-              placeholder="Enter your access code"
-              required
-              autoFocus
-              style={{ width: '100%', boxSizing: 'border-box', textTransform: 'uppercase', letterSpacing: '.1em' }}
-            />
-          </div>
+        {/* In-person text */}
+        <p style={{ fontSize: 13, color: '#EEEDFE', margin: '24px 0 0', lineHeight: 1.6 }}>
+          Looking for an in-person appointment with a Tech College Essay Mentor in the CCC?<br />
+          Check the CCC's Google Classroom for hours.
+        </p>
 
-         {error && (
-            <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#791F1F' }}>
-             {error}
-            </div>
-          )}
-
-<button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}>            {loading ? 'Verifying...' : 'Continue →'}
-          </button>
-        </form>
       </div>
     </main>
   )
-}
