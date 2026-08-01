@@ -138,11 +138,8 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     )
   }
 
-  return (
+ return (
     <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
-      <Link href="/" style={{ fontSize: 13, color: '#888780', textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-        ← Back to home
-      </Link>
 
       <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 12px' }}>
         In-Person Check-In
