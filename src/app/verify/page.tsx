@@ -32,7 +32,7 @@ export default function VerifyPage() {
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
 <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
-        
+
         {/* Headline */}
         <h1 style={{ fontSize: 36, fontWeight: 700, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.2 }}>
           Got College Essays?<br />Get Help!
@@ -82,3 +82,4 @@ export default function VerifyPage() {
       </div>
     </main>
   )
+}
