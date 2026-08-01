@@ -127,4 +127,9 @@ html, body {
     background: white !important;
   }
 }
+@media (min-width: 769px) {
+  .nowrap-desktop {
+    white-space: nowrap;
+  }
+}
 }

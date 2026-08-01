@@ -41,8 +41,8 @@ export default function HomePage() {
             <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
               Oakland Tech
             </p>
-           <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
-              College Essay Mentor Program
+          <h1 className="nowrap-desktop" style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
+              College Essay<br />Mentor Program
             </h1>
           </div>
         </div>
