@@ -274,11 +274,13 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
   return (
   <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Purple header */}
-<div style={{ background: '#534AB7', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 32 }}>
+<div style={{ background: '#534AB7', marginBottom: 32 }}>
+        <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 1rem', display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 50, height: 50, objectFit: 'contain', flexShrink: 0 }} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 2px' }}>Oakland Tech</p>
-          <h1 style={{ color: '#ffffff', fontSize: 18, fontWeight: 500, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>College Essay Mentor Program</h1>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 2px' }}>Oakland Tech</p>
+            <h1 style={{ color: '#ffffff', fontSize: 18, fontWeight: 500, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>College Essay Mentor Program</h1>
+          </div>
         </div>
       </div>
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 1rem 2rem' }}>
