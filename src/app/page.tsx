@@ -42,7 +42,7 @@ export default function HomePage() {
               Oakland Tech
             </p>
            <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
-              College Essay<br />Mentor Program
+              College Essay Mentor Program
             </h1>
           </div>
         </div>
