@@ -126,13 +126,38 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
           border: '0.5px solid #5DCAA5',
           borderRadius: 12,
           padding: '2rem',
+          marginBottom: 16,
         }}>
           <p style={{ fontSize: 22, fontWeight: 500, margin: '0 0 8px', color: '#085041' }}>
             You're checked in!
           </p>
-         <p style={{ fontSize: 13, color: '#0F6E56', margin: 0 }}>
+          <p style={{ fontSize: 13, color: '#0F6E56', margin: 0 }}>
             A mentor will be with you shortly. Please have a seat and wait to be called.
           </p>
+        </div>
+        <div style={{
+          background: '#ffffff',
+          border: '0.5px solid #e8e6de',
+          borderRadius: 12,
+          padding: '1.25rem',
+        }}>
+          <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px', color: '#2C2C2A' }}>
+            Want more help with your college essays?
+          </p>
+          <p style={{ fontSize: 13, color: '#5F5E5A', margin: '0 0 12px' }}>
+            Book a free virtual appointment with a Tech College Essay Mentor and meet mentor from home.
+          </p>
+          <a href="/verify" style={{
+            display: 'inline-block',
+            background: '#534AB7',
+            color: '#ffffff',
+            textDecoration: 'none',
+            fontSize: 13,
+            padding: '8px 20px',
+            borderRadius: 8,
+          }}>
+            Book a virtual appointment →
+          </a>
         </div>
       </main>
     )
