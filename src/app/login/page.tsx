@@ -99,21 +99,23 @@ redirectTo: `${window.location.origin}/reset-password`,
     )
   }
 
-  return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f4f0', padding: '1rem' }}>
-      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 400 }}>
+ return (
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
+      <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
+        
+        <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 100, marginBottom: 16 }} />
+        
+        <h1 style={{ fontSize: 28, fontWeight: 700, color: '#ffffff', margin: '0 0 8px' }}>
+          Oakland Tech
+        </h1>
+        <p style={{ fontSize: 16, color: '#EEEDFE', margin: '0 0 24px' }}>
+          College Essay Mentor Program
+        </p>
 
-<div style={{ marginBottom: 24 }}>
-         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', color: '#888780', margin: '0 0 4px' }}>
-            Oakland Tech
-          </p>
-          <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 6px', color: '#2C2C2A' }}>
-            College Essay Mentor Program
-          </h1>
-          <p style={{ fontSize: 14, color: '#888780', margin: 0 }}>
+      <div style={{ background: '#ffffff', borderRadius: 12, padding: '2rem', textAlign: 'left' }}>
+        <p style={{ fontSize: 14, color: '#888780', margin: '0 0 20px', textAlign: 'center' }}>
             {resetMode ? 'Reset your password' : 'Sign in to your account'}
           </p>
-        </div>
 
         <form onSubmit={resetMode ? handleForgotPassword : handleLogin}>
           <div style={{ marginBottom: 14 }}>
