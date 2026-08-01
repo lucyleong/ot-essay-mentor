@@ -46,16 +46,6 @@ export default function HomePage() {
             </h1>
           </div>
         </div>
-        <div style={{ flexShrink: 0 }}>
-         <Link href="/login" style={{
-            background: 'transparent', color: '#EEEDFE',
-            textDecoration: 'none', fontSize: 12,
-            padding: '6px 12px', borderRadius: 8,
-            border: '0.5px solid #EEEDFE',
-          }}>
-            Login
-          </Link>
-        </div>
       </div>
 
       {/* Hero */}
