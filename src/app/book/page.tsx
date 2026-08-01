@@ -272,13 +272,16 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
   }
 
   return (
-    <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
-      <Link href="/" style={{ 
-        fontSize: 13, color: '#888780', textDecoration: 'none', 
-        display: 'block', marginBottom: 20 
-      }}>
-        ← Back to home
-      </Link>
+  <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
+      {/* Purple header */}
+      <div style={{ background: '#534AB7', padding: '24px 32px', display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
+        <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
+        <div>
+          <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>Oakland Tech</p>
+          <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>College Essay Mentor Program</h1>
+        </div>
+      </div>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 1rem 2rem' }}>
 
       <div style={{ marginBottom: 24 }}>
   <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 12px' }}>
@@ -673,13 +676,14 @@ style={{ flex: 1, background: '#534AB7', color: '#ffffff', border: 'none' }}
                 onClick={() => setSelectedSlot(null)}
                 style={{ padding: '0 16px' }}
               >
-                Cancel
+             Cancel
               </button>
             </div>
 <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async />
           </form>
         </div>
       )}
+      </div>
     </main>
   )
 }
