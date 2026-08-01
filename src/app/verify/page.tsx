@@ -1,8 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function VerifyPage() {
+function VerifyContent() {
   const [code,    setCode]    = useState('')
   const [error,   setError]   = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,7 +23,7 @@ export default function VerifyPage() {
     }
   }, [])
 
- function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -46,19 +46,16 @@ export default function VerifyPage() {
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
-<img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
+        <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
 
-        {/* Headline */}
         <h1 style={{ fontSize: 36, fontWeight: 700, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.2 }}>
           Got College Essays?<br />Get Help!
         </h1>
 
-        {/* Subtext */}
         <p style={{ fontSize: 16, color: '#EEEDFE', margin: '0 0 32px', lineHeight: 1.6 }}>
           Tech Seniors, sign up here for a free, online appointment with a Tech College Essay Mentor.
         </p>
 
-        {/* Form */}
         <div style={{ background: '#ffffff', borderRadius: 12, padding: '2rem' }}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 16 }}>
@@ -88,7 +85,6 @@ export default function VerifyPage() {
           </form>
         </div>
 
-        {/* In-person text */}
         <p style={{ fontSize: 13, color: '#EEEDFE', margin: '24px 0 0', lineHeight: 1.6 }}>
           Looking for an in-person appointment with a Tech College Essay Mentor in the CCC?<br />
           Check the CCC's Google Classroom for hours.
@@ -96,5 +92,13 @@ export default function VerifyPage() {
 
       </div>
     </main>
+  )
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense>
+      <VerifyContent />
+    </Suspense>
   )
 }
