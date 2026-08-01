@@ -31,7 +31,7 @@ export default function VerifyPage() {
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
-        {/* Bulldog image placeholder - we'll add this when you find the image */}
+<img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
         
         {/* Headline */}
         <h1 style={{ fontSize: 36, fontWeight: 700, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.2 }}>
