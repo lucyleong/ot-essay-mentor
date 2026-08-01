@@ -181,7 +181,7 @@ export default function HomePage() {
 
       </div>
 
-      {/* Footer */}
+    {/* Footer */}
       <div style={{
         borderTop: '0.5px solid #e8e6de',
         padding: '20px 32px',
@@ -196,6 +196,10 @@ export default function HomePage() {
         {' · '}
         <a href="/terms" style={{ color: '#534AB7' }}>
           Terms & Privacy Policy
+        </a>
+       {' · '}
+        <a href="/login" style={{ color: '#534AB7' }}>
+          Mentor login
         </a>
       </div>
 
