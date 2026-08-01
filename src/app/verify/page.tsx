@@ -14,10 +14,10 @@ function VerifyContent() {
     if (urlCode) {
       const entered = urlCode.trim().toUpperCase()
       if (entered === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
-        sessionStorage.setItem('booking_verified', 'true')
+        localStorage.setItem('booking_verified', 'true')
         router.push('/book')
       } else if (entered === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
-        sessionStorage.setItem('checkin_verified', 'true')
+        localStorage.setItem('checkin_verified', 'true')
         router.push('/checkin')
       }
     }
@@ -31,10 +31,10 @@ function VerifyContent() {
     const entered = code.trim().toUpperCase()
 
     if (entered === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
-      sessionStorage.setItem('booking_verified', 'true')
+      localStorage.setItem('booking_verified', 'true')
       router.push('/book')
     } else if (entered === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
-      sessionStorage.setItem('checkin_verified', 'true')
+      localStorage.setItem('checkin_verified', 'true')
       router.push('/checkin')
     } else {
       setError('Incorrect code. Please check with your teacher and try again.')

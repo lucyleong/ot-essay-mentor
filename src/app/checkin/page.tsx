@@ -47,11 +47,11 @@ const [returningName, setReturningName] = useState('')
     const urlCode = params.get('code')
 
     if (urlCode && urlCode.toUpperCase() === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
-      sessionStorage.setItem('checkin_verified', 'true')
+      localStorage.setItem('checkin_verified', 'true')
       return
     }
 
-    const verified = sessionStorage.getItem('checkin_verified')
+    const verified = localStorage.getItem('checkin_verified')
     if (!verified) {
       router.push('/verify')
       return
