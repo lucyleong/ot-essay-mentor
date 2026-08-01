@@ -138,12 +138,23 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     )
   }
 
- return (
-    <main style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 1rem' }}>
+return (
+    <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
+      {/* Purple header */}
+      <div style={{ background: '#534AB7', marginBottom: 32 }}>
+        <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 1rem', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 50, height: 50, objectFit: 'contain', flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 2px' }}>Oakland Tech</p>
+            <h1 style={{ color: '#ffffff', fontSize: 18, fontWeight: 500, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>College Essay Mentor Program</h1>
+          </div>
+        </div>
+      </div>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 1rem 2rem' }}>
 
-      <h1 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 12px' }}>
+      <h2 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 12px' }}>
         In-Person Check-In
-      </h1>
+      </h2>
       <p style={{ margin: '0 0 20px' }}>
         Welcome! Please fill out this short form to check in for in-person essay mentoring.
         A mentor will be with you shortly.
@@ -297,7 +308,7 @@ if (q.question_text === 'Which mentor did you work with?' && !showMentor) return
             </div>
           ))}
 
-        <button
+       <button
           type="submit"
           disabled={submitting || !!emailError || !email || !firstName || !lastName}
           style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}
@@ -305,6 +316,7 @@ if (q.question_text === 'Which mentor did you work with?' && !showMentor) return
           {submitting ? 'Checking in...' : 'Check in'}
         </button>
       </form>
+      </div>
     </main>
   )
 }
