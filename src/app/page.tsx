@@ -27,21 +27,15 @@ export default function HomePage() {
   return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
-      {/* Header */}
-      <div className="no-wrap-row" style={{
-        background: '#534AB7',
-        padding: '24px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-<img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 80, height: 80, objectFit: 'contain' }} />
+     {/* Header */}
+      <div style={{ background: '#534AB7' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 80, height: 80, objectFit: 'contain' }} />
           <div>
             <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
               Oakland Tech
             </p>
-         <h1 className="nowrap-desktop" style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
+            <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
               College Essay Mentor Program
             </h1>
           </div>
