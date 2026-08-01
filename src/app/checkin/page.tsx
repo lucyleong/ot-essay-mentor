@@ -47,7 +47,7 @@ const [returningName, setReturningName] = useState('')
     const urlCode = params.get('code')
 
     if (urlCode && urlCode.toUpperCase() === process.env.NEXT_PUBLIC_CHECKIN_CODE?.toUpperCase()) {
-      localStorage.setItem('checkin_verified', 'true')
+localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
       return
     }
 

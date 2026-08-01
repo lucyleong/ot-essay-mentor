@@ -83,7 +83,7 @@ export default function BookPage() {
     const urlCode = params.get('code')
 
     if (urlCode && urlCode.toUpperCase() === process.env.NEXT_PUBLIC_BOOKING_CODE?.toUpperCase()) {
-      localStorage.setItem('booking_verified', 'true')
+localStorage.setItem('booking_verified', process.env.NEXT_PUBLIC_BOOKING_CODE!)
       return
     }
 
