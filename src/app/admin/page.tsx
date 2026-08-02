@@ -951,7 +951,7 @@ onClick={() => {
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
                   <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, marginBottom: 20 }}>
                       {[
-                        { label: 'Virtual',    value: reports.bookings.active },
+{ label: 'Virtual',    value: reports.bookings.virtual },
                         { label: 'In person', value: reports.bookings.inPerson },
                         { label: 'Canceled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
