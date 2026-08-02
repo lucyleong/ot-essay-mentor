@@ -145,7 +145,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
             Want more help with your college essays?
           </p>
           <p style={{ fontSize: 13, color: '#5F5E5A', margin: '0 0 12px' }}>
-            Book a free virtual appointment with a Tech College Essay Mentor and meet mentor from home.
+            Book a free virtual appointment with a Oakland Tech College Essay Mentor and meet a mentor from home.
           </p>
           <a href="/verify" style={{
             display: 'inline-block',
