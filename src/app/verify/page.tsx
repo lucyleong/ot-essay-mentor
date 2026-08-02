@@ -59,14 +59,11 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
         <div style={{ background: '#ffffff', borderRadius: 12, padding: '2rem' }}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#5F5E5A', marginBottom: 8, letterSpacing: '.1em', textTransform: 'uppercase' }}>
-                Sign Up Code
-              </label>
-              <input
+            <input
                 type="text"
                 value={code}
                 onChange={e => setCode(e.target.value)}
-                placeholder="Enter your code"
+                placeholder="Enter sign up code"
                 required
                 autoFocus
                 style={{ width: '100%', boxSizing: 'border-box', textTransform: 'uppercase', letterSpacing: '.1em', fontSize: 18, textAlign: 'center' }}
