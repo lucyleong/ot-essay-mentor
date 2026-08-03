@@ -889,8 +889,14 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                   )})}
              </div>}
 
-{bookingStatus === 'available' && (
-                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+{bookingStatus === 'available' && bookingMeetingType === 'in_person' && (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
+                    <p style={{ color: '#888780', fontSize: 13, margin: 0 }}>In-person appointments are walk-in only — no available slots.</p>
+                  </div>
+                )}
+
+{bookingStatus === 'available' && bookingMeetingType !== 'in_person' && (
+                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                     {availableSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
