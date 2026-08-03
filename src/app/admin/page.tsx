@@ -90,8 +90,8 @@ const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
-const [bookingFilter, setBookingFilter] = useState<'all' | 'active' | 'completed' | 'cancelled' | 'in_person' | 'available'>('all')
-
+const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
+const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -663,23 +663,29 @@ onClick={() => {
                   {bookings.filter(b => b.cancelled_at).length} cancelled
                 </p>
 
-       {/* Filters */}
+    {/* Filters */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-{(['all', 'active', 'completed', 'cancelled', 'available', 'in_person'] as const).map(f => (
-                          <button
-                        key={f}
-                        onClick={() => setBookingFilter(f)}
-                        style={{
-                          fontSize: 12, padding: '4px 12px', borderRadius: 20,
-                          background: bookingFilter === f ? '#534AB7' : '#ffffff',
-                          color: bookingFilter === f ? '#ffffff' : '#5F5E5A',
-                          border: `0.5px solid ${bookingFilter === f ? '#534AB7' : '#D3D1C7'}`,
-                        }}
-                      >
-{f === 'cancelled' ? 'Canceled' : f === 'active' ? 'Virtual' : f === 'in_person' ? 'In Person' : f.charAt(0).toUpperCase() + f.slice(1)}
-                      </button>
-                    ))}
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <select
+                      value={bookingMeetingType}
+                      onChange={e => setBookingMeetingType(e.target.value as any)}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                    >
+                      <option value="all">All types</option>
+                      <option value="virtual">Virtual</option>
+                      <option value="in_person">In Person</option>
+                    </select>
+                    <select
+                      value={bookingStatus}
+                      onChange={e => setBookingStatus(e.target.value as any)}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                    >
+                      <option value="all">All statuses</option>
+                      <option value="upcoming">Upcoming</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="available">Available slots</option>
+                    </select>
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <select
@@ -705,16 +711,17 @@ onClick={() => {
                   </div>
                 </div>
 
-               {bookingFilter !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+               {bookingStatus !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
               {bookings.filter(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
                     const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name ?? ''
 
-                  if (bookingFilter === 'active' && (booking.cancelled_at || isPast)) return false
-                    if (bookingFilter === 'completed' && (booking.cancelled_at || !isPast)) return false
-                    if (bookingFilter === 'cancelled' && !booking.cancelled_at) return false
-                    if (bookingFilter === 'in_person' && (booking as any).meeting_type !== 'in_person') return false
+                if (bookingMeetingType === 'virtual' && (booking as any).meeting_type !== 'virtual') return false
+                    if (bookingMeetingType === 'in_person' && (booking as any).meeting_type !== 'in_person') return false
+                    if (bookingStatus === 'upcoming' && (booking.cancelled_at || isPast)) return false
+                    if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast)) return false
+                    if (bookingStatus === 'cancelled' && !booking.cancelled_at) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                return true
                   }).sort((a, b) => {
@@ -740,7 +747,10 @@ onClick={() => {
                     }}>
                       {/* Top row: name + status badge */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
-                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
+                       <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
+                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: (booking as any).meeting_type === 'in_person' ? '#E1F5EE' : '#EEEDFE', color: (booking as any).meeting_type === 'in_person' ? '#085041' : '#3C3489' }}>
+                          {(booking as any).meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
+                        </span>
                         <span style={{
                           fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
                           background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
@@ -877,8 +887,8 @@ onClick={() => {
                   )})}
              </div>}
 
-                {bookingFilter === 'available' && (
-                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+{bookingStatus === 'available' && (
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                     {availableSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
