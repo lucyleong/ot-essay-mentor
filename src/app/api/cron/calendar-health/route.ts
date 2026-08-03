@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { getFreshAccessToken } from '@/lib/calendar'
 import { sendEmail } from '@/lib/email'
 
 const supabase = createClient(
@@ -15,12 +14,39 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await getFreshAccessToken()
+    // Check if we have a valid token by fetching it from the database
+    const { data: tokenData } = await supabase
+      .from('google_calendar_tokens')
+      .select('access_token, expires_at, refresh_token')
+      .single()
+
+    if (!tokenData?.refresh_token) {
+      throw new Error('No refresh token found')
+    }
+
+    // Try to refresh the token
+    const response = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id:     process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        refresh_token: tokenData.refresh_token,
+        grant_type:    'refresh_token',
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error ?? 'Token refresh failed')
+    }
+
     return NextResponse.json({ ok: true, status: 'connected' })
-  } catch {
+  } catch (err: any) {
     // Token is expired or invalid — send alert email
     await sendEmail({
-      to: process.env.ADMIN_EMAIL ?? 'admin@otessaymentors.org',
+      to: 'admin@otessaymentors.org',
       subject: '⚠️ Google Calendar disconnected — action needed',
       html: `
         <p>Hi Lucy,</p>
@@ -33,6 +59,6 @@ export async function GET(request: NextRequest) {
       recipientType: 'mentor',
     })
 
-    return NextResponse.json({ ok: false, status: 'disconnected' })
+    return NextResponse.json({ ok: false, status: 'disconnected', error: err.message })
   }
 }
