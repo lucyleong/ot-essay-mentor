@@ -746,19 +746,21 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                    <div key={booking.id} style={{
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                     }}>
-                      {/* Top row: name + status badge */}
+                     {/* Top row: name + badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
-                       <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
-                       <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#E1F5EE' : '#EEEDFE', color: booking.meeting_type === 'in_person' ? '#085041' : '#3C3489' }}>
-  {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
-</span>
-                        <span style={{
-                          fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
-                          background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
-                          color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
-                        }}>
-                          {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
-                        </span>
+                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
+                        <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#E1F5EE' : '#EEEDFE', color: booking.meeting_type === 'in_person' ? '#085041' : '#3C3489' }}>
+                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
+                          </span>
+                          <span style={{
+                            fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
+                            background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
+                            color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
+                          }}>
+                            {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
+                          </span>
+                        </div>
                       </div>
                       {/* Second row: email */}
                       <p style={{ fontSize: 12, color: '#888780', margin: '0 0 1px' }}>
