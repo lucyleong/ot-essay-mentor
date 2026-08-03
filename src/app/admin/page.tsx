@@ -24,6 +24,7 @@ type Booking = {
   sms_consent: boolean
   sms_confirm_sent: boolean
   sms_confirmed_at: string | null
+  meeting_type: string | null
   appointment_slots: any
   survey_responses: any[]
 }
@@ -717,8 +718,8 @@ onClick={() => {
                     const isPast = startTime ? new Date(startTime) < new Date() : false
                     const mentorName = (booking.appointment_slots as any)?.mentor_profiles?.full_name ?? ''
 
-                if (bookingMeetingType === 'virtual' && (booking as any).meeting_type !== 'virtual') return false
-                    if (bookingMeetingType === 'in_person' && (booking as any).meeting_type !== 'in_person') return false
+              if (bookingMeetingType === 'virtual' && booking.meeting_type !== 'virtual') return false
+if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') return false
                     if (bookingStatus === 'upcoming' && (booking.cancelled_at || isPast)) return false
                     if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast)) return false
                     if (bookingStatus === 'cancelled' && !booking.cancelled_at) return false
@@ -748,9 +749,9 @@ onClick={() => {
                       {/* Top row: name + status badge */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
-                        <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: (booking as any).meeting_type === 'in_person' ? '#E1F5EE' : '#EEEDFE', color: (booking as any).meeting_type === 'in_person' ? '#085041' : '#3C3489' }}>
-                          {(booking as any).meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
-                        </span>
+                       <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#E1F5EE' : '#EEEDFE', color: booking.meeting_type === 'in_person' ? '#085041' : '#3C3489' }}>
+  {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
+</span>
                         <span style={{
                           fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
                           background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
