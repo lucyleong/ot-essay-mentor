@@ -64,6 +64,7 @@ const [isAdmin, setIsAdmin] = useState(false)
 const [bioText, setBioText] = useState('')
 const [bioSaving, setBioSaving] = useState(false)
 const [bioSaveSuccess, setBioSaveSuccess] = useState(false)
+const [isEditingBio, setIsEditingBio] = useState(false)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -1089,38 +1090,67 @@ style={{
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
                       Your bio
                     </label>
-                    <textarea
-                      value={bioText}
-                      onChange={e => setBioText(e.target.value)}
-                      rows={6}
-                      placeholder="Write a short bio about yourself..."
-                      style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
-                    />
+                    {isEditingBio ? (
+                      <textarea
+                        value={bioText}
+                        onChange={e => setBioText(e.target.value)}
+                        rows={6}
+                        placeholder="Write a short bio about yourself..."
+                        style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
+                      />
+                    ) : (
+                      <p style={{ fontSize: 14, color: bioText ? '#2C2C2A' : '#B4B2A9', fontStyle: bioText ? 'normal' : 'italic', lineHeight: 1.6, margin: 0 }}>
+                        {bioText || 'No bio yet — click Edit to add one'}
+                      </p>
+                    )}
                   </div>
                   {bioSaveSuccess && (
                     <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginBottom: 12, fontSize: 13, color: '#085041' }}>
                       Bio updated successfully!
                     </div>
                   )}
-                  <button
-                    onClick={async () => {
-                      setBioSaving(true)
-                      setBioSaveSuccess(false)
-                      await supabase
-                        .from('mentor_profiles')
-                        .update({ bio: bioText })
-.eq('id', mentor!.id)
-                      setBioSaving(false)
-                      setBioSaveSuccess(true)
-                    }}
-                    disabled={bioSaving}
-                    style={{ background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
-                  >
-                    {bioSaving ? 'Saving...' : 'Save bio'}
-                  </button>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {!isEditingBio ? (
+                      <button
+                        onClick={() => setIsEditingBio(true)}
+                        style={{ fontSize: 13, padding: '8px 16px' }}
+                      >
+                        Edit bio
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={async () => {
+                            setBioSaving(true)
+                            setBioSaveSuccess(false)
+                            await supabase
+                              .from('mentor_profiles')
+                              .update({ bio: bioText })
+                              .eq('id', mentor!.id)
+                            setBioSaving(false)
+                            setBioSaveSuccess(true)
+                            setIsEditingBio(false)
+                          }}
+                          disabled={bioSaving}
+                          style={{ background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                        >
+                          {bioSaving ? 'Saving...' : 'Save bio'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setBioText(mentor?.bio ?? '')
+                            setIsEditingBio(false)
+                          }}
+                          style={{ fontSize: 13, padding: '8px 16px' }}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                 </div>
                 </div>
               </div>
-           )}
+            )}
 
             </>
         )}
