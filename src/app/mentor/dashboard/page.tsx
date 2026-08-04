@@ -61,6 +61,9 @@ const [bookingIssues, setBookingIssues] = useState<Record<string, { noShow: bool
 const [savingIssue, setSavingIssue] = useState<string | null>(null)
 const [menuOpen, setMenuOpen] = useState(false)
 const [isAdmin, setIsAdmin] = useState(false)
+const [bioText, setBioText] = useState('')
+const [bioSaving, setBioSaving] = useState(false)
+const [bioSaveSuccess, setBioSaveSuccess] = useState(false)
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -89,12 +92,13 @@ const timeOptions = generateTimeOptions()
 
     const { data: mentorData } = await supabase
       .from('mentor_profiles')
-      .select('id, full_name, email, is_virtual_available')
+      .select('id, full_name, email, is_virtual_available, bio')
       .eq('auth_user_id', user.id)
       .single()
 
     if (!mentorData) { router.push('/login'); return }
     setMentor(mentorData)
+    setBioText(mentorData.bio ?? '')
 
     const bookingsRes = await fetch('/api/mentor/bookings')
     const bookingsData = await bookingsRes.json()
@@ -196,6 +200,7 @@ const todayBookings    = allBookings
     { key: 'students', label: 'Students' },
     ...(mentor?.is_virtual_available !== false ? [{ key: 'slots', label: 'My availability' }] : []),
     ...(isInPersonAvailable ? [{ key: 'walkin', label: 'Walk-in Queue' }] : []),
+    { key: 'profile',  label: 'My Profile' },
   ]
   return (
     <div className="mentor-layout" style={{ display: 'flex', minHeight: '100vh', background: '#f5f4f0' }}>
@@ -1075,5 +1080,49 @@ style={{
         )}
       </div>
     </div>
-  )
+  
+  {/* MY PROFILE */}
+            {activePanel === 'profile' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>My Profile</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Update your bio as it appears on the mentors page
+                </p>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem' }}>
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                      Your bio
+                    </label>
+                    <textarea
+                      value={bioText}
+                      onChange={e => setBioText(e.target.value)}
+                      rows={6}
+                      placeholder="Write a short bio about yourself..."
+                      style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
+                    />
+                  </div>
+                  {bioSaveSuccess && (
+                    <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginBottom: 12, fontSize: 13, color: '#085041' }}>
+                      Bio updated successfully!
+                    </div>
+                  )}
+                  <button
+                    onClick={async () => {
+                      setBioSaving(true)
+                      setBioSaveSuccess(false)
+                      await supabase
+                        .from('mentor_profiles')
+                        .update({ bio: bioText })
+                        .eq('id', mentor.id)
+                      setBioSaving(false)
+                      setBioSaveSuccess(true)
+                    }}
+                    disabled={bioSaving}
+                    style={{ background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                  >
+                    {bioSaving ? 'Saving...' : 'Save bio'}
+                  </button>
+                </div>
+              </div>
+            )})
 }
