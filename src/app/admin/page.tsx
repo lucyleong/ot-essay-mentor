@@ -1379,10 +1379,25 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             seen.add(key)
                             return true
                           })
-                          .map((s: any) => {
+                         .map((s: any) => {
                             const time = new Date(s.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
                             const firstName = s.mentor_profiles?.full_name?.split(' ')[0] ?? 'Unknown'
-                            return `${firstName} ${time}`
+                            return { mentor: firstName, start: new Date(s.start_time), end: new Date(s.end_time) }
+                          })
+                          .reduce((acc: any[], curr: any) => {
+                            const existing = acc.find(a => a.mentor === curr.mentor)
+                            if (existing) {
+                              if (curr.start < existing.start) existing.start = curr.start
+                              if (curr.end > existing.end) existing.end = curr.end
+                            } else {
+                              acc.push({ ...curr })
+                            }
+                            return acc
+                          }, [])
+                          .map(({ mentor, start, end }: any) => {
+                            const s = start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            const e = end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            return `${mentor} ${s}–${e}`
                           })
 
                         return (
