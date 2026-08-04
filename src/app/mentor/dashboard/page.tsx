@@ -32,6 +32,7 @@ type MentorProfile = {
   full_name: string
   email: string
   is_virtual_available?: boolean
+  bio?: string | null
 }
 
 export default function MentorDashboardPage() {
