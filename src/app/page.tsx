@@ -80,7 +80,8 @@ export default function HomePage() {
             , color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
             The Oakland Tech College Essay Mentor Program provides no-cost support to our seniors as they prepare their college applications. Helping Oakland Tech seniors for the past decade, the College 
             Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their Common App Essays and UC PIQs. {' '}
-<a href="/mentors" style={{ color: '#534AB7', fontWeight: 600 }}>Read about the team here.</a>          </p>
+<a href="/mentors" style={{ color: '#534AB7', fontWeight: 600 }}>Read about the team here.</a>          
+</p>
           <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
             We work with students from their earliest brainstorming sessions to the final polishing of their work for submission.
           </p>
