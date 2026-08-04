@@ -1348,11 +1348,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
 
            {/* SCHEDULES */}
             {activePanel === 'schedules' && (
-              <div>
-              
-
-            
-
+              <div>          
                 <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 4px' }}>Create mentor schedule</h2>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Add availability on behalf of a mentor
@@ -1540,9 +1536,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     </button>
                   </div>
                 </div>
-              </div>
-            )}
-   {/* Schedule summary by mentor */}
+             </div>
+
+           {/* Schedule summary by mentor */}
                 {scheduleSlots.length > 0 && (() => {
                   const byMentor: Record<string, any[]> = {}
                   scheduleSlots.forEach((s: any) => {
@@ -1595,7 +1591,8 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       })}
                     </div>
                   )
-                })()}
+               })()}
+            )}
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
               <div>
