@@ -1591,6 +1591,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     </div>
                   )
                })()}
+               </div>
             )}
             {/* GOOGLE CALENDAR */}
             {activePanel === 'calendar' && (
