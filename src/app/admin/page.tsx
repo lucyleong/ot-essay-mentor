@@ -1542,61 +1542,53 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                 </div>
               </div>
             )}
-   {/* Schedule summary by day */}
-     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Schedule Overview</h1>
-                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
-                  Upcoming mentor availability grouped by day
-                </p>
+   {/* Schedule summary by mentor */}
                 {scheduleSlots.length > 0 && (() => {
-                  const byDay: Record<string, any[]> = {}
-                  const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
+                  const byMentor: Record<string, any[]> = {}
                   scheduleSlots.forEach((s: any) => {
-                    const day = new Date(s.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })
-                    if (!byDay[day]) byDay[day] = []
-                    byDay[day].push(s)
+                    const name = s.mentor_profiles?.full_name ?? 'Unknown'
+                    if (!byMentor[name]) byMentor[name] = []
+                    byMentor[name].push(s)
                   })
 
                   return (
                     <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', marginBottom: 32 }}>
-                      {dayOrder.filter(day => byDay[day]).map(day => {
-                        // Get unique mentor+time combos
-                        const seen = new Set<string>()
-                        const entries = byDay[day]
-                          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-                          .filter((s: any) => {
-                            const time = new Date(s.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
-                            const key = `${s.mentor_profiles?.full_name}-${time}`
-                            if (seen.has(key)) return false
-                            seen.add(key)
-                            return true
+                      <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 12px', color: '#2C2C2A' }}>Mentor Availability Overview</p>
+                      {Object.entries(byMentor).sort().map(([mentorName, slots]) => {
+                        // Group by day of week, get time ranges
+                        const byDay: Record<string, { start: Date, end: Date }> = {}
+                        slots.forEach((s: any) => {
+                          const day = new Date(s.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })
+                          const start = new Date(s.start_time)
+                          const end = new Date(s.end_time)
+                          if (!byDay[day]) {
+                            byDay[day] = { start, end }
+                          } else {
+                            if (start < byDay[day].start) byDay[day].start = start
+                            if (end > byDay[day].end) byDay[day].end = end
+                          }
+                        })
+
+                        const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        const summary = dayOrder
+                          .filter(d => byDay[d])
+                          .map(d => {
+                            const s = byDay[d].start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            const e = byDay[d].end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            return `${d} ${s}–${e}`
                           })
-                         .map((s: any) => {
-                            const time = new Date(s.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
-                            const firstName = s.mentor_profiles?.full_name?.split(' ')[0] ?? 'Unknown'
-                            return { mentor: firstName, start: new Date(s.start_time), end: new Date(s.end_time) }
-                          })
-                          .reduce((acc: any[], curr: any) => {
-                            const existing = acc.find(a => a.mentor === curr.mentor)
-                            if (existing) {
-                              if (curr.start < existing.start) existing.start = curr.start
-                              if (curr.end > existing.end) existing.end = curr.end
-                            } else {
-                              acc.push({ ...curr })
-                            }
-                            return acc
-                          }, [])
-                          .map(({ mentor, start, end }: any) => {
-                            const s = start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
-                            const e = end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
-                            return `${mentor} ${s}–${e}`
-                          })
+                          .join(' · ')
 
                         return (
-                          <div key={day} style={{ padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                            <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: '#534AB7' }}>{day}</p>
+                          <div key={mentorName} style={{ padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: '#2C2C2A' }}>
+                                {mentorName.split(' ')[0]}
+                              </p>
+                              <span style={{ fontSize: 11, color: '#888780' }}>{slots.length} slots</span>
+                            </div>
                             <p style={{ fontSize: 12, color: '#5F5E5A', margin: 0 }}>
-                              {entries.join(' · ')}
+                              {summary || 'No recurring pattern'}
                             </p>
                           </div>
                         )
