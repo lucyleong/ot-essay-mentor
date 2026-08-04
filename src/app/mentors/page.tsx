@@ -68,7 +68,7 @@ export default async function MentorsPage() {
           gap: 0,
         }}>
           {(mentors ?? []).map(mentor => (
-            
+            <a
               key={mentor.id}
               href={`#mentor-${mentor.id}`}
               style={{
@@ -146,7 +146,8 @@ export default async function MentorsPage() {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
              {programTeamMembers.map(member => (
-                <div key={member.id} id={`mentor-${member.id}`} style={{
+                <div 
+                key={member.id} id={`mentor-${member.id}`} style={{
                   background: '#ffffff',
                   border: '0.5px solid #e8e6de',
                   borderRadius: 12,
