@@ -1,14 +1,38 @@
 import Link from 'next/link'
 
 export default function TermsPage() {
-  return (
-    <main style={{ maxWidth: 700, margin: '0 auto', padding: '3rem 2rem' }}>
-      <Link href="/" style={{ fontSize: 13, color: '#888780', textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-        ← Back to home
-      </Link>
+ return (
+   return (
+    <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ background: '#534AB7' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
+            <div>
+              <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
+                Oakland Tech
+              </p>
+              <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
+                College Essay Mentor Program
+              </h1>
+            </div>
+          </div>
+          <Link href="/" style={{
+            background: 'transparent', color: '#EEEDFE',
+            textDecoration: 'none', fontSize: 13,
+            padding: '8px 18px', borderRadius: 8,
+            border: '0.5px solid #EEEDFE', flexShrink: 0,
+          }}>
+            ← Home
+          </Link>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 700, margin: '0 auto', padding: '3rem 2rem' }}>
       <h1 style={{ fontSize: 24, fontWeight: 500, margin: '0 0 8px' }}>Terms, Conditions & Privacy Policy</h1>
       <p style={{ fontSize: 13, color: '#888780', margin: '0 0 40px' }}>
-        Oakland Tech College Essay Mentor Program · Last updated: July 2026
+        Oakland Tech College Essay Mentor Program · Last updated: August 2026
       </p>
 
       <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Terms & Conditions</h2>
@@ -67,13 +91,17 @@ export default function TermsPage() {
         Your information is retained for the duration of the program year, then anonymized and archived at the end of each semester. Essays you share are deleted at the end of each program session.
       </p>
 
-      <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
-      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: 0 }}>
+    <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
+      <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
         Questions? Contact us at{' '}
         <a href="mailto:admin@otessaymentors.org" style={{ color: '#534AB7' }}>
           admin@otessaymentors.org
         </a>
       </p>
+      <Link href="/" style={{ fontSize: 13, color: '#888780', textDecoration: 'none', display: 'block' }}>
+        ← Back to home
+      </Link>
+      </div>
     </main>
   )
 }

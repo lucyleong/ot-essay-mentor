@@ -27,29 +27,28 @@ export default async function MentorsPage() {
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div style={{
-        background: '#534AB7',
-        padding: '24px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <div>
-          <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
-            Oakland Tech
-          </p>
-          <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
-            College Essay Mentor Program
-          </h1>
+      <div style={{ background: '#534AB7' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
+            <div>
+              <p style={{ color: '#EEEDFE', fontSize: 11, fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>
+                Oakland Tech
+              </p>
+              <h1 style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, margin: 0 }}>
+                College Essay Mentor Program
+              </h1>
+            </div>
+          </div>
+          <Link href="/" style={{
+            background: 'transparent', color: '#EEEDFE',
+            textDecoration: 'none', fontSize: 13,
+            padding: '8px 18px', borderRadius: 8,
+            border: '0.5px solid #EEEDFE', flexShrink: 0,
+          }}>
+            ← Home
+          </Link>
         </div>
-        <Link href="/" style={{
-          background: 'transparent', color: '#EEEDFE',
-          textDecoration: 'none', fontSize: 13,
-          padding: '8px 18px', borderRadius: 8,
-          border: '0.5px solid #EEEDFE',
-        }}>
-          ← Back to home
-        </Link>
       </div>
 
      {/* Content */}
