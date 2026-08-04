@@ -317,7 +317,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
           textAlign: 'center',
         }}>
           <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
-            No appointments available in the next 7 days. Please check back soon.
+            No appointments available in the next 8 days. Please check back soon.
           </p>
         </div>
       ) : (
