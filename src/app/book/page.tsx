@@ -112,7 +112,7 @@ const verified = localStorage.getItem('booking_verified') === process.env.NEXT_P
   const isPast10pm = nowPST.getHours() >= 22
   const daysToAdd = isPast10pm ? 2 : 1
 
-  const days = Array.from({ length: 7 }, (_, i) => {
+  const days = Array.from({ length: 8 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() + daysToAdd + i)
     return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
@@ -303,7 +303,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
       One appointment per student at a time only. Please complete your appointment before booking a new one.
     </p>
     <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>
-      {total} open slot{total !== 1 ? 's' : ''} available in the next 7 days
+      {total} open slot{total !== 1 ? 's' : ''} available in the next 8 days
     </p>
   </div>
 
