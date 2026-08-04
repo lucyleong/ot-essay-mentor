@@ -82,7 +82,7 @@ export default async function MentorsPage() {
             </a>
           ))}
           {(programTeamMembers ?? []).map(member => (
-            
+            <a
               key={member.id}
               href={`#mentor-${member.id}`}
               style={{
