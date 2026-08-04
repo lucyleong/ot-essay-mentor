@@ -1109,7 +1109,7 @@ style={{
                       await supabase
                         .from('mentor_profiles')
                         .update({ bio: bioText })
-                        .eq('id', mentor.id)
+.eq('id', mentor!.id)
                       setBioSaving(false)
                       setBioSaveSuccess(true)
                     }}
