@@ -2,7 +2,6 @@ import Link from 'next/link'
 
 export default function TermsPage() {
  return (
-   return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{ background: '#534AB7' }}>
