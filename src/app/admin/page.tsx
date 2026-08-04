@@ -1534,9 +1534,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     >
                       {addingSchedule ? 'Saving...' : 'Save schedule'}
                     </button>
-                  </div>
                 </div>
-             </div>
+              </div>
+            </div>
 
            {/* Schedule summary by mentor */}
                 {scheduleSlots.length > 0 && (() => {
