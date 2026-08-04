@@ -16,11 +16,13 @@ export default async function MentorsPage() {
     .neq('email', 'lucylc@gmail.com')
     .order('full_name', { ascending: true })
 
-  const { data: programTeam } = await supabase
+  const { data: programTeam, error: programTeamError } = await supabase
     .from('mentor_profiles')
     .select('id, full_name, bio')
     .eq('email', 'lucylc@gmail.com')
     .single()
+
+  console.log('programTeam:', programTeam, 'error:', programTeamError?.message)
 
   return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
@@ -122,6 +124,44 @@ export default async function MentorsPage() {
            </div>
           ))}
         </div>
+
+{/* Program Team */}
+        {programTeam && (
+          <div style={{ marginTop: 48 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 16px', color: '#2C2C2A' }}>
+              Program Team
+            </h2>
+            <div style={{
+              background: '#ffffff',
+              border: '0.5px solid #e8e6de',
+              borderRadius: 12,
+              padding: '1.5rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: '50%',
+                  background: '#EEEDFE', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', fontSize: 16, fontWeight: 500,
+                  color: '#3C3489', flexShrink: 0,
+                }}>
+                  {programTeam.full_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                </div>
+                <p style={{ fontWeight: 500, fontSize: 17, margin: 0, color: '#2C2C2A' }}>
+                  {programTeam.full_name}
+                </p>
+              </div>
+              {programTeam.bio ? (
+                <p style={{ fontSize: 14, color: '#5F5E5A', lineHeight: 1.7, margin: 0 }}>
+                  {programTeam.bio}
+                </p>
+              ) : (
+                <p style={{ fontSize: 14, color: '#B4B2A9', fontStyle: 'italic', margin: 0 }}>
+                  Bio coming soon
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         <div style={{ textAlign: 'center', marginTop: 40 }}>
           <Link href="/book" style={{
