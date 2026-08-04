@@ -17,14 +17,6 @@ export default function TermsPage() {
               </h1>
             </div>
           </div>
-          <Link href="/" style={{
-            background: 'transparent', color: '#EEEDFE',
-            textDecoration: 'none', fontSize: 13,
-            padding: '8px 18px', borderRadius: 8,
-            border: '0.5px solid #EEEDFE', flexShrink: 0,
-          }}>
-            ← Home
-          </Link>
         </div>
       </div>
 
