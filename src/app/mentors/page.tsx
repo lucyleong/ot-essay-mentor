@@ -40,14 +40,6 @@ export default async function MentorsPage() {
               </h1>
             </div>
           </div>
-          <Link href="/" style={{
-            background: 'transparent', color: '#EEEDFE',
-            textDecoration: 'none', fontSize: 13,
-            padding: '8px 18px', borderRadius: 8,
-            border: '0.5px solid #EEEDFE', flexShrink: 0,
-          }}>
-            ← Home
-          </Link>
         </div>
       </div>
 
@@ -180,7 +172,7 @@ export default async function MentorsPage() {
           </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: 40 }}>
+       <div style={{ textAlign: 'center', marginTop: 40 }}>
           <Link href="/book" style={{
             display: 'inline-block',
             background: '#534AB7', color: '#ffffff',
@@ -188,6 +180,11 @@ export default async function MentorsPage() {
             padding: '12px 28px', borderRadius: 8,
           }}>
             Book an appointment →
+          </Link>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <Link href="/" style={{ fontSize: 13, color: '#888780', textDecoration: 'none' }}>
+            ← Back to home
           </Link>
         </div>
       </div>
