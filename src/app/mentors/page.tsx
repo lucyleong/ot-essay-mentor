@@ -60,7 +60,7 @@ export default async function MentorsPage() {
 <p style={{ fontSize: 15, color: '#5F5E5A', margin: '0 0 12px', lineHeight: 1.7 }}>          OT's Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their college essays.
         </p>
 
-      {/* Quick-jump name links - 2 column grid */}
+    {/* Quick-jump name links - 2 column grid */}
         <div style={{
           marginBottom: 16,
           display: 'grid',
@@ -68,7 +68,7 @@ export default async function MentorsPage() {
           gap: 0,
         }}>
           {(mentors ?? []).map(mentor => (
-            <a
+            
               key={mentor.id}
               href={`#mentor-${mentor.id}`}
               style={{
@@ -79,6 +79,20 @@ export default async function MentorsPage() {
               }}
             >
               {mentor.full_name}
+            </a>
+          ))}
+          {(programTeamMembers ?? []).map(member => (
+            
+              key={member.id}
+              href={`#mentor-${member.id}`}
+              style={{
+                fontSize: 14, color: '#534AB7',
+                textDecoration: 'none',
+                padding: '2px 8px',
+                borderRadius: 6,
+              }}
+            >
+              {member.full_name}
             </a>
           ))}
         </div>
@@ -131,8 +145,8 @@ export default async function MentorsPage() {
               Program Team
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {programTeamMembers.map(member => (
-                <div key={member.id} style={{
+             {programTeamMembers.map(member => (
+                <div key={member.id} id={`mentor-${member.id}`} style={{
                   background: '#ffffff',
                   border: '0.5px solid #e8e6de',
                   borderRadius: 12,
