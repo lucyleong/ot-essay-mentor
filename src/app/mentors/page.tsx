@@ -27,7 +27,7 @@ export default async function MentorsPage() {
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div style={{ background: '#534AB7' }}>
+      <div style={{ background: '#582C83' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
@@ -63,7 +63,7 @@ export default async function MentorsPage() {
               key={mentor.id}
               href={`#mentor-${mentor.id}`}
               style={{
-                fontSize: 14, color: '#534AB7',
+                fontSize: 14, color: '#582C83',
                 textDecoration: 'none',
                 padding: '2px 8px',
                 borderRadius: 6,
@@ -77,7 +77,7 @@ export default async function MentorsPage() {
               key={member.id}
               href={`#mentor-${member.id}`}
               style={{
-                fontSize: 14, color: '#534AB7',
+                fontSize: 14, color: '#582C83',
                 textDecoration: 'none',
                 padding: '2px 8px',
                 borderRadius: 6,
@@ -175,7 +175,7 @@ export default async function MentorsPage() {
        <div style={{ textAlign: 'center', marginTop: 40 }}>
           <Link href="/book" style={{
             display: 'inline-block',
-            background: '#534AB7', color: '#ffffff',
+            background: '#582C83', color: '#ffffff',
             textDecoration: 'none', fontSize: 14, fontWeight: 500,
             padding: '12px 28px', borderRadius: 8,
           }}>

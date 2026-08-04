@@ -186,7 +186,7 @@ const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
   }, [activePanel, reports])
   useEffect(() => {
     if (activePanel === 'reports' && reports?.demographics && typeof window !== 'undefined' && (window as any).Chart) {
-const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
+const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][]) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         if (!canvas) return
@@ -231,7 +231,7 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
         if (existing) existing.destroy()
 
         const sorted = [...entries].sort((a, b) => b[1] - a[1])
-        const barColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#378ADD', '#BA7517', '#639922', '#888780', '#993556', '#0F6E56']
+        const barColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#378ADD', '#BA7517', '#639922', '#888780', '#993556', '#0F6E56']
 
         new (window as any).Chart(canvas, {
           type: 'bar',
@@ -468,7 +468,7 @@ onClick={() => {
           </a>
         <button
             onClick={() => router.push('/mentor/dashboard')}
-            style={{ fontSize: 12, color: '#534AB7', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 8 }}
+            style={{ fontSize: 12, color: '#582C83', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 8 }}
           >
             Mentor view →
           </button>
@@ -521,7 +521,7 @@ onClick={() => {
                     </div>
                  <button onClick={addMentor} disabled={adding} style={{ 
                         fontSize: 12, whiteSpace: 'nowrap',
-                        background: newName && newEmail ? '#534AB7' : undefined,
+                        background: newName && newEmail ? '#582C83' : undefined,
                         color: newName && newEmail ? '#ffffff' : undefined,
                         border: newName && newEmail ? 'none' : undefined,
                       }}>
@@ -754,7 +754,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     }}>
                      {/* Top row: name + badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
-                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#534AB7', textDecoration: 'none' }}>{booking.student_name}</a>
+                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>
@@ -871,7 +871,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                                 }
                               }}
                               disabled={!transferMentorId || transferring}
-                              style={{ fontSize: 12, padding: '4px 10px', background: '#534AB7', color: '#fff', border: 'none' }}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#fff', border: 'none' }}
                             >
                               {transferring ? 'Transferring...' : 'Confirm'}
                             </button>
@@ -885,7 +885,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         ) : (
                           <button
                             onClick={() => setTransferringId(booking.id)}
-                            style={{ fontSize: 12, padding: '4px 10px', color: '#534AB7', borderColor: '#C9C5F7' }}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#582C83', borderColor: '#C9C5F7' }}
                           >
                             Transfer
                           </button>
@@ -983,7 +983,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#534AB7' }}>{stat.value}</p>
+                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#582C83' }}>{stat.value}</p>
                           <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
                         </div>
                       ))}
@@ -1024,7 +1024,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           <div>
                             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
                             <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
-                              <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#534AB7' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
+                              <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#582C83' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
                             </div>
                           </div>
 
@@ -1105,9 +1105,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             onClick={() => setReportsMeetingType(t)}
                             style={{
                               fontSize: 11, padding: '3px 10px', borderRadius: 20,
-                              background: reportsMeetingType === t ? '#534AB7' : '#ffffff',
+                              background: reportsMeetingType === t ? '#582C83' : '#ffffff',
                               color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
-                              border: `0.5px solid ${reportsMeetingType === t ? '#534AB7' : '#D3D1C7'}`,
+                              border: `0.5px solid ${reportsMeetingType === t ? '#582C83' : '#D3D1C7'}`,
                             }}
                           >
                             {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
@@ -1534,7 +1534,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         }, 3000)
                       }}
                       disabled={addingSchedule}
-                      style={{ background: '#534AB7', color: '#ffffff', border: 'none', padding: '8px 20px', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 500 }}
+                      style={{ background: '#582C83', color: '#ffffff', border: 'none', padding: '8px 20px', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 500 }}
                     >
                       {addingSchedule ? 'Saving...' : 'Save schedule'}
                     </button>
@@ -1625,7 +1625,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                   <a
                     href="/api/auth/google"
                     style={{
-                      display: 'inline-block', background: '#534AB7', color: '#ffffff',
+                      display: 'inline-block', background: '#582C83', color: '#ffffff',
                       textDecoration: 'none', fontSize: 13, fontWeight: 500,
                       padding: '8px 18px', borderRadius: 8,
                     }}

@@ -4,7 +4,7 @@ export default function TermsPage() {
  return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Header */}
-      <div style={{ background: '#534AB7' }}>
+      <div style={{ background: '#582C83' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 60, height: 60, objectFit: 'contain' }} />
@@ -26,7 +26,7 @@ export default function TermsPage() {
         Oakland Tech College Essay Mentor Program · Last updated: August 2026
       </p>
 
-      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Terms & Conditions</h2>
+      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#582C83' }}>Terms & Conditions</h2>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Program eligibility</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
@@ -60,7 +60,7 @@ export default function TermsPage() {
 
       <hr style={{ border: 'none', borderTop: '0.5px solid #e8e6de', margin: '0 0 16px' }} />
 
-      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#534AB7' }}>Privacy Policy</h2>
+      <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 16px', color: '#582C83' }}>Privacy Policy</h2>
 
       <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Information we collect</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 20px' }}>
@@ -85,7 +85,7 @@ export default function TermsPage() {
     <h3 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 8px' }}>Contact</h3>
       <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 40px' }}>
         Questions? Contact us at{' '}
-        <a href="mailto:admin@otessaymentors.org" style={{ color: '#534AB7' }}>
+        <a href="mailto:admin@otessaymentors.org" style={{ color: '#582C83' }}>
           admin@otessaymentors.org
         </a>
       </p>

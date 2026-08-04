@@ -251,7 +251,7 @@ const todayBookings    = allBookings
               {isAdmin && (
                 <button
                   onClick={() => router.push('/admin')}
-                  style={{ fontSize: 14, color: '#534AB7', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 12 }}
+                  style={{ fontSize: 14, color: '#582C83', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 12 }}
                 >
                   Admin view →
                 </button>
@@ -318,7 +318,7 @@ const todayBookings    = allBookings
           {isAdmin && (
             <button
               onClick={() => router.push('/admin')}
-              style={{ fontSize: 12, color: '#534AB7', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 8 }}
+              style={{ fontSize: 12, color: '#582C83', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 8 }}
             >
               Admin view →
             </button>
@@ -395,7 +395,7 @@ const todayBookings    = allBookings
                             rel="noopener noreferrer"
                             style={{
                               fontSize: 12, padding: '5px 14px', borderRadius: 8,
-                              background: '#534AB7', color: '#ffffff',
+                              background: '#582C83', color: '#ffffff',
                               textDecoration: 'none', fontWeight: 500,
                             }}
                           >
@@ -866,7 +866,7 @@ setTimeout(async () => {
                     }}
                     disabled={addingSlot}
 style={{ 
-  background: '#534AB7', 
+  background: '#582C83', 
   color: '#ffffff',
   padding: '8px 20px',
   whiteSpace: 'nowrap',
@@ -898,7 +898,7 @@ style={{
                     }}
                     style={{
                       width: 48, height: 26, borderRadius: 20, border: 'none',
-                      background: isInPersonAvailable ? '#534AB7' : '#D3D1C7',
+                      background: isInPersonAvailable ? '#582C83' : '#D3D1C7',
                       position: 'relative', cursor: 'pointer', padding: 0,
                       flexShrink: 0,
                     }}
@@ -1034,7 +1034,7 @@ style={{
                                   await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
                                   loadData()
                                 }}
-                                style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                                style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none' }}
                               >
                                 Helped
                               </button>
@@ -1066,7 +1066,7 @@ style={{
                                 await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
                                 loadData()
                               }}
-                              style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                              style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none' }}
                             >
                               Helped
                             </button>
@@ -1133,7 +1133,7 @@ style={{
                             setIsEditingBio(false)
                           }}
                           disabled={bioSaving}
-                          style={{ background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                          style={{ background: '#582C83', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
                         >
                           {bioSaving ? 'Saving...' : 'Save bio'}
                         </button>

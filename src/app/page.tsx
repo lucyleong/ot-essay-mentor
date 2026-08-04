@@ -28,7 +28,7 @@ export default function HomePage() {
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
 
      {/* Header */}
-      <div style={{ background: '#534AB7' }}>
+      <div style={{ background: '#582C83' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
           <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 80, height: 80, objectFit: 'contain' }} />
           <div>
@@ -57,7 +57,7 @@ export default function HomePage() {
         </p>
         <Link href="/verify" style={{
           display: 'inline-block',
-          background: '#534AB7', color: '#ffffff',
+          background: '#582C83', color: '#ffffff',
           textDecoration: 'none', fontSize: 15, fontWeight: 500,
           padding: '12px 28px', borderRadius: 8,
         }}>
@@ -80,7 +80,7 @@ export default function HomePage() {
             , color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
             The Oakland Tech College Essay Mentor Program provides no-cost support to our seniors as they prepare their college applications. Helping Oakland Tech seniors for the past decade, the College 
             Essay Mentors are a group of working writers, editors, journalists, educators and others who specialize in supporting students with their Common App Essays and UC PIQs. {' '}
-<a href="/mentors" style={{ color: '#534AB7', fontWeight: 600 }}>Read about the team here.</a>          
+<a href="/mentors" style={{ color: '#582C83', fontWeight: 600 }}>Read about the team here.</a>          
 </p>
           <p style={{ fontSize: 15, color: '#5F5E5A', lineHeight: 1.8, margin: '0 0 14px' }}>
             We work with students from their earliest brainstorming sessions to the final polishing of their work for submission.
@@ -108,7 +108,7 @@ export default function HomePage() {
               <div key={item.num} style={{ display: 'flex', gap: 12 }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: '#EEEDFE', color: '#534AB7',
+                  background: '#EEEDFE', color: '#582C83',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 13, fontWeight: 500, flexShrink: 0,
                 }}>
@@ -144,7 +144,7 @@ export default function HomePage() {
 
         {/* CTA */}
         <div style={{
-          background: '#534AB7', borderRadius: 12,
+          background: '#582C83', borderRadius: 12,
           padding: '2rem', textAlign: 'center',
         }}>
           <h3 style={{ color: '#ffffff', fontSize: 18, fontWeight: 500, margin: '0 0 8px' }}>
@@ -155,7 +155,7 @@ export default function HomePage() {
           </p>
           <Link href="/verify" style={{
             display: 'inline-block',
-            background: '#ffffff', color: '#534AB7',
+            background: '#ffffff', color: '#582C83',
             textDecoration: 'none', fontSize: 14, fontWeight: 500,
             padding: '10px 24px', borderRadius: 8,
           }}>
@@ -174,15 +174,15 @@ export default function HomePage() {
         color: '#888780',
       }}>
         Oakland Tech College Essay Mentor Program · Questions? Contact{' '}
-        <a href="mailto:admin@otessaymentors.org" style={{ color: '#534AB7' }}>
+        <a href="mailto:admin@otessaymentors.org" style={{ color: '#582C83' }}>
           admin@otessaymentors.org
         </a>
         {' · '}
-        <a href="/terms" style={{ color: '#534AB7' }}>
+        <a href="/terms" style={{ color: '#582C83' }}>
           Terms & Privacy Policy
         </a>
        {' · '}
-        <a href="/login" style={{ color: '#534AB7' }}>
+        <a href="/login" style={{ color: '#582C83' }}>
           Mentor login
         </a>
       </div>
