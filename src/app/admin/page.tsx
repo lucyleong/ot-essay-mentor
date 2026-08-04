@@ -1340,10 +1340,59 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
              </div>
             )}
 
-            {/* SCHEDULES */}
+           {/* SCHEDULES */}
             {activePanel === 'schedules' && (
               <div>
-                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Create mentor schedule</h1>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Schedule Overview</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
+                  Upcoming mentor availability grouped by day
+                </p>
+
+               {/* Schedule summary by day */}
+                {scheduleSlots.length > 0 && (() => {
+                  const byDay: Record<string, any[]> = {}
+                  const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+                  scheduleSlots.forEach((s: any) => {
+                    const day = new Date(s.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })
+                    if (!byDay[day]) byDay[day] = []
+                    byDay[day].push(s)
+                  })
+
+                  return (
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', marginBottom: 32 }}>
+                      {dayOrder.filter(day => byDay[day]).map(day => {
+                        // Get unique mentor+time combos
+                        const seen = new Set<string>()
+                        const entries = byDay[day]
+                          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+                          .filter((s: any) => {
+                            const time = new Date(s.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            const key = `${s.mentor_profiles?.full_name}-${time}`
+                            if (seen.has(key)) return false
+                            seen.add(key)
+                            return true
+                          })
+                          .map((s: any) => {
+                            const time = new Date(s.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+                            const firstName = s.mentor_profiles?.full_name?.split(' ')[0] ?? 'Unknown'
+                            return `${firstName} ${time}`
+                          })
+
+                        return (
+                          <div key={day} style={{ padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                            <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: '#534AB7' }}>{day}</p>
+                            <p style={{ fontSize: 12, color: '#5F5E5A', margin: 0 }}>
+                              {entries.join(' · ')}
+                            </p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })()}
+
+                <h2 style={{ fontSize: 18, fontWeight: 500, margin: '0 0 4px' }}>Create mentor schedule</h2>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Add availability on behalf of a mentor
                 </p>
