@@ -1534,11 +1534,10 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     >
                       {addingSchedule ? 'Saving...' : 'Save schedule'}
                     </button>
-                </div>
+               </div>
               </div>
-            </div>
 
-           {/* Schedule summary by mentor */}
+              {/* Schedule summary by mentor */}
                 {scheduleSlots.length > 0 && (() => {
                   const byMentor: Record<string, any[]> = {}
                   scheduleSlots.forEach((s: any) => {
