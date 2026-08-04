@@ -43,7 +43,7 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#582C83', padding: '1rem' }}>
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
         <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
@@ -76,7 +76,7 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
               </div>
             )}
 
-            <button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none', fontSize: 16, padding: '12px' }}>
+            <button type="submit" disabled={loading} style={{ width: '100%', background: '#582C83', color: '#ffffff', border: 'none', fontSize: 16, padding: '12px' }}>
               {loading ? 'Verifying...' : 'Enter'}
             </button>
           </form>
