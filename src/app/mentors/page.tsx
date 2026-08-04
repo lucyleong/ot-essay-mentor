@@ -8,12 +8,19 @@ const supabase = createClient(
 )
 
 export default async function MentorsPage() {
-  const { data: mentors } = await supabase
+ const { data: mentors } = await supabase
     .from('mentor_profiles')
     .select('id, full_name, bio')
     .eq('is_active', true)
-.neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
+    .neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
+    .neq('email', 'lucylc@gmail.com')
     .order('full_name', { ascending: true })
+
+  const { data: programTeam } = await supabase
+    .from('mentor_profiles')
+    .select('id, full_name, bio')
+    .eq('email', 'lucylc@gmail.com')
+    .single()
 
   return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
