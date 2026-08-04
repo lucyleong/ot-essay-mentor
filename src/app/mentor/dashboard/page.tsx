@@ -1075,13 +1075,9 @@ style={{
                   ))
                 )}
               </div>
-            )}
-            </>
-        )}
-      </div>
-    </div>
-  
-  {/* MY PROFILE */}
+           )}
+
+            {/* MY PROFILE */}
             {activePanel === 'profile' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>My Profile</h1>
