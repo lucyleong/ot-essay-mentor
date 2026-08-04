@@ -93,6 +93,7 @@ const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' |
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
+const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -267,7 +268,7 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     }
   }, [activePanel, reports])
 
-  async function loadData() {
+ async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
     const mentorData = await mentorRes.json()
 
@@ -283,9 +284,14 @@ const pieColors = ['#534AB7', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     const slotsRes  = await fetch('/api/admin/slots/available')
     const slotsData = await slotsRes.json()
     setAvailableSlots(slotsData ?? [])
-const walkinRes = await fetch('/api/ccc/queue')
+
+    const walkinRes = await fetch('/api/ccc/queue')
     const walkinData = await walkinRes.json()
     setWalkinQueue(walkinData.queue ?? [])
+
+    const scheduleSlotsRes = await fetch('/api/admin/schedules/list')
+    const scheduleSlotsData = await scheduleSlotsRes.json()
+    setScheduleSlots(scheduleSlotsData ?? [])
 
     setLoading(false)
   }
