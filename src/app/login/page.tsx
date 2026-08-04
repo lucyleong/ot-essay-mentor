@@ -100,7 +100,7 @@ redirectTo: `${window.location.origin}/reset-password`,
   }
 
  return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#534AB7', padding: '1rem' }}>
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#582C83', padding: '1rem' }}>
       <div style={{ width: '100%', maxWidth: 440, textAlign: 'center' }}>
         
        <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 150, marginBottom: 16 }} />
@@ -167,7 +167,7 @@ redirectTo: `${window.location.origin}/reset-password`,
               <button
                 type="button"
                 onClick={() => { setResetMode(true); setError('') }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#534AB7', padding: 0 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#582C83', padding: 0 }}
               >
                 Forgot your password?
               </button>
@@ -180,7 +180,7 @@ redirectTo: `${window.location.origin}/reset-password`,
             </div>
           )}
 
-<button type="submit" disabled={loading} style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}>            
+<button type="submit" disabled={loading} style={{ width: '100%', background: '#582C83', color: '#ffffff', border: 'none' }}>            
   {loading ? (resetMode ? 'Sending...' : 'Signing in...') : (resetMode ? 'Send reset link' : 'Sign in')}
           </button>
 
