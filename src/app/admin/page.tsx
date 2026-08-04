@@ -1349,10 +1349,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
            {/* SCHEDULES */}
             {activePanel === 'schedules' && (
               <div>
-                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Schedule Overview</h1>
-                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
-                  Upcoming mentor availability grouped by day
-                </p>
+              
 
             
 
@@ -1546,6 +1543,10 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
               </div>
             )}
    {/* Schedule summary by day */}
+     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Schedule Overview</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
+                  Upcoming mentor availability grouped by day
+                </p>
                 {scheduleSlots.length > 0 && (() => {
                   const byDay: Record<string, any[]> = {}
                   const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
