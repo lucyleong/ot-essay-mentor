@@ -13,6 +13,10 @@ function toLA(dateStr: string, timeStr: string): Date {
   return new Date(testDate.getTime() + offsetMs)
 }
 
+// Debug test
+const testDST = toLA('2026-11-01', '15:00')
+console.log('DST test - Nov 1 3pm LA should be 23:00 UTC:', testDST.toISOString())
+
 export async function GET() {
   const supabase = await createServerSupabaseClient()
 
