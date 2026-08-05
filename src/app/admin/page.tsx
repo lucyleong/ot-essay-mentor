@@ -1351,10 +1351,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                   >
                     Save
                   </button>
-                </div>
-              </div>
+               </div>
 
-            {/* Cancel mentor slots */}
+              {/* Cancel mentor slots */}
                 <h2 style={{ fontSize: 18, fontWeight: 500, margin: '32px 0 4px' }}>Cancel mentor slots</h2>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
                   Cancel upcoming slots on a mentor's behalf
