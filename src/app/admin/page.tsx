@@ -1426,7 +1426,6 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       ))}
                     </select>
                   </div>
-
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
 <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} min={new Date().toISOString().split('T')[0]} max={programEndDate || undefined} style={{ width: '100%', boxSizing: 'border-box' }} />                    </div>

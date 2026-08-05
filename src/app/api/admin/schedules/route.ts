@@ -98,6 +98,7 @@ if (untilDate && current.start > untilDate) break
           start: toLA(nextDateStr, startTimeStr),
           end: toLA(nextDateStr, endTimeStr)
         }
+                console.log(`Admin slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)
       } else {
         break
       }
