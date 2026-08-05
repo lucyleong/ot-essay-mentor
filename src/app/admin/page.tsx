@@ -1401,10 +1401,11 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       </button>
                     </div>
                   ))}
-                </div>
-                            )}
+              </div>
+              </div>
+            )}
 
-{/* END SESSION */}
+            {/* END SESSION */}
             {activePanel === 'session' && (
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>End Session</h1>
