@@ -729,6 +729,7 @@ Array.from(
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
 <input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} min={new Date().toISOString().split('T')[0]} max={programEndDate || undefined} style={{ width: '100%', boxSizing: 'border-box' }} />
+                    </div>
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
                       <input
