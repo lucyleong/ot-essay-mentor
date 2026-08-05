@@ -56,9 +56,27 @@ for (const baseSlot of baseDaySlots) {
       end:   new Date(baseSlot.end_time),
     }
 
+    // Extract the wall clock time ONCE from the base slot
+    const laFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+      hour12: false
+    })
+
+    const getPart = (parts: Intl.DateTimeFormatPart[], type: string) => 
+      parts.find(p => p.type === type)?.value ?? '00'
+
+    const baseParts = laFormatter.formatToParts(current.start)
+    const wallClockStart = `${getPart(baseParts, 'hour')}:${getPart(baseParts, 'minute')}`
+    const baseEndParts = laFormatter.formatToParts(current.end)
+    const wallClockEnd = `${getPart(baseEndParts, 'hour')}:${getPart(baseEndParts, 'minute')}`
+    const baseDateStr = `${getPart(baseParts, 'year')}-${getPart(baseParts, 'month')}-${getPart(baseParts, 'day')}`
+
     let count = 0
     while (count < 52) {
-if (untilDate && current.start > untilDate) break
+      if (untilDate && current.start > untilDate) break
+
       slotsToInsert.push({
         mentor_id:        body.mentorId,
         start_time:       current.start.toISOString(),
@@ -70,38 +88,21 @@ if (untilDate && current.start > untilDate) break
 
       if (!body.recurrenceRule) break
 
-     const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
+      const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
 
-      const laFormatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Los_Angeles',
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit',
-        hour12: false
-      })
-
-      const getPart = (parts: Intl.DateTimeFormatPart[], type: string) => 
-        parts.find(p => p.type === type)?.value ?? '00'
-
-      const currentStartParts = laFormatter.formatToParts(current.start)
-      const currentEndParts = laFormatter.formatToParts(current.end)
-
-      const currentDateStr = `${getPart(currentStartParts, 'year')}-${getPart(currentStartParts, 'month')}-${getPart(currentStartParts, 'day')}`
-      const startTimeStr = `${getPart(currentStartParts, 'hour')}:${getPart(currentStartParts, 'minute')}`
-      const endTimeStr = `${getPart(currentEndParts, 'hour')}:${getPart(currentEndParts, 'minute')}`
-
+      // Add days to the base date, keeping wall clock time constant
+      const currentDateParts = laFormatter.formatToParts(current.start)
+      const currentDateStr = `${getPart(currentDateParts, 'year')}-${getPart(currentDateParts, 'month')}-${getPart(currentDateParts, 'day')}`
       const currentDate = new Date(currentDateStr + 'T12:00:00')
       const nextDate = addDays(currentDate, daysToAdd)
       const nextDateStr = nextDate.toISOString().split('T')[0]
 
-      if (body.recurrenceRule === 'daily' || body.recurrenceRule === 'weekly' || body.recurrenceRule === 'biweekly') {
-        current = {
-          start: toLA(nextDateStr, startTimeStr),
-          end: toLA(nextDateStr, endTimeStr)
-        }
-                console.log(`Admin slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)
-      } else {
-        break
+      // Always use the ORIGINAL wall clock time
+      current = {
+        start: toLA(nextDateStr, wallClockStart),
+        end: toLA(nextDateStr, wallClockEnd)
       }
+      console.log(`Admin slot: ${nextDateStr} ${wallClockStart} → ${current.start.toISOString()}`)
 
       count++
     }
