@@ -66,6 +66,7 @@ const [bioText, setBioText] = useState('')
 const [bioSaving, setBioSaving] = useState(false)
 const [bioSaveSuccess, setBioSaveSuccess] = useState(false)
 const [isEditingBio, setIsEditingBio] = useState(false)
+const [programEndDate, setProgramEndDate] = useState('')
 
 function generateTimeOptions(startAfter?: string) {
   const options = []
@@ -108,6 +109,13 @@ const timeOptions = generateTimeOptions()
     if (!mentorData) { router.push('/login'); return }
     setMentor(mentorData)
     setBioText(mentorData.bio ?? '')
+
+const { data: endDateSetting } = await supabase
+      .from('program_settings')
+      .select('value')
+      .eq('key', 'program_end_date')
+      .single()
+    if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
     const bookingsRes = await fetch('/api/mentor/bookings')
     const bookingsData = await bookingsRes.json()
@@ -720,8 +728,7 @@ Array.from(
 
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
-<input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} min="2025-01-01" max="2030-12-31" style={{ width: '100%', boxSizing: 'border-box' }} />
-                    </div>
+<input type="date" value={slotDate} onChange={e => setSlotDate(e.target.value)} min="2026-08-01" max={programEndDate} style={{ width: '100%', boxSizing: 'border-box' }} />
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
                       <input
@@ -777,12 +784,13 @@ Array.from(
                       {slotRecurrence !== 'none' && (
                         <div>
                           <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat until</label>
-                          <input
-                            type="date"
-                            value={slotUntil}
-                            onChange={e => setSlotUntil(e.target.value)}
-                            style={{ width: '100%', boxSizing: 'border-box' }}
-                          />
+                       <input
+  type="date"
+  value={slotUntil}
+  onChange={e => setSlotUntil(e.target.value)}
+  max={programEndDate}
+  style={{ width: '100%', boxSizing: 'border-box' }}
+/>
                         </div>
                       )}
                       <button

@@ -94,6 +94,7 @@ const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
+const [programEndDate, setProgramEndDate] = useState('')
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -300,6 +301,13 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     const scheduleSlotsData = await scheduleSlotsRes.json()
     setScheduleSlots(scheduleSlotsData ?? [])
 
+    const { data: endDateSetting } = await supabase
+      .from('program_settings')
+      .select('value')
+      .eq('key', 'program_end_date')
+      .single()
+    if (endDateSetting) setProgramEndDate(endDateSetting.value)
+
     setLoading(false)
   }
 
@@ -379,6 +387,7 @@ const navItems = [
     { key: 'schedules', label: 'Scheduling' },
     { key: 'qrcodes',   label: 'QR Codes' },
     { key: 'calendar',  label: 'Google Calendar' },
+    { key: 'settings',  label: 'Settings' },
     { key: 'session',   label: 'End Session' },
   ]
 
@@ -1251,6 +1260,42 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                 )}
               </div>
             )}
+            {/* SETTINGS */}
+            {activePanel === 'settings' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Program Settings</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Configure program-wide settings
+                </p>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem' }}>
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                      Program end date
+                    </label>
+                    <p style={{ fontSize: 12, color: '#888780', margin: '0 0 8px' }}>
+                      Mentors cannot schedule appointments beyond this date
+                    </p>
+                    <input
+                      type="date"
+                      value={programEndDate}
+                      onChange={e => setProgramEndDate(e.target.value)}
+                      style={{ width: 200, boxSizing: 'border-box' }}
+                    />
+                  </div>
+                  <button
+                    onClick={async () => {
+                      await supabase
+                        .from('program_settings')
+                        .upsert({ key: 'program_end_date', value: programEndDate })
+                      alert('Program end date saved!')
+                    }}
+                    style={{ background: '#582C83', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            )}
 {/* END SESSION */}
             {activePanel === 'session' && (
               <div>
@@ -1385,8 +1430,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
 
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>                    <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Date</label>
-<input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} min="2025-01-01" max="2030-12-31" style={{ width: '100%', boxSizing: 'border-box' }} />
-                    </div>
+<input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)} min={new Date().toISOString().split('T')[0]} max={programEndDate || undefined} style={{ width: '100%', boxSizing: 'border-box' }} />                    </div>
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Available from</label>
                       <input
@@ -1442,10 +1486,11 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     {scheduleRecurrence !== 'none' && (
                       <div>
                         <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Repeat until</label>
-                        <input
+                       <input
                           type="date"
                           value={scheduleUntil}
                           onChange={e => setScheduleUntil(e.target.value)}
+                          max={programEndDate || undefined}
                           style={{ width: '100%', boxSizing: 'border-box' }}
                         />
                       </div>
