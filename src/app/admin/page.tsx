@@ -1468,8 +1468,8 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         const slotDuration = 20
                         const intervalMins = slotDuration + breakMinutes
 
-                       const windowStart = toLA(slotDate, slotStart)
-const windowEnd   = toLA(slotDate, slotEnd)
+                     const windowStart = toLA(scheduleDate, scheduleStart)
+const windowEnd   = toLA(scheduleDate, scheduleEnd)
 
 
                         const slotTimes: { startTime: string; endTime: string }[] = []
