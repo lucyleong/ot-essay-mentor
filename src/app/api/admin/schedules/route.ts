@@ -4,6 +4,16 @@ import { addDays, addWeeks, addMonths } from 'date-fns'
 import { sendEmail } from '@/lib/email'
 import { formatDatePST } from '@/lib/utils'
 
+function toLA(dateStr: string, timeStr: string): Date {
+  const dt = new Date(`${dateStr}T${timeStr}:00Z`)
+  const laString = dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: false })
+  const utcString = dt.toLocaleString('en-US', { hour12: false })
+  const laDate = new Date(laString)
+  const utcDate = new Date(utcString)
+  const offsetMs = utcDate.getTime() - laDate.getTime()
+  return new Date(dt.getTime() + offsetMs)
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -40,7 +50,7 @@ export async function POST(request: NextRequest) {
   const programEndDate = endDateSetting?.value
   const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
   const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : programEndDateObj
-  
+
   for (const baseSlot of baseDaySlots) {
     let current = {
       start: new Date(baseSlot.start_time),
@@ -62,12 +72,34 @@ export async function POST(request: NextRequest) {
 
       if (!body.recurrenceRule) break
 
-      if (body.recurrenceRule === 'daily') {
-        current = { start: addDays(current.start, 1), end: addDays(current.end, 1) }
-      } else if (body.recurrenceRule === 'weekly') {
-        current = { start: addWeeks(current.start, 1), end: addWeeks(current.end, 1) }
-      } else if (body.recurrenceRule === 'biweekly') {
-        current = { start: addWeeks(current.start, 2), end: addWeeks(current.end, 2) }
+     const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
+
+      const laFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit',
+        hour12: false
+      })
+
+      const getPart = (parts: Intl.DateTimeFormatPart[], type: string) => 
+        parts.find(p => p.type === type)?.value ?? '00'
+
+      const currentStartParts = laFormatter.formatToParts(current.start)
+      const currentEndParts = laFormatter.formatToParts(current.end)
+
+      const currentDateStr = `${getPart(currentStartParts, 'year')}-${getPart(currentStartParts, 'month')}-${getPart(currentStartParts, 'day')}`
+      const startTimeStr = `${getPart(currentStartParts, 'hour')}:${getPart(currentStartParts, 'minute')}`
+      const endTimeStr = `${getPart(currentEndParts, 'hour')}:${getPart(currentEndParts, 'minute')}`
+
+      const currentDate = new Date(currentDateStr + 'T12:00:00')
+      const nextDate = addDays(currentDate, daysToAdd)
+      const nextDateStr = nextDate.toISOString().split('T')[0]
+
+      if (body.recurrenceRule === 'daily' || body.recurrenceRule === 'weekly' || body.recurrenceRule === 'biweekly') {
+        current = {
+          start: toLA(nextDateStr, startTimeStr),
+          end: toLA(nextDateStr, endTimeStr)
+        }
       } else {
         break
       }
