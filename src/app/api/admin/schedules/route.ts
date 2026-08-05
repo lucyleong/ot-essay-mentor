@@ -49,8 +49,7 @@ export async function POST(request: NextRequest) {
 
   const programEndDate = endDateSetting?.value
   const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
-  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : programEndDateObj
-
+const untilDate = body.recurrenceUntil ? new Date(new Date(body.recurrenceUntil).getTime() + 24 * 60 * 60 * 1000) : programEndDateObj
   for (const baseSlot of baseDaySlots) {
     let current = {
       start: new Date(baseSlot.start_time),
@@ -59,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     let count = 0
     while (count < 52) {
-      if (untilDate && current.start > untilDate) break
+if (untilDate && current.start >= untilDate) break
 console.log('untilDate:', untilDate?.toISOString(), 'current.start:', current.start.toISOString())
 
       slotsToInsert.push({
