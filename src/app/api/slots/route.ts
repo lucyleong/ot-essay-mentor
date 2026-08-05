@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { addDays, addWeeks } from 'date-fns'
 
+function toLA(dateStr: string, timeStr: string): Date {
+  const dt = new Date(`${dateStr}T${timeStr}:00`)
+  const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
+                   new Date(dt.toLocaleString('en-US')).getTime()
+  return new Date(dt.getTime() - laOffset)
+}
+
 export async function GET() {
   const supabase = await createServerSupabaseClient()
 
@@ -68,7 +75,7 @@ export async function POST(request: NextRequest) {
   const slotsToInsert: any[] = []
 const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
   const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : programEndDateObj
-  
+
   // Validate against program end date
   if (programEndDate) {
     const endDate = new Date(programEndDate + 'T23:59:59')
@@ -103,13 +110,38 @@ const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-
 
       if (!body.recurrenceRule) break
 
-      if (body.recurrenceRule === 'daily') {
-  current = { start: addDays(current.start, 1), end: addDays(current.end, 1) }
-} else if (body.recurrenceRule === 'weekly') {
-  current = { start: addWeeks(current.start, 1), end: addWeeks(current.end, 1) }
-} else if (body.recurrenceRule === 'biweekly') {
-  current = { start: addWeeks(current.start, 2), end: addWeeks(current.end, 2) }
-} else {
+    const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
+
+      // Get the next date in LA timezone
+      const nextStart = addDays(current.start, daysToAdd)
+      const nextEnd = addDays(current.end, daysToAdd)
+
+      // Get the wall clock time in LA for the current slot
+      const laFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      })
+
+      const startParts = laFormatter.formatToParts(nextStart)
+      const endParts = laFormatter.formatToParts(nextEnd)
+
+      const getPart = (parts: Intl.DateTimeFormatPart[], type: string) => 
+        parts.find(p => p.type === type)?.value ?? '00'
+
+      // Reconstruct using LA wall clock time to get correct UTC for that date
+      const nextDateStr = `${getPart(startParts, 'year')}-${getPart(startParts, 'month')}-${getPart(startParts, 'day')}`
+      const startTimeStr = `${getPart(startParts, 'hour')}:${getPart(startParts, 'minute')}`
+      const endTimeStr = `${getPart(endParts, 'hour')}:${getPart(endParts, 'minute')}`
+
+      const nextEndDateStr = `${getPart(endParts, 'year')}-${getPart(endParts, 'month')}-${getPart(endParts, 'day')}`
+
+      current = {
+        start: toLA(nextDateStr, startTimeStr),
+        end: toLA(nextEndDateStr, endTimeStr)
+      }
+      else {
   break
 }
 
