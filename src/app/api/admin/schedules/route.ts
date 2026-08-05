@@ -30,8 +30,17 @@ export async function POST(request: NextRequest) {
 
   // Expand for recurrence
   const slotsToInsert: any[] = []
-  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : null
+// Fetch program end date
+  const { data: endDateSetting } = await supabase
+    .from('program_settings')
+    .select('value')
+    .eq('key', 'program_end_date')
+    .single()
 
+  const programEndDate = endDateSetting?.value
+  const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
+  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : programEndDateObj
+  
   for (const baseSlot of baseDaySlots) {
     let current = {
       start: new Date(baseSlot.start_time),
