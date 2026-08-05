@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
     let count = 0
     while (count < 52) {
       if (untilDate && current.start > untilDate) break
+console.log('untilDate:', untilDate?.toISOString(), 'current.start:', current.start.toISOString())
 
       slotsToInsert.push({
         mentor_id:        body.mentorId,
