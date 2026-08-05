@@ -395,14 +395,14 @@ async function toggleMentorVirtual(mentor: Mentor) {
 
 const navItems = [
     { key: 'reports',   label: 'Reports' },
-{ key: 'bookings',  label: 'Appointments' },
+    { key: 'bookings',  label: 'Appointments' },
+    { key: 'schedules', label: 'Scheduling' },
     { key: 'walkin',    label: 'Walk-in Queue' },
     { key: 'mentors',   label: 'Mentors' },
-    { key: 'schedules', label: 'Scheduling' },
-    { key: 'qrcodes',   label: 'QR Codes' },
-    { key: 'calendar',  label: 'Google Calendar' },
     { key: 'settings',  label: 'Settings' },
-    { key: 'session',   label: 'End Session' },
+    { key: 'qrcodes',   label: 'QR Codes', indent: true },
+    { key: 'calendar',  label: 'Google Calendar', indent: true },
+    { key: 'session',   label: 'End Session', indent: true },
   ]
 
   return (
@@ -429,15 +429,17 @@ const navItems = [
             background: '#ffffff', zIndex: 99, overflowY: 'auto',
             borderTop: '0.5px solid #e8e6de',
           }}>
-            {navItems.map(item => (
+           {navItems.map(item => (
               <button
                 key={item.key}
                 onClick={() => { setActivePanel(item.key); setMenuOpen(false) }}
                 style={{
                   display: 'block', width: '100%', textAlign: 'left',
-                  padding: '14px 20px', fontSize: 15, cursor: 'pointer',
+                  padding: item.indent ? '12px 20px 12px 36px' : '14px 20px',
+                  fontSize: item.indent ? 13 : 15,
+                  cursor: 'pointer',
                   background: activePanel === item.key ? '#f5f4f0' : 'transparent',
-                  color: activePanel === item.key ? '#2C2C2A' : '#5F5E5A',
+                  color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
                   fontWeight: activePanel === item.key ? 500 : 400,
                   border: 'none', borderBottom: '0.5px solid #e8e6de',
                 }}
@@ -471,11 +473,29 @@ const navItems = [
           <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>Admin</p>
 <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>Oakland Tech<br />College Essay Mentor Program</p>        </div>
 
-        {navItems.map(item => (
+       {navItems.map(item => (
           <button
             key={item.key}
-onClick={() => {
+            onClick={() => {
               setActivePanel(item.key)
+              const url = new URL(window.location.href)
+              url.searchParams.set('panel', item.key)
+              window.history.pushState({}, '', url)
+            }}
+            style={{
+              display: 'flex', alignItems: 'center',
+              padding: item.indent ? '7px 16px 7px 28px' : '9px 16px',
+              fontSize: item.indent ? 12 : 13,
+              cursor: 'pointer',
+              background: activePanel === item.key ? '#f5f4f0' : 'transparent',
+              color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
+              fontWeight: activePanel === item.key ? 500 : 400,
+              border: 'none', width: '100%', textAlign: 'left',
+            }}
+          >
+            {item.label}
+          </button>
+        ))}
               const url = new URL(window.location.href)
               url.searchParams.set('panel', item.key)
               window.history.pushState({}, '', url)
