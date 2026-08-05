@@ -115,6 +115,7 @@ const { data: endDateSetting } = await supabase
       .select('value')
       .eq('key', 'program_end_date')
       .single()
+          console.log('programEndDate from DB:', endDateSetting?.value)
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
     const bookingsRes = await fetch('/api/mentor/bookings')
