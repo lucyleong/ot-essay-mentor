@@ -5,13 +5,10 @@ import { sendEmail } from '@/lib/email'
 import { formatDatePST } from '@/lib/utils'
 
 function toLA(dateStr: string, timeStr: string): Date {
-  const dt = new Date(`${dateStr}T${timeStr}:00Z`)
-  const laString = dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: false })
-  const utcString = dt.toLocaleString('en-US', { hour12: false })
-  const laDate = new Date(laString)
-  const utcDate = new Date(utcString)
-  const offsetMs = utcDate.getTime() - laDate.getTime()
-  return new Date(dt.getTime() + offsetMs)
+  const dt = new Date(`${dateStr}T${timeStr}:00`)
+  const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
+                   new Date(dt.toLocaleString('en-US')).getTime()
+  return new Date(dt.getTime() - laOffset)
 }
 
 const supabase = createClient(
