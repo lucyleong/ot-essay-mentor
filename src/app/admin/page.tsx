@@ -456,8 +456,8 @@ const navItems = [
       }}
       style={{
         display: 'flex', alignItems: 'center',
-        padding: item.indent ? '7px 16px 7px 28px' : '9px 16px',
-        fontSize: item.indent ? 12 : 13,
+        padding: item.indent ? '12px 20px 12px 36px' : '14px 20px',
+fontSize: item.indent ? 13 : 15,
         cursor: 'pointer',
         background: activePanel === item.key ? '#f5f4f0' : 'transparent',
         color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
@@ -512,8 +512,9 @@ const navItems = [
   ) : item.indent && !settingsOpen ? null : (
     <button
       key={item.key}
-      onClick={() => {
+     onClick={() => {
         setActivePanel(item.key)
+        setMenuOpen(false)
         const url = new URL(window.location.href)
         url.searchParams.set('panel', item.key)
         window.history.pushState({}, '', url)
