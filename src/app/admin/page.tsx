@@ -496,22 +496,6 @@ const navItems = [
             {item.label}
           </button>
         ))}
-              const url = new URL(window.location.href)
-              url.searchParams.set('panel', item.key)
-              window.history.pushState({}, '', url)
-            }}
-                        style={{
-              display: 'flex', alignItems: 'center',
-              padding: '9px 16px', fontSize: 13, cursor: 'pointer',
-              background: activePanel === item.key ? '#f5f4f0' : 'transparent',
-              color: activePanel === item.key ? '#2C2C2A' : '#5F5E5A',
-              fontWeight: activePanel === item.key ? 500 : 400,
-              border: 'none', width: '100%', textAlign: 'left',
-            }}
-          >
-            {item.label}
-          </button>
-       ))}
       </div>
 
       <div style={{ marginTop: 16, padding: '12px 16px', borderTop: '0.5px solid #e8e6de' }}>
