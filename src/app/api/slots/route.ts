@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
+  // Check program end date
+  const { data: endDateSetting } = await supabase
+    .from('program_settings')
+    .select('value')
+    .eq('key', 'program_end_date')
+    .single()
+
+  const programEndDate = endDateSetting?.value
+
   const body = await request.json()
 
   // Build base slots from time window
@@ -59,7 +68,19 @@ export async function POST(request: NextRequest) {
   const slotsToInsert: any[] = []
   const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : null
 
-  console.log('baseDaySlots:', JSON.stringify(baseDaySlots))
+  // Validate against program end date
+  if (programEndDate) {
+    const endDate = new Date(programEndDate + 'T23:59:59')
+    for (const baseSlot of baseDaySlots) {
+      if (new Date(baseSlot.start_time) > endDate) {
+        return NextResponse.json({ error: `Slots cannot be scheduled past ${programEndDate}` }, { status: 422 })
+      }
+    }
+    // Also check recurrence end date
+    if (untilDate && untilDate > endDate) {
+      return NextResponse.json({ error: `Recurrence cannot extend past ${programEndDate}` }, { status: 422 })
+    }
+  }
   for (const baseSlot of baseDaySlots) {
     let current = {
       start: new Date(baseSlot.start_time),
