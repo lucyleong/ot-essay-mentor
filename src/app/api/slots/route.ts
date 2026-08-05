@@ -141,10 +141,6 @@ const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-
         start: toLA(nextDateStr, startTimeStr),
         end: toLA(nextEndDateStr, endTimeStr)
       }
-      else {
-  break
-}
-
       count++
     }
   }
