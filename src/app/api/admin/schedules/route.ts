@@ -21,6 +21,9 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
+  console.log('Received slotTimes:', JSON.stringify(body.slotTimes?.slice(0,2)))
+console.log('recurrenceRule:', body.recurrenceRule)
+console.log('recurrenceUntil:', body.recurrenceUntil)
 
   if (!body.mentorId) {
     return NextResponse.json({ error: 'Missing mentorId' }, { status: 400 })
