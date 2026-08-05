@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       }
     }
     // Also check recurrence end date
-    if (untilDate && untilDate > endDate) {
+   if (untilDate && untilDate > new Date(programEndDate + 'T23:59:59-08:00')) {
       return NextResponse.json({ error: `Recurrence cannot extend past ${programEndDate}` }, { status: 422 })
     }
   }
