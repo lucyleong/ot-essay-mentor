@@ -3,14 +3,24 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { addDays, addWeeks } from 'date-fns'
 
 function toLA(dateStr: string, timeStr: string): Date {
-  // Use Intl to get the UTC offset for LA on this specific date
-  const testDate = new Date(`${dateStr}T${timeStr}:00Z`)
-  const laString = testDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: false })
-  const utcString = testDate.toLocaleString('en-US', { hour12: false })
-  const laDate = new Date(laString)
-  const utcDate = new Date(utcString)
-  const offsetMs = utcDate.getTime() - laDate.getTime()
-  return new Date(testDate.getTime() + offsetMs)
+  // Calculate DST boundaries for the year
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const year = y
+  
+  // DST starts: second Sunday in March
+  const dstStart = new Date(Date.UTC(year, 2, 1))
+  dstStart.setUTCDate(1 + (7 - dstStart.getUTCDay()) % 7 + 7)
+  
+  // DST ends: first Sunday in November
+  const dstEnd = new Date(Date.UTC(year, 10, 1))
+  dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7)
+  
+  const date = new Date(Date.UTC(y, m - 1, d))
+  const isPDT = date >= dstStart && date < dstEnd
+  const offsetHours = isPDT ? 7 : 8
+  
+  const [hour, minute] = timeStr.split(':').map(Number)
+  return new Date(Date.UTC(y, m - 1, d, hour + offsetHours, minute))
 }
 
 // Debug test

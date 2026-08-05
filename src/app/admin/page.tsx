@@ -270,11 +270,25 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
   }, [activePanel, reports])
 
  function toLA(dateStr: string, timeStr: string): Date {
-    const dt = new Date(`${dateStr}T${timeStr}:00`)
-    const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
-                     new Date(dt.toLocaleString('en-US')).getTime()
-    return new Date(dt.getTime() - laOffset)
-  }
+  // Calculate DST boundaries for the year
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const year = y
+  
+  // DST starts: second Sunday in March
+  const dstStart = new Date(Date.UTC(year, 2, 1))
+  dstStart.setUTCDate(1 + (7 - dstStart.getUTCDay()) % 7 + 7)
+  
+  // DST ends: first Sunday in November
+  const dstEnd = new Date(Date.UTC(year, 10, 1))
+  dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7)
+  
+  const date = new Date(Date.UTC(y, m - 1, d))
+  const isPDT = date >= dstStart && date < dstEnd
+  const offsetHours = isPDT ? 7 : 8
+  
+  const [hour, minute] = timeStr.split(':').map(Number)
+  return new Date(Date.UTC(y, m - 1, d, hour + offsetHours, minute))
+}
 
   async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
