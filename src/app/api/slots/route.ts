@@ -118,36 +118,35 @@ const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-
 
       if (!body.recurrenceRule) break
 
-    const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
+   const daysToAdd = body.recurrenceRule === 'daily' ? 1 : body.recurrenceRule === 'weekly' ? 7 : 14
 
-      // Get the next date in LA timezone
-      const nextStart = addDays(current.start, daysToAdd)
-      const nextEnd = addDays(current.end, daysToAdd)
-
-      // Get the wall clock time in LA for the current slot
+      // Get LA wall clock time for CURRENT slot
       const laFormatter = new Intl.DateTimeFormat('en-US', {
         timeZone: 'America/Los_Angeles',
         year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour: '2-digit', minute: '2-digit',
         hour12: false
       })
-
-      const startParts = laFormatter.formatToParts(nextStart)
-      const endParts = laFormatter.formatToParts(nextEnd)
 
       const getPart = (parts: Intl.DateTimeFormatPart[], type: string) => 
         parts.find(p => p.type === type)?.value ?? '00'
 
-      // Reconstruct using LA wall clock time to get correct UTC for that date
-      const nextDateStr = `${getPart(startParts, 'year')}-${getPart(startParts, 'month')}-${getPart(startParts, 'day')}`
-      const startTimeStr = `${getPart(startParts, 'hour')}:${getPart(startParts, 'minute')}`
-      const endTimeStr = `${getPart(endParts, 'hour')}:${getPart(endParts, 'minute')}`
+      const currentStartParts = laFormatter.formatToParts(current.start)
+      const currentEndParts = laFormatter.formatToParts(current.end)
 
-      const nextEndDateStr = `${getPart(endParts, 'year')}-${getPart(endParts, 'month')}-${getPart(endParts, 'day')}`
+      // Get current LA date and time
+      const currentDateStr = `${getPart(currentStartParts, 'year')}-${getPart(currentStartParts, 'month')}-${getPart(currentStartParts, 'day')}`
+      const startTimeStr = `${getPart(currentStartParts, 'hour')}:${getPart(currentStartParts, 'minute')}`
+      const endTimeStr = `${getPart(currentEndParts, 'hour')}:${getPart(currentEndParts, 'minute')}`
+
+      // Add days to the DATE only (not UTC timestamp)
+      const currentDate = new Date(currentDateStr + 'T12:00:00') // noon to avoid date boundary issues
+      const nextDate = addDays(currentDate, daysToAdd)
+      const nextDateStr = nextDate.toISOString().split('T')[0]
 
       current = {
         start: toLA(nextDateStr, startTimeStr),
-        end: toLA(nextEndDateStr, endTimeStr)
+        end: toLA(nextDateStr, endTimeStr)
       }
       console.log(`Recurring slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)
       count++
