@@ -381,7 +381,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
 
 const navItems = [
     { key: 'reports',   label: 'Reports' },
-    { key: 'bookings',  label: 'Bookings' },
+{ key: 'bookings',  label: 'Appointments' },
     { key: 'walkin',    label: 'Walk-in Queue' },
     { key: 'mentors',   label: 'Mentors' },
     { key: 'schedules', label: 'Scheduling' },
@@ -679,8 +679,7 @@ onClick={() => {
             {/* ALL BOOKINGS */}
             {activePanel === 'bookings' && (
               <div>
-                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>All bookings</h1>
-             <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
+<h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>All appointments</h1>             <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} active ·{' '}
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) < new Date()).length} completed ·{' '}
                   {bookings.filter(b => b.cancelled_at).length} cancelled
@@ -703,11 +702,11 @@ onClick={() => {
                       onChange={e => setBookingStatus(e.target.value as any)}
                       style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
                     >
-                      <option value="all">All statuses</option>
+                    <option value="all">Bookings: All</option>
                       <option value="upcoming">Upcoming</option>
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
-                      <option value="available">Available slots</option>
+                      <option value="available">Open slots</option>
                     </select>
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
