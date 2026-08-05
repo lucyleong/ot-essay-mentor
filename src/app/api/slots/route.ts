@@ -149,6 +149,11 @@ const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-
         start: toLA(nextDateStr, startTimeStr),
         end: toLA(nextEndDateStr, endTimeStr)
       }
+      console.log(`Recurring slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)
+      count++
+        start: toLA(nextDateStr, startTimeStr),
+        end: toLA(nextEndDateStr, endTimeStr)
+      }
       count++
     }
   }
