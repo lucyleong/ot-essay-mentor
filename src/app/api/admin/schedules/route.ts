@@ -49,7 +49,8 @@ export async function POST(request: NextRequest) {
 
   const programEndDate = endDateSetting?.value
   const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
-const untilDate = body.recurrenceUntil ? toLA(body.recurrenceUntil, '23:59') : programEndDateObj  for (const baseSlot of baseDaySlots) {
+const untilDate = body.recurrenceUntil ? toLA(body.recurrenceUntil, '23:59') : programEndDateObj  
+for (const baseSlot of baseDaySlots) {
     let current = {
       start: new Date(baseSlot.start_time),
       end:   new Date(baseSlot.end_time),
@@ -58,8 +59,6 @@ const untilDate = body.recurrenceUntil ? toLA(body.recurrenceUntil, '23:59') : p
     let count = 0
     while (count < 52) {
 if (untilDate && current.start > untilDate) break
-console.log('untilDate:', untilDate?.toISOString(), 'current.start:', current.start.toISOString())
-
       slotsToInsert.push({
         mentor_id:        body.mentorId,
         start_time:       current.start.toISOString(),
@@ -99,7 +98,6 @@ console.log('untilDate:', untilDate?.toISOString(), 'current.start:', current.st
           start: toLA(nextDateStr, startTimeStr),
           end: toLA(nextDateStr, endTimeStr)
         }
-                console.log(`Admin recurring slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)               
       } else {
         break
       }
@@ -140,7 +138,6 @@ console.log('untilDate:', untilDate?.toISOString(), 'current.start:', current.st
       })
     }
   } catch (emailErr) {
-    console.error('Mentor schedule notification email failed:', emailErr)
   }
 
   return NextResponse.json({ slotsCreated: inserted?.length ?? 0 })
