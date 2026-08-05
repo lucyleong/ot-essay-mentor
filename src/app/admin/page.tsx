@@ -400,10 +400,11 @@ const navItems = [
     { key: 'schedules', label: 'Scheduling' },
     { key: 'walkin',    label: 'Walk-in Queue' },
     { key: 'mentors',   label: 'Mentors' },
-    { key: 'settings',  label: 'Settings' },
-    { key: 'qrcodes',   label: 'QR Codes', indent: true },
-    { key: 'calendar',  label: 'Google Calendar', indent: true },
-    { key: 'session',   label: 'End Session', indent: true },
+  { key: 'settings',  label: 'Settings' },
+{ key: 'program',   label: 'Program Settings', indent: true },
+{ key: 'qrcodes',   label: 'QR Codes', indent: true },
+{ key: 'calendar',  label: 'Google Calendar', indent: true },
+{ key: 'session',   label: 'End Session', indent: true },
   ]
 
   return (
@@ -1315,8 +1316,8 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
               </div>
             )}
             {/* SETTINGS */}
-            {activePanel === 'settings' && (
-              <div>
+{activePanel === 'program' && (
+                <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Program Settings</h1>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Configure program-wide settings
