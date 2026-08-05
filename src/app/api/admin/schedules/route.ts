@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
           start: toLA(nextDateStr, startTimeStr),
           end: toLA(nextDateStr, endTimeStr)
         }
+                console.log(`Admin recurring slot: ${nextDateStr} ${startTimeStr} → ${current.start.toISOString()}`)               
       } else {
         break
       }
