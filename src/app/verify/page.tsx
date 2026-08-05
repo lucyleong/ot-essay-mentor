@@ -83,7 +83,7 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
         </div>
 
         <p style={{ fontSize: 13, color: '#EEEDFE', margin: '24px 0 0', lineHeight: 1.6 }}>
-          Looking for an in-person appointment with a Oakland Tech College Essay Mentor in the CCC?<br />
+          Looking for an in-person appointment with an Oakland Tech College Essay Mentor in the CCC?<br />
           Check the CCC's Google Classroom for hours.
         </p>
 
