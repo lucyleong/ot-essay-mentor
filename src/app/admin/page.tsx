@@ -95,6 +95,7 @@ const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' |
 const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
 const [programEndDate, setProgramEndDate] = useState('')
+const [settingsOpen, setSettingsOpen] = useState(false)
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -430,23 +431,43 @@ const navItems = [
             borderTop: '0.5px solid #e8e6de',
           }}>
            {navItems.map(item => (
-              <button
-                key={item.key}
-                onClick={() => { setActivePanel(item.key); setMenuOpen(false) }}
-                style={{
-                  display: 'block', width: '100%', textAlign: 'left',
-                  padding: item.indent ? '12px 20px 12px 36px' : '14px 20px',
-                  fontSize: item.indent ? 13 : 15,
-                  cursor: 'pointer',
-                  background: activePanel === item.key ? '#f5f4f0' : 'transparent',
-                  color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
-                  fontWeight: activePanel === item.key ? 500 : 400,
-                  border: 'none', borderBottom: '0.5px solid #e8e6de',
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
+  item.key === 'settings' ? (
+    <button
+      key={item.key}
+      onClick={() => setSettingsOpen(!settingsOpen)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '9px 16px', fontSize: 13, cursor: 'pointer',
+        background: 'transparent', color: '#5F5E5A',
+        fontWeight: 400, border: 'none', width: '100%', textAlign: 'left',
+      }}
+    >
+      Settings {settingsOpen ? '▾' : '▸'}
+    </button>
+  ) : item.indent && !settingsOpen ? null : (
+    <button
+      key={item.key}
+      onClick={() => {
+        setActivePanel(item.key)
+        const url = new URL(window.location.href)
+        url.searchParams.set('panel', item.key)
+        window.history.pushState({}, '', url)
+      }}
+      style={{
+        display: 'flex', alignItems: 'center',
+        padding: item.indent ? '7px 16px 7px 28px' : '9px 16px',
+        fontSize: item.indent ? 12 : 13,
+        cursor: 'pointer',
+        background: activePanel === item.key ? '#f5f4f0' : 'transparent',
+        color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
+        fontWeight: activePanel === item.key ? 500 : 400,
+        border: 'none', width: '100%', textAlign: 'left',
+      }}
+    >
+      {item.label}
+    </button>
+  )
+))}
            <div style={{ padding: '16px 20px', borderTop: '0.5px solid #e8e6de' }}>
               <a href="/" style={{ display: 'block', fontSize: 14, color: '#888780', textDecoration: 'none', marginBottom: 12 }}>
                 ← Home
@@ -474,28 +495,43 @@ const navItems = [
 <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>Oakland Tech<br />College Essay Mentor Program</p>        </div>
 
        {navItems.map(item => (
-          <button
-            key={item.key}
-            onClick={() => {
-              setActivePanel(item.key)
-              const url = new URL(window.location.href)
-              url.searchParams.set('panel', item.key)
-              window.history.pushState({}, '', url)
-            }}
-            style={{
-              display: 'flex', alignItems: 'center',
-              padding: item.indent ? '7px 16px 7px 28px' : '9px 16px',
-              fontSize: item.indent ? 12 : 13,
-              cursor: 'pointer',
-              background: activePanel === item.key ? '#f5f4f0' : 'transparent',
-              color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
-              fontWeight: activePanel === item.key ? 500 : 400,
-              border: 'none', width: '100%', textAlign: 'left',
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
+  item.key === 'settings' ? (
+    <button
+      key={item.key}
+      onClick={() => setSettingsOpen(!settingsOpen)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '9px 16px', fontSize: 13, cursor: 'pointer',
+        background: 'transparent', color: '#5F5E5A',
+        fontWeight: 400, border: 'none', width: '100%', textAlign: 'left',
+      }}
+    >
+      Settings {settingsOpen ? '▾' : '▸'}
+    </button>
+  ) : item.indent && !settingsOpen ? null : (
+    <button
+      key={item.key}
+      onClick={() => {
+        setActivePanel(item.key)
+        const url = new URL(window.location.href)
+        url.searchParams.set('panel', item.key)
+        window.history.pushState({}, '', url)
+      }}
+      style={{
+        display: 'flex', alignItems: 'center',
+        padding: item.indent ? '7px 16px 7px 28px' : '9px 16px',
+        fontSize: item.indent ? 12 : 13,
+        cursor: 'pointer',
+        background: activePanel === item.key ? '#f5f4f0' : 'transparent',
+        color: activePanel === item.key ? '#2C2C2A' : item.indent ? '#888780' : '#5F5E5A',
+        fontWeight: activePanel === item.key ? 500 : 400,
+        border: 'none', width: '100%', textAlign: 'left',
+      }}
+    >
+      {item.label}
+    </button>
+  )
+))}
 
       <div style={{ marginTop: 16, padding: '12px 16px', borderTop: '0.5px solid #e8e6de' }}>
   <a href="/" style={{ display: 'block', fontSize: 12, color: '#888780', textDecoration: 'none', marginBottom: 8 }}>
