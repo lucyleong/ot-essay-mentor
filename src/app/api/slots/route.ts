@@ -66,8 +66,9 @@ export async function POST(request: NextRequest) {
 
   // Expand for recurrence
   const slotsToInsert: any[] = []
-  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : null
-
+const programEndDateObj = programEndDate ? new Date(programEndDate + 'T23:59:59-08:00') : null
+  const untilDate = body.recurrenceUntil ? new Date(body.recurrenceUntil) : programEndDateObj
+  
   // Validate against program end date
   if (programEndDate) {
     const endDate = new Date(programEndDate + 'T23:59:59')
