@@ -53,7 +53,7 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
         </h1>
 
         <p style={{ fontSize: 16, color: '#EEEDFE', margin: '0 0 32px', lineHeight: 1.6 }}>
-          Tech Seniors, sign up here for a free, online appointment with a Tech College Essay Mentor.
+          Oakland Tech Seniors, sign up here for a free, online appointment with an Oakland Tech College Essay Mentor.
         </p>
 
         <div style={{ background: '#ffffff', borderRadius: 12, padding: '2rem' }}>
@@ -83,7 +83,7 @@ localStorage.setItem('checkin_verified', process.env.NEXT_PUBLIC_CHECKIN_CODE!)
         </div>
 
         <p style={{ fontSize: 13, color: '#EEEDFE', margin: '24px 0 0', lineHeight: 1.6 }}>
-          Looking for an in-person appointment with a Tech College Essay Mentor in the CCC?<br />
+          Looking for an in-person appointment with a Oakland Tech College Essay Mentor in the CCC?<br />
           Check the CCC's Google Classroom for hours.
         </p>
 
