@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -6,8 +6,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET() {
-  const { data: slots } = await supabase
+export async function GET(request: NextRequest) {
+  const mentorId = request.nextUrl.searchParams.get('mentorId')
+
+  let query = supabase
     .from('appointment_slots')
     .select(`
       id, start_time, end_time, is_booked, meeting_type,
@@ -16,6 +18,10 @@ export async function GET() {
     .eq('is_cancelled', false)
     .gte('start_time', new Date().toISOString())
     .order('start_time', { ascending: true })
+
+  if (mentorId) query = query.eq('mentor_id', mentorId)
+
+  const { data: slots } = await query
 
   return NextResponse.json(slots ?? [])
 }

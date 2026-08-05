@@ -96,6 +96,8 @@ const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'complet
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
 const [programEndDate, setProgramEndDate] = useState('')
 const [settingsOpen, setSettingsOpen] = useState(false)
+const [cancelMentorId, setCancelMentorId] = useState('')
+const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -1351,7 +1353,58 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                   </button>
                 </div>
               </div>
-            )}
+
+            {/* Cancel mentor slots */}
+                <h2 style={{ fontSize: 18, fontWeight: 500, margin: '32px 0 4px' }}>Cancel mentor slots</h2>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
+                  Cancel upcoming slots on a mentor's behalf
+                </p>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem' }}>
+                  <select
+                    value={cancelMentorId}
+                    onChange={async e => {
+                      setCancelMentorId(e.target.value)
+                      if (!e.target.value) { setCancelMentorSlots([]); return }
+                      const res = await fetch(`/api/admin/schedules/list?mentorId=${e.target.value}`)
+                      const data = await res.json()
+                      setCancelMentorSlots(data ?? [])
+                    }}
+                    style={{ width: '100%', boxSizing: 'border-box', marginBottom: 16 }}
+                  >
+                    <option value="">Select a mentor...</option>
+                    {mentors.filter(m => m.is_active).map(m => (
+                      <option key={m.id} value={m.id}>{m.full_name}</option>
+                    ))}
+                  </select>
+
+                  {cancelMentorSlots.length === 0 && cancelMentorId && (
+                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>No upcoming slots.</p>
+                  )}
+
+                  {cancelMentorSlots.map((slot: any) => (
+                    <div key={slot.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 2px' }}>
+                          {formatDateTimePST(slot.start_time)}
+                        </p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          {slot.is_booked ? '⚠️ Booked' : 'Open'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          await fetch(`/api/slots/${slot.id}`, { method: 'DELETE' })
+                          setCancelMentorSlots(prev => prev.filter(s => s.id !== slot.id))
+                        }}
+                        style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                            )}
+
 {/* END SESSION */}
             {activePanel === 'session' && (
               <div>
