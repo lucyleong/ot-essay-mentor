@@ -87,6 +87,13 @@ const timeOptions = generateTimeOptions()
     loadData()
   }, [])
 
+  function toLA(dateStr: string, timeStr: string): Date {
+    const dt = new Date(`${dateStr}T${timeStr}:00`)
+    const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
+                     new Date(dt.toLocaleString('en-US')).getTime()
+    return new Date(dt.getTime() - laOffset)
+  }
+
   async function loadData() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
@@ -792,8 +799,8 @@ Array.from(
                       const slotDuration = 20
                       const intervalMins = slotDuration + breakMinutes
 
-                      const windowStart = new Date(`${slotDate}T${slotStart}:00`)
-                      const windowEnd   = new Date(`${slotDate}T${slotEnd}:00`)
+                     const windowStart = toLA(slotDate, slotStart)
+const windowEnd   = toLA(slotDate, slotEnd)
 
                       const slotTimes: { startTime: string; endTime: string }[] = []
                       let current = new Date(windowStart)

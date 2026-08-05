@@ -268,7 +268,14 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     }
   }, [activePanel, reports])
 
- async function loadData() {
+ function toLA(dateStr: string, timeStr: string): Date {
+    const dt = new Date(`${dateStr}T${timeStr}:00`)
+    const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
+                     new Date(dt.toLocaleString('en-US')).getTime()
+    return new Date(dt.getTime() - laOffset)
+  }
+
+  async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
     const mentorData = await mentorRes.json()
 
@@ -1461,8 +1468,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         const slotDuration = 20
                         const intervalMins = slotDuration + breakMinutes
 
-                        const windowStart = new Date(`${scheduleDate}T${scheduleStart}:00`)
-                        const windowEnd   = new Date(`${scheduleDate}T${scheduleEnd}:00`)
+                       const windowStart = toLA(slotDate, slotStart)
+const windowEnd   = toLA(slotDate, slotEnd)
+
 
                         const slotTimes: { startTime: string; endTime: string }[] = []
                         let current = new Date(windowStart)
