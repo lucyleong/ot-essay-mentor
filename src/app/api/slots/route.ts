@@ -3,10 +3,14 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { addDays, addWeeks } from 'date-fns'
 
 function toLA(dateStr: string, timeStr: string): Date {
-  const dt = new Date(`${dateStr}T${timeStr}:00`)
-  const laOffset = new Date(dt.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })).getTime() - 
-                   new Date(dt.toLocaleString('en-US')).getTime()
-  return new Date(dt.getTime() - laOffset)
+  // Use Intl to get the UTC offset for LA on this specific date
+  const testDate = new Date(`${dateStr}T${timeStr}:00Z`)
+  const laString = testDate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: false })
+  const utcString = testDate.toLocaleString('en-US', { hour12: false })
+  const laDate = new Date(laString)
+  const utcDate = new Date(utcString)
+  const offsetMs = utcDate.getTime() - laDate.getTime()
+  return new Date(testDate.getTime() + offsetMs)
 }
 
 export async function GET() {
