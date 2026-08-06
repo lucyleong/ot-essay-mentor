@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { sendSMS } from '@/lib/sms'
 import { format, parseISO } from 'date-fns'
 import { formatDatePST, formatTimePST } from '@/lib/utils'
+import twilio from 'twilio'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,6 +12,22 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
+  // Validate Twilio signature
+  const twilioSignature = request.headers.get('X-Twilio-Signature') ?? ''
+  const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio`
+  const params: Record<string, string> = {}
+  formData.forEach((value, key) => { params[key] = value.toString() })
+  
+  const isValid = twilio.validateRequest(
+    process.env.TWILIO_AUTH_TOKEN!,
+    twilioSignature,
+    webhookUrl,
+    params
+  )
+
+  if (!isValid) {
+    return new NextResponse('Forbidden', { status: 403 })
+  }
   const from     = formData.get('From') as string  // Student's phone number
   const body     = (formData.get('Body') as string)?.trim()
 
