@@ -87,7 +87,15 @@ export async function POST(
   if (contentType.includes('application/json')) {
     const body = await request.json()
 
-  if (!body.googleDocUrl?.includes('docs.google.com/document')) {
+ try {
+      const docUrl = new URL(body.googleDocUrl)
+      if (docUrl.hostname !== 'docs.google.com' || !docUrl.pathname.startsWith('/document')) {
+        return NextResponse.json(
+          { error: 'Please provide a valid Google Docs link.' },
+          { status: 422 }
+        )
+      }
+    } catch {
       return NextResponse.json(
         { error: 'Please provide a valid Google Docs link.' },
         { status: 422 }
