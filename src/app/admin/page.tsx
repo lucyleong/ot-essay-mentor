@@ -1780,16 +1780,26 @@ const windowEnd   = toLA(scheduleDate, scheduleEnd)
                     All Google Meet links and calendar events are created through the program account (otessaymentors@gmail.com).
                     Click below to reconnect if Meet links stop working.
                   </p>
-                  <a
-                    href="/api/auth/google"
+                 <button
+                    onClick={async () => {
+                      // Generate a one-time token
+                      const token = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
+                      const expiry = new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5 min TTL
+                      await supabase.from('program_settings').upsert([
+                        { key: 'google_auth_token', value: token },
+                        { key: 'google_auth_token_expiry', value: expiry },
+                      ], { onConflict: 'key' })
+                      window.location.href = `/api/auth/google?token=${token}`
+                    }}
                     style={{
-                      display: 'inline-block', background: '#582C83', color: '#ffffff',
-                      textDecoration: 'none', fontSize: 13, fontWeight: 500,
+                      background: '#582C83', color: '#ffffff',
+                      fontSize: 13, fontWeight: 500,
                       padding: '8px 18px', borderRadius: 8,
+                      border: 'none', cursor: 'pointer',
                     }}
                   >
                     Connect Google Calendar
-                  </a>
+                  </button>
                 </div>
               </div>
             )}

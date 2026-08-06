@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -6,10 +6,34 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET() {
-  // Generate a random state token and store it
+export async function GET(request: NextRequest) {
+  // Validate one-time admin token
+  const adminToken = request.nextUrl.searchParams.get('token')
+
+  const { data: storedToken } = await supabase
+    .from('program_settings')
+    .select('value')
+    .eq('key', 'google_auth_token')
+    .single()
+
+  const { data: storedExpiry } = await supabase
+    .from('program_settings')
+    .select('value')
+    .eq('key', 'google_auth_token_expiry')
+    .single()
+
+  const isExpired = storedExpiry ? new Date(storedExpiry.value) < new Date() : true
+
+  if (!adminToken || !storedToken || adminToken !== storedToken.value || isExpired) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // Delete token immediately after validation (single-use)
+  await supabase.from('program_settings').delete().eq('key', 'google_auth_token')
+  await supabase.from('program_settings').delete().eq('key', 'google_auth_token_expiry')
+
+  // Generate state and store it
   const state = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
-  
   await supabase.from('program_settings').upsert(
     { key: 'google_oauth_state', value: state },
     { onConflict: 'key' }
