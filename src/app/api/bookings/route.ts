@@ -100,6 +100,13 @@ const { data: existingBookings } = await supabase
     .single()
 if (bookingError) {
     console.error('Booking insert error:', bookingError)
+    // Check for unique constraint violation (slot already booked)
+    if (bookingError.code === '23505') {
+      return NextResponse.json(
+        { error: 'This slot was just booked by someone else. Please select a different time.' },
+        { status: 409 }
+      )
+    }
     return NextResponse.json(
       { error: (bookingError as any).message },
       { status: 500 }
