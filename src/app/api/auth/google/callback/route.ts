@@ -62,9 +62,6 @@ export async function GET(request: NextRequest) {
       new URL('/admin?error=no_refresh_token', request.url)
     )
   }
-
-  const supabase = await createServerSupabaseClient()
-
   const expiry = new Date(
     Date.now() + tokens.expires_in * 1000
   ).toISOString()
