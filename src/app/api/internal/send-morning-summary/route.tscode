@@ -1,2 +1,0 @@
-[functions.send-morning-summary]
-schedule = "0 * * * *"
