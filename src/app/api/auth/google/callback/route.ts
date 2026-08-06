@@ -11,6 +11,24 @@ export async function GET(request: NextRequest) {
     )
   }
 
+  const state = request.nextUrl.searchParams.get('state')
+  
+  // Validate state parameter
+  const { data: storedState } = await supabase
+    .from('program_settings')
+    .select('value')
+    .eq('key', 'google_oauth_state')
+    .single()
+
+  if (!state || !storedState || state !== storedState.value) {
+    return NextResponse.redirect(
+      new URL('/admin?error=invalid_state', request.url)
+    )
+  }
+
+  // Clear the state after use
+  await supabase.from('program_settings').delete().eq('key', 'google_oauth_state')
+
   // Exchange code for tokens
   const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',

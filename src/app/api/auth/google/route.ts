@@ -1,5 +1,19 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
 export async function GET() {
+  // Generate a random state token and store it
+  const state = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
+  
+  await supabase.from('program_settings').upsert(
+    { key: 'google_oauth_state', value: state },
+    { onConflict: 'key' }
+  )
 
   const params = new URLSearchParams({
     client_id:     process.env.GOOGLE_CLIENT_ID!,
@@ -11,6 +25,7 @@ export async function GET() {
     ].join(' '),
     access_type: 'offline',
     prompt:      'consent',
+    state,
   })
 
   return NextResponse.redirect(
