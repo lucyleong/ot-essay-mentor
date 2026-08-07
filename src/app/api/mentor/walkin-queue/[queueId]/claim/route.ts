@@ -54,29 +54,20 @@ export async function POST(
 
     if (queueEntry) {
       // Find or create a walk-in slot for this mentor
-      let { data: slot } = await serviceSupabase
+    // Always create a new slot for each walk-in student
+      const { data: newSlot } = await serviceSupabase
         .from('appointment_slots')
-        .select('id')
-        .eq('mentor_id', mentor.id)
-        .eq('meeting_type', 'in_person')
-        .gte('start_time', new Date().toISOString().split('T')[0])
-        .maybeSingle()
-
-      if (!slot) {
-        const { data: newSlot } = await serviceSupabase
-          .from('appointment_slots')
-          .insert({
-            mentor_id:    mentor.id,
-            start_time:   new Date().toISOString(),
-            end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
-            meeting_type: 'in_person',
-            is_booked:    true,
-            is_cancelled: false,
-          })
-          .select()
-          .single()
-        slot = newSlot
-      }
+        .insert({
+          mentor_id:    mentor.id,
+          start_time:   new Date().toISOString(),
+          end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
+          meeting_type: 'in_person',
+          is_booked:    true,
+          is_cancelled: false,
+        })
+        .select()
+        .single()
+      const slot = newSlot
 
       if (slot) {
         await serviceSupabase
