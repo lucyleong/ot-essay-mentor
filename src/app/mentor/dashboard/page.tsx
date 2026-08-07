@@ -84,8 +84,15 @@ function generateTimeOptions(startAfter?: string) {
 }
 
 const timeOptions = generateTimeOptions()
-  useEffect(() => {
+ useEffect(() => {
     loadData()
+    
+    // Auto-refresh walk-in queue every 30 seconds
+    const interval = setInterval(() => {
+      loadData()
+    }, 30000)
+    
+    return () => clearInterval(interval)
   }, [])
 
  function toLA(dateStr: string, timeStr: string): Date {
