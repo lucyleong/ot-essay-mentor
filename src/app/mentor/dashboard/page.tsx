@@ -416,7 +416,8 @@ const todayBookings    = allBookings
                           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                             {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
                             {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
-{(booking.appointment_slots?.meeting_type ?? (booking as any).meeting_type) === 'in_person' ? 'In person' : 'Virtual'}                          </p>
+{(booking.appointment_slots?.meeting_type ?? 
+  (booking as any).meeting_type) === 'in_person' ? 'In person' : 'Virtual'}                          </p>
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                             {statusBadge(booking)}
                           </div>
@@ -474,8 +475,8 @@ const todayBookings    = allBookings
                           )
                         )}
 
-                      <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
-                          <button
+                    <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+                          {(booking as any).meeting_type !== 'in_person' && <button
                             onClick={() => toggleIssue(booking.id, 'noShow')}
                             disabled={savingIssue === booking.id}
                             style={{
@@ -487,7 +488,7 @@ const todayBookings    = allBookings
                           >
                             {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
                           </button>
-                          <button
+                         {(booking as any).meeting_type !== 'in_person' && <button
                             onClick={() => toggleIssue(booking.id, 'meetIssue')}
                             disabled={savingIssue === booking.id}
                             style={{
@@ -497,8 +498,8 @@ const todayBookings    = allBookings
                               color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
                             }}
                           >
-                            {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
-                          </button>
+                           {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                          </button>}
                         </div>
                       </div>
                     </div>
