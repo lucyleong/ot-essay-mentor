@@ -1143,16 +1143,28 @@ style={{
                                     Helped by {(entry as any).mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
                                   </span>
                                 )}
-                                {entry.status === 'walked_out' && (
+                               {entry.status === 'walked_out' && (
                                   <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
                                     Walked out
                                   </span>
                                 )}
                               </div>
-                              <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                             <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
                                 {entry.student_email} · Checked in {formatLocaleTimePST(entry.checked_in_at)}
+                                {entry.helped_at && ` · Helped at ${formatLocaleTimePST(entry.helped_at)}`}
                               </p>
                             </div>
+                            {entry.status === 'walked_out' && (
+                              <button
+                                onClick={async () => {
+                                  await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#ffffff', border: 'none', flexShrink: 0 }}
+                              >
+                                Helped
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}

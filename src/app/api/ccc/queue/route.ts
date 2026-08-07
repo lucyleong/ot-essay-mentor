@@ -22,8 +22,8 @@ export async function GET(request: NextRequest) {
 
   const { data: queue } = await supabase
     .from('walkin_queue')
-    .select(`
-      id, student_name, status, checked_in_at, helped_by_mentor_id,
+   .select(`
+      id, student_name, status, checked_in_at, helped_at, helped_by_mentor_id,
       mentor_profiles ( full_name ),
       walkin_queue_answers (
         answer_text,
