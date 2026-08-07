@@ -13,7 +13,7 @@ export default function CCCPage() {
   const [assigningId, setAssigningId] = useState<string | null>(null)
   const [selectedMentor, setSelectedMentor] = useState<Record<string, string>>({})
 
-  useEffect(() => {
+ useEffect(() => {
     async function init() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user || user.app_metadata?.role !== 'ccc') {
@@ -21,6 +21,8 @@ export default function CCCPage() {
         return
       }
       loadData()
+      const interval = setInterval(loadData, 10000)
+      return () => clearInterval(interval)
     }
     init()
   }, [])
@@ -75,12 +77,137 @@ export default function CCCPage() {
           {queue.filter(e => e.status === 'waiting').length} waiting · {queue.filter(e => e.status === 'helped').length} helped · {queue.filter(e => e.status === 'walked_out').length} walked out
         </p>
 
-        {queue.length === 0 ? (
+       {queue.length === 0 ? (
           <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
             <p style={{ color: '#888780', margin: 0 }}>No students checked in today.</p>
           </div>
         ) : (
-          queue.map(entry => (
+          <>
+          {/* Waiting section */}
+          {queue.filter(e => e.status === 'waiting').length === 0 && (
+            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', textAlign: 'center', marginBottom: 16 }}>
+              <p style={{ color: '#888780', margin: 0, fontSize: 13 }}>No students waiting right now.</p>
+            </div>
+          )}
+          {queue.filter(e => e.status === 'waiting').map(entry => (
+            <div key={entry.id} style={{
+              background: '#ffffff', border: '0.5px solid #e8e6de',
+              borderRadius: 12, padding: '16px 20px', marginBottom: 10,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontWeight: 500, fontSize: 15, margin: '0 0 4px' }}>{entry.student_name}</p>
+                  <p style={{ fontSize: 12, color: '#888780', margin: '0 0 4px' }}>
+                    Checked in {formatLocaleTimePST(entry.checked_in_at)}
+                  </p>
+                  {(() => {
+                    const answers = entry.walkin_queue_answers ?? []
+                    const helpWith = answers.find((a: any) => a.intake_questions?.question_text === 'I Want Help With')?.answer_text
+                    const counselor = answers.find((a: any) => a.intake_questions?.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
+                    return (helpWith || counselor) ? (
+                      <p style={{ fontSize: 12, color: '#2C2C2A', margin: 0 }}>
+                        {helpWith && `Help: ${helpWith}`}
+                        {helpWith && counselor && ' · '}
+                        {counselor && `Private counselor: ${counselor}`}
+                      </p>
+                    ) : null
+                  })()}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 180 }}>
+                  <select
+                    value={selectedMentor[entry.id] ?? ''}
+                    onChange={e => setSelectedMentor(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                    style={{ fontSize: 12, padding: '4px 8px', width: '100%', borderRadius: 6 }}
+                  >
+                    <option value="">Assign to mentor...</option>
+                    {mentors.map((m: any) => (
+                      <option key={m.id} value={m.id}>{m.full_name}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={async () => {
+                      if (!selectedMentor[entry.id]) return
+                      setAssigningId(entry.id)
+                      await fetch(`/api/ccc/assign`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                        body: JSON.stringify({ queueId: entry.id, mentorId: selectedMentor[entry.id] }),
+                      })
+                      setAssigningId(null)
+                      loadData()
+                    }}
+                    disabled={!selectedMentor[entry.id] || assigningId === entry.id}
+                    style={{ fontSize: 12, padding: '5px 14px', background: selectedMentor[entry.id] ? '#582C83' : undefined, color: selectedMentor[entry.id] ? '#ffffff' : undefined, border: selectedMentor[entry.id] ? 'none' : undefined }}
+                  >
+                    {assigningId === entry.id ? 'Assigning...' : 'Assign'}
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
+                      loadData()
+                    }}
+                    style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                  >
+                    Walked out
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Completed section */}
+          {queue.filter(e => e.status !== 'waiting').length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <p style={{ fontSize: 12, fontWeight: 500, color: '#888780', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                Completed
+              </p>
+              {queue.filter(e => e.status !== 'waiting').map(entry => (
+                <div key={entry.id} style={{
+                  background: '#ffffff', border: '0.5px solid #e8e6de',
+                  borderRadius: 12, padding: '16px 20px', marginBottom: 10,
+                  opacity: 0.6,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <p style={{ fontWeight: 500, fontSize: 15, margin: 0, textDecoration: 'line-through', color: '#888780' }}>
+                          {entry.student_name}
+                        </p>
+                        {entry.status === 'helped' && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                            Helped by {entry.mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
+                          </span>
+                        )}
+                        {entry.status === 'walked_out' && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                            Walked out
+                          </span>
+                        )}
+                      </div>
+                      <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                        Checked in {formatLocaleTimePST(entry.checked_in_at)}
+                        {entry.helped_at && ` · Helped at ${formatLocaleTimePST(entry.helped_at)}`}
+                      </p>
+                    </div>
+                    {entry.status === 'walked_out' && (
+                      <select
+                        value={selectedMentor[entry.id] ?? ''}
+                        onChange={e => setSelectedMentor(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                        style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                      >
+                        <option value="">Re-assign to mentor...</option>
+                        {mentors.map((m: any) => (
+                          <option key={m.id} value={m.id}>{m.full_name}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          </>
+        )}
             <div key={entry.id} style={{
               background: '#ffffff', border: '0.5px solid #e8e6de',
               borderRadius: 12, padding: '16px 20px', marginBottom: 10,
