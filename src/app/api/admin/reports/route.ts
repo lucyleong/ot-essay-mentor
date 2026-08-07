@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -119,7 +120,11 @@ function getOtherResponses(answers: any[], questionKey: string): string[] {
 }
 
 export async function GET(request: NextRequest) {
-  const meetingType = request.nextUrl.searchParams.get('type') // 'virtual', 'in_person', or null for all
+  const auth = await requireAdmin(request)
+  if ('error' in auth) return auth.error
+
+  const meetingType = request.nextUrl.searchParams.get('type')
+   // 'virtual', 'in_person', or null for all
 
   // Total bookings
   let bookingsQuery = supabase
