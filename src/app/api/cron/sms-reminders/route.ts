@@ -11,8 +11,8 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   const auth = request.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.INTERNAL_API_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Find appointments 47-49 hours from now (gives us a 2-hour window to catch them)
