@@ -708,7 +708,7 @@ fontSize: item.indent ? 13 : 15,
                                   onClick={async () => {
                                     await fetch(`/api/admin/mentors/delete`, {
                                       method: 'POST',
-                                      headers: { 'Content-Type': 'application/json' },
+headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                                       body: JSON.stringify({ mentorId: mentor.id }),
                                     })
                                     setDeletingMentorId(null)
