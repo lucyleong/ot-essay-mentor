@@ -825,12 +825,35 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       return bTime.localeCompare(aTime)
                     }
                 return new Date(b.booked_at).getTime() - new Date(a.booked_at).getTime()
-                  }).map(booking => {
+              }).reduce((acc: any[], booking, index, arr) => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
+                    
+                    // Add date header if sorting by date and date changes
+                    if ((bookingSort === 'start_time_asc' || bookingSort === 'start_time_desc') && startTime) {
+                      const dateStr = new Date(startTime).toLocaleDateString('en-US', { 
+                        weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' 
+                      })
+                      const prevStartTime = index > 0 ? (arr[index-1].appointment_slots as any)?.start_time : null
+                      const prevDateStr = prevStartTime ? new Date(prevStartTime).toLocaleDateString('en-US', { 
+                        weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' 
+                      }) : null
+                      
+                      if (dateStr !== prevDateStr) {
+                        acc.push(
+                          <div key={`header-${dateStr}`} style={{ 
+                            fontSize: 12, fontWeight: 600, color: '#582C83', 
+                            padding: '12px 0 4px', borderBottom: '0.5px solid #e8e6de' 
+                          }}>
+                            {dateStr}
+                          </div>
+                        )
+                      }
+                    }
 
-                    return (
+                    acc.push(
                    <div key={booking.id} style={{
+
                       padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
                     }}>
                      {/* Top row: name + badges */}
@@ -973,7 +996,9 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                         )
                       )}
                    </div>
-                  )})}
+                    )
+                    return acc
+                  }, [])}
              </div>}
 
 {bookingStatus === 'available' && bookingMeetingType === 'in_person' && (
