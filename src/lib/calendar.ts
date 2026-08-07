@@ -117,18 +117,28 @@ const patchRes = await fetch(
         }),
       }
     )
+
+    if (!patchRes.ok) {
+      const errText = await patchRes.text()
+      console.error('Failed to add attendees to new calendar event:', errText)
+      throw new Error(`Failed to add attendees: ${patchRes.status}`)
+    }
     
-    return { meetLink: newMeetLink }
     return { meetLink: newMeetLink }
 
   }
   const accessToken = await getFreshAccessToken()
 
   // Get current event to preserve existing attendees
-  const getRes = await fetch(
+ const getRes = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/primary/events/${slot.google_calendar_event_id}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   )
+  if (!getRes.ok) {
+    const errText = await getRes.text()
+    console.error('Failed to fetch calendar event:', errText)
+    throw new Error(`Failed to fetch calendar event: ${getRes.status}`)
+  }
   const currentEvent = await getRes.json()
   const existingAttendees = currentEvent.attendees ?? []
 
