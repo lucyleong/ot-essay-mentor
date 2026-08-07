@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { addDays, addWeeks, addMonths } from 'date-fns'
 import { sendEmail } from '@/lib/email'
 import { formatDatePST } from '@/lib/utils'
+import { requireAdmin } from '@/lib/admin-auth'
 
 function toLA(dateStr: string, timeStr: string): Date {
   // Calculate DST boundaries for the year
@@ -31,6 +32,9 @@ const supabase = createClient(
 )
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin(request)
+  if ('error' in auth) return auth.error
+
   const body = await request.json()
 
   if (!body.mentorId) {
