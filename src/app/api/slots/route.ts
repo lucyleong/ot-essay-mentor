@@ -110,7 +110,7 @@ const untilDate = body.recurrenceUntil ? toLA(body.recurrenceUntil, '23:59') : p
     }
 
     let count = 0
-    while (count < 52) {
+    while (count < 200) {
       if (untilDate && current.start > untilDate) break
 
       slotsToInsert.push({
