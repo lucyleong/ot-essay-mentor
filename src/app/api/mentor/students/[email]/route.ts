@@ -51,10 +51,6 @@ export async function GET(
     .is('cancelled_at', null)
     .order('booked_at', { ascending: false })
 
-  if (!isAdmin && mentor) {
-    bookingsQuery = bookingsQuery.eq('appointment_slots.mentor_id', mentor.id)
-  }
-
   const { data: bookings, error: bookingsError } = await bookingsQuery
 
   // Notes — admins see all, mentors only see non-private notes from others + all their own
@@ -69,7 +65,7 @@ export async function GET(
   }
 
   const { data: notes } = await notesQuery
-  
+
 
   // Generate signed URLs for file uploads
   const bookingsWithUrls = await Promise.all((bookings ?? []).map(async (booking: any) => {
