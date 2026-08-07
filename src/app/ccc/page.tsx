@@ -296,16 +296,24 @@ export default function CCCPage() {
                       Walked out
                     </button>
                   )}
-                  {entry.status === 'walked_out' && (
-                    <select
-                      value={selectedMentor[entry.id] ?? ''}
-                      onChange={e => setSelectedMentor(prev => ({ ...prev, [entry.id]: e.target.value }))}
-                      style={{ fontSize: 12, padding: '4px 8px', width: '100%', borderRadius: 6 }}
-                    >
-                      <option value="">Re-assign to mentor...</option>
-                      {mentors.map((m: any) => (
-                        <option key={m.id} value={m.id}>{m.full_name}</option>
-                    </>
+                 {entry.status === 'walked_out' && (
+                      <select
+                        value={selectedMentor[entry.id] ?? ''}
+                        onChange={e => setSelectedMentor(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                        style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                      >
+                        <option value="">Re-assign to mentor...</option>
+                        {mentors.map((m: any) => (
+                          <option key={m.id} value={m.id}>{m.full_name}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          </>
         )}
       </div>
     </main>
