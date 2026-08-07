@@ -28,7 +28,8 @@ export async function GET(
 
   if (!mentor && !isAdmin) return NextResponse.json({ error: 'No mentor profile' }, { status: 401 })
 
-  const { data: bookings, error: bookingsError } = await serviceSupabase
+  // Build bookings query — admins see all, mentors only see their own students
+  let bookingsQuery = serviceSupabase
     .from('student_bookings')
     .select(`
       id, student_name, student_email, student_phone,
@@ -50,11 +51,25 @@ export async function GET(
     .is('cancelled_at', null)
     .order('booked_at', { ascending: false })
 
-  const { data: notes } = await serviceSupabase
+  if (!isAdmin && mentor) {
+    bookingsQuery = bookingsQuery.eq('appointment_slots.mentor_id', mentor.id)
+  }
+
+  const { data: bookings, error: bookingsError } = await bookingsQuery
+
+  // Notes — admins see all, mentors only see non-private notes from others + all their own
+  let notesQuery = serviceSupabase
     .from('mentor_student_notes')
     .select('id, body, is_private, created_at, mentor_id, mentor_profiles(full_name)')
     .eq('student_email', studentEmail)
     .order('created_at', { ascending: false })
+
+  if (!isAdmin && mentor) {
+    notesQuery = notesQuery.or(`is_private.eq.false,mentor_id.eq.${mentor.id}`)
+  }
+
+  const { data: notes } = await notesQuery
+  
 
   // Generate signed URLs for file uploads
   const bookingsWithUrls = await Promise.all((bookings ?? []).map(async (booking: any) => {
