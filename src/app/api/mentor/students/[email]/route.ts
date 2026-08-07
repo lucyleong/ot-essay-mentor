@@ -32,8 +32,8 @@ export async function GET(
   let bookingsQuery = serviceSupabase
     .from('student_bookings')
     .select(`
-      id, student_name, student_email, student_phone,
-      booked_at, confirmation_code,
+    id, student_name, student_email, student_phone,
+      booked_at, confirmation_code, meeting_type,
       appointment_slots (
         start_time, end_time, meeting_type, google_meet_link,
         mentor_profiles ( full_name )
