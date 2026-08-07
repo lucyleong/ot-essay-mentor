@@ -416,8 +416,7 @@ const todayBookings    = allBookings
                           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
                             {format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} –{' '}
                             {format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} ·{' '}
-                            {booking.appointment_slots.meeting_type === 'in_person' ? 'In person' : 'Virtual'}
-                          </p>
+{(booking.appointment_slots?.meeting_type ?? (booking as any).meeting_type) === 'in_person' ? 'In person' : 'Virtual'}                          </p>
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                             {statusBadge(booking)}
                           </div>
