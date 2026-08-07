@@ -300,19 +300,20 @@ async function getAuthHeader(): Promise<Record<string, string>> {
   }
 
   async function loadData() {
-   const mentorRes  = await fetch('/api/admin/mentors/list')
-    const mentorData = await mentorRes.json()
+const authHeader = await getAuthHeader()
+   const mentorRes  = await fetch('/api/admin/mentors/list', { headers: authHeader })
+       const mentorData = await mentorRes.json()
 
     const sortedMentors = (mentorData ?? []).sort((a: Mentor, b: Mentor) => {
       if (a.is_active === b.is_active) return 0
       return a.is_active ? -1 : 1
     })
     setMentors(sortedMentors)
-   const bookingRes  = await fetch('/api/admin/bookings')
+const bookingRes  = await fetch('/api/admin/bookings', { headers: authHeader })
     const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
 
-    const slotsRes  = await fetch('/api/admin/slots/available')
+const slotsRes  = await fetch('/api/admin/slots/available', { headers: authHeader })
     const slotsData = await slotsRes.json()
     setAvailableSlots(slotsData ?? [])
 
@@ -320,7 +321,7 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     const walkinData = await walkinRes.json()
     setWalkinQueue(walkinData.queue ?? [])
 
-    const scheduleSlotsRes = await fetch('/api/admin/schedules/list')
+const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: authHeader })
     const scheduleSlotsData = await scheduleSlotsRes.json()
     setScheduleSlots(scheduleSlotsData ?? [])
 
@@ -348,9 +349,9 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     setAddError('')
     setAddSuccess('')
 
-   const res = await fetch('/api/admin/mentors/add', {
+  const res = await fetch('/api/admin/mentors/add', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
       body: JSON.stringify({ fullName: newName.trim(), email: newEmail.trim().toLowerCase() }),
     })
     const data = await res.json()
@@ -370,9 +371,9 @@ async function getAuthHeader(): Promise<Record<string, string>> {
   }
 
  async function toggleMentorActive(mentor: Mentor) {
-    await fetch('/api/admin/mentors/toggle', {
+   await fetch('/api/admin/mentors/toggle', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
       body: JSON.stringify({
         mentorId: mentor.id,
         field: 'is_active',
@@ -382,9 +383,9 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     loadData()
   }
 async function toggleMentorVirtual(mentor: Mentor) {
-    await fetch('/api/admin/mentors/toggle', {
+   await fetch('/api/admin/mentors/toggle', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
       body: JSON.stringify({
         mentorId: mentor.id,
         field: 'is_virtual_available',
@@ -1378,7 +1379,7 @@ const exportHeaders = await getAuthHeader()
                     onChange={async e => {
                       setCancelMentorId(e.target.value)
                       if (!e.target.value) { setCancelMentorSlots([]); return }
-                      const res = await fetch(`/api/admin/schedules/list?mentorId=${e.target.value}`)
+const res = await fetch(`/api/admin/schedules/list?mentorId=${e.target.value}`, { headers: await getAuthHeader() })
                       const data = await res.json()
                       setCancelMentorSlots(data ?? [])
                     }}
@@ -1662,7 +1663,7 @@ const windowEnd   = toLA(scheduleDate, scheduleEnd)
                         try {
                           const res = await fetch('/api/admin/schedules', {
                             method:  'POST',
-                            headers: { 'Content-Type': 'application/json' },
+headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                             body:    JSON.stringify({
                               mentorId:        scheduleMentorId,
                               slotTimes,
