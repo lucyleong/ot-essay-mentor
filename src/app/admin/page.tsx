@@ -292,6 +292,12 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
   const [hour, minute] = timeStr.split(':').map(Number)
   return new Date(Date.UTC(y, m - 1, d, hour + offsetHours, minute))
 }
+async function getAuthHeader(): Promise<Record<string, string>> {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token 
+      ? { 'Authorization': `Bearer ${session.access_token}` }
+      : {}
+  }
 
   async function loadData() {
    const mentorRes  = await fetch('/api/admin/mentors/list')
@@ -390,7 +396,7 @@ async function toggleMentorVirtual(mentor: Mentor) {
   async function loadReports() {
     setReportsLoading(true)
     const params = reportsMeetingType !== 'all' ? `?type=${reportsMeetingType}` : ''
-    const res  = await fetch(`/api/admin/reports${params}`)
+const res  = await fetch(`/api/admin/reports${params}`, { headers: await getAuthHeader() })
     const data = await res.json()
     setReports(data)
     setReportsLoading(false)
@@ -931,7 +937,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                                 setTransferring(true)
                                 const res = await fetch('/api/admin/bookings/transfer', {
                                   method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
+headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                                   body: JSON.stringify({ bookingId: booking.id, newMentorId: transferMentorId }),
                                 })
                                 const data = await res.json()
@@ -1027,8 +1033,16 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     {reports && (
                       <button
                         onClick={() => {
-                          window.location.href = '/api/admin/reports/export'
-                        }}
+const exportHeaders = await getAuthHeader()
+                          const exportRes = await fetch('/api/admin/reports/export', { headers: exportHeaders })
+                          const blob = await exportRes.blob()
+                          const url = URL.createObjectURL(blob)
+                          const a = document.createElement('a')
+                          a.href = url
+                          a.download = `ot-essay-mentors-${new Date().toISOString().slice(0, 10)}.csv`
+                          a.click()
+                          URL.revokeObjectURL(url)
+                                                }}
                         style={{ fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         Export CSV
@@ -1454,7 +1468,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             return
                           }
                           setEndingSession(true)
-                          const res = await fetch('/api/admin/end-session', { method: 'POST' })
+const res = await fetch('/api/admin/end-session', { method: 'POST', headers: await getAuthHeader() })
                           setEndingSession(false)
                           if (res.ok) {
                             setSessionEnded(true)
