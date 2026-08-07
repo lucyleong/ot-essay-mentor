@@ -305,13 +305,7 @@ export default function CCCPage() {
                       <option value="">Re-assign to mentor...</option>
                       {mentors.map((m: any) => (
                         <option key={m.id} value={m.id}>{m.full_name}</option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))
+                    </>
         )}
       </div>
     </main>
