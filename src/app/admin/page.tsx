@@ -1032,7 +1032,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     {reports && (
                       <button
-                        onClick={() => {
+                       onClick={async () => {
 const exportHeaders = await getAuthHeader()
                           const exportRes = await fetch('/api/admin/reports/export', { headers: exportHeaders })
                           const blob = await exportRes.blob()
