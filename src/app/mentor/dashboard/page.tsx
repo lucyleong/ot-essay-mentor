@@ -205,6 +205,7 @@ const todayBookings    = allBookings
      })
      .sort((a, b) => new Date(b.appointment_slots.start_time).getTime() - new Date(a.appointment_slots.start_time).getTime())
  function statusBadge(booking: Booking) {
+    if ((booking as any).meeting_type === 'in_person') return null
     if (booking.sms_confirmed_at) {
       return (
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
