@@ -89,7 +89,7 @@ for (const baseSlot of baseDaySlots) {
     const baseDateStr = `${getPart(baseParts, 'year')}-${getPart(baseParts, 'month')}-${getPart(baseParts, 'day')}`
 
     let count = 0
-    while (count < 52) {
+    while (count < 200) {
       if (untilDate && current.start > untilDate) break
 
       slotsToInsert.push({
