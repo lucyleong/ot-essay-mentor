@@ -476,7 +476,7 @@ const todayBookings    = allBookings
                         )}
 
                     <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
-                          {(booking as any).meeting_type !== 'in_person' && <button
+                         {(booking as any).meeting_type !== 'in_person' && <button
                             onClick={() => toggleIssue(booking.id, 'noShow')}
                             disabled={savingIssue === booking.id}
                             style={{
@@ -487,8 +487,8 @@ const todayBookings    = allBookings
                             }}
                           >
                             {bookingIssues[booking.id]?.noShow ? '✓ No-show' : 'No-show'}
-                          </button>
-                         {(booking as any).meeting_type !== 'in_person' && <button
+                          </button>}
+                       {(booking as any).meeting_type !== 'in_person' && <button
                             onClick={() => toggleIssue(booking.id, 'meetIssue')}
                             disabled={savingIssue === booking.id}
                             style={{
@@ -498,7 +498,7 @@ const todayBookings    = allBookings
                               color: bookingIssues[booking.id]?.meetIssue ? '#854F0B' : '#5F5E5A',
                             }}
                           >
-                           {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
+                            {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                           </button>}
                         </div>
                       </div>
