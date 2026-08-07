@@ -317,7 +317,7 @@ const slotsRes  = await fetch('/api/admin/slots/available', { headers: authHeade
     const slotsData = await slotsRes.json()
     setAvailableSlots(slotsData ?? [])
 
-    const walkinRes = await fetch('/api/ccc/queue')
+const walkinRes = await fetch('/api/ccc/queue', { headers: authHeader })
     const walkinData = await walkinRes.json()
     setWalkinQueue(walkinData.queue ?? [])
 
@@ -1821,14 +1821,12 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     Click below to reconnect if Meet links stop working.
                   </p>
                  <button
-                    onClick={async () => {
-                      // Generate a one-time token
-                      const token = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
-                      const expiry = new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5 min TTL
-                      await supabase.from('program_settings').upsert([
-                        { key: 'google_auth_token', value: token },
-                        { key: 'google_auth_token_expiry', value: expiry },
-                      ], { onConflict: 'key' })
+                  onClick={async () => {
+                      const res = await fetch('/api/admin/google-auth-token', {
+                        method: 'POST',
+                        headers: await getAuthHeader(),
+                      })
+                      const { token } = await res.json()
                       window.location.href = `/api/auth/google?token=${token}`
                     }}
                     style={{

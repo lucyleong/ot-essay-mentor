@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdminOrCCC } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,9 @@ const supabase = createClient(
 )
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdminOrCCC(request)
+  if ('error' in auth) return auth.error
+
   const { queueId, mentorId } = await request.json()
 
   if (!queueId || !mentorId) {

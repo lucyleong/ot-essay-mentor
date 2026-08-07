@@ -25,3 +25,23 @@ export async function requireAdmin(request: NextRequest): Promise<{ error: NextR
 
   return { userId: user.id }
 }
+export async function requireAdminOrCCC(request: NextRequest): Promise<{ error: NextResponse } | { userId: string }> {
+  const authHeader = request.headers.get('Authorization')
+  if (!authHeader) {
+    return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) }
+  }
+
+  const token = authHeader.replace('Bearer ', '')
+  const { data: { user } } = await serviceSupabase.auth.getUser(token)
+
+  if (!user) {
+    return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) }
+  }
+
+  const role = user.app_metadata?.role
+  if (role !== 'admin' && role !== 'ccc') {
+    return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) }
+  }
+
+  return { userId: user.id }
+}

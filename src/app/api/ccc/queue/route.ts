@@ -1,12 +1,16 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdminOrCCC } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAdminOrCCC(request)
+  if ('error' in auth) return auth.error
+  
   const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const startOfDayPST = new Date(nowPST)
   startOfDayPST.setHours(0, 0, 0, 0)

@@ -25,11 +25,20 @@ export default function CCCPage() {
     init()
   }, [])
 
+ async function getAuthHeader() {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token 
+      ? { 'Authorization': `Bearer ${session.access_token}` }
+      : {}
+  }
+
   async function loadData() {
+    const authHeader = await getAuthHeader()
     const [queueRes, mentorsRes] = await Promise.all([
-      fetch('/api/ccc/queue'),
-      fetch('/api/ccc/mentors'),
+      fetch('/api/ccc/queue', { headers: authHeader }),
+      fetch('/api/ccc/mentors', { headers: authHeader }),
     ])
+
     const queueData = await queueRes.json()
     const mentorsData = await mentorsRes.json()
     setQueue(queueData.queue ?? [])
@@ -125,9 +134,9 @@ export default function CCCPage() {
                         onClick={async () => {
                           if (!selectedMentor[entry.id]) return
                           setAssigningId(entry.id)
-                          await fetch(`/api/ccc/assign`, {
+                         await fetch(`/api/ccc/assign`, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                             body: JSON.stringify({ queueId: entry.id, mentorId: selectedMentor[entry.id] }),
                           })
                           setAssigningId(null)
