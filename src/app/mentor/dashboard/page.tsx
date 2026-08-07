@@ -1004,12 +1004,19 @@ style={{
                   Students currently checked in and waiting at the College and Career Center
                 </p>
 
-                {walkinQueue.length === 0 ? (
+              {walkinQueue.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
                     <p style={{ color: '#888780', margin: 0 }}>No one is waiting right now.</p>
                   </div>
                 ) : (
-                walkinQueue.map((entry, index) => (
+                  <>
+                  {/* Waiting section */}
+                  {walkinQueue.filter(e => e.status === 'waiting').length === 0 && (
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', textAlign: 'center', marginBottom: 16 }}>
+                      <p style={{ color: '#888780', margin: 0, fontSize: 13 }}>No students waiting right now.</p>
+                    </div>
+                  )}
+                  {walkinQueue.filter(e => e.status === 'waiting').map((entry, index) => (
                    <div key={entry.id} style={{
                       background: '#ffffff', border: '0.5px solid #e8e6de',
                       borderRadius: 12, padding: '14px 20px', marginBottom: 8,
@@ -1111,7 +1118,47 @@ style={{
                         </div>
                       </div>
                     </div>
-                  ))
+                ))}
+
+                  {/* Helped/Walked out section */}
+                  {walkinQueue.filter(e => e.status !== 'waiting').length > 0 && (
+                    <div style={{ marginTop: 16 }}>
+                      <p style={{ fontSize: 12, fontWeight: 500, color: '#888780', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                        Completed
+                      </p>
+                      {walkinQueue.filter(e => e.status !== 'waiting').map((entry, index) => (
+                        <div key={entry.id} style={{
+                          background: '#ffffff', border: '0.5px solid #e8e6de',
+                          borderRadius: 12, padding: '14px 20px', marginBottom: 8,
+                          opacity: 0.6,
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <p style={{ fontWeight: 500, fontSize: 14, margin: 0, textDecoration: 'line-through', color: '#888780' }}>
+                                  {entry.student_name}
+                                </p>
+                                {entry.status === 'helped' && (
+                                  <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                                    Helped by {(entry as any).mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
+                                  </span>
+                                )}
+                                {entry.status === 'walked_out' && (
+                                  <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                                    Walked out
+                                  </span>
+                                )}
+                              </div>
+                              <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                                {entry.student_email} · Checked in {formatLocaleTimePST(entry.checked_in_at)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  </>
                 )}
               </div>
            )}
