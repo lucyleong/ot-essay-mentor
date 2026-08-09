@@ -22,8 +22,17 @@ export async function GET() {
   const endOfDayPST = new Date(nowPST)
   endOfDayPST.setHours(23, 59, 59, 999)
   
-  // Convert PST boundaries to UTC for database query
-  const offsetMs = 7 * 60 * 60 * 1000 // PST is UTC-7
+  // Convert PST/PDT boundaries to UTC for database query
+  const jan = new Date(Date.UTC(nowPST.getFullYear(), 0, 1))
+  const jul = new Date(Date.UTC(nowPST.getFullYear(), 6, 1))
+  const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())
+  const dstStart = new Date(Date.UTC(nowPST.getFullYear(), 2, 1))
+  dstStart.setUTCDate(1 + (7 - dstStart.getUTCDay()) % 7 + 7)
+  const dstEnd = new Date(Date.UTC(nowPST.getFullYear(), 10, 1))
+  dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7)
+  const today = new Date()
+  const isPDT = today >= dstStart && today < dstEnd
+  const offsetMs = isPDT ? 7 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000
   const startUTC = new Date(startOfDayPST.getTime() + offsetMs).toISOString()
   const endUTC = new Date(endOfDayPST.getTime() + offsetMs).toISOString()
 
