@@ -27,9 +27,6 @@ export async function POST(
     .single()
 
   if (!mentor && !isCCC && !isAdmin) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
-    
-
-  if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
   // Update walk-in queue status to walked_out
   const { error } = await serviceSupabase
