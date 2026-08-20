@@ -60,10 +60,10 @@ export async function POST(request: NextRequest) {
       slot = newSlot
     }
 
-    if (slot) {
+  if (slot) {
       await supabase
         .from('student_bookings')
-        .update({ slot_id: slot.id })
+        .update({ slot_id: slot.id, cancelled_at: null })
         .eq('id', booking.id)
     }
   }
