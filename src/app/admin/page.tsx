@@ -841,9 +841,10 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       
                       if (dateStr !== prevDateStr) {
                         acc.push(
-                          <div key={`header-${dateStr}`} style={{ 
-                            fontSize: 12, fontWeight: 600, color: '#582C83', 
-                            padding: '12px 0 4px', borderBottom: '0.5px solid #e8e6de' 
+                        <div key={`header-${dateStr}`} style={{ 
+                            fontSize: 12, fontWeight: 700, color: '#582C83',
+                            padding: '12px 0 4px', borderBottom: '0.5px solid #e8e6de',
+                            textTransform: 'uppercase', letterSpacing: '.06em'
                           }}>
                             {dateStr}
                           </div>
