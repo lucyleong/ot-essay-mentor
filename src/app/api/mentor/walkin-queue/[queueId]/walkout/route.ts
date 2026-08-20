@@ -17,11 +17,17 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const isCCC = user.app_metadata?.role === 'ccc'
+  const isAdmin = user.app_metadata?.role === 'admin'
+
   const { data: mentor } = await supabase
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
     .single()
+
+  if (!mentor && !isCCC && !isAdmin) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
+    
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
