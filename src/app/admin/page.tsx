@@ -1012,9 +1012,9 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     {availableSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
-                    [...availableSlots].sort((a, b) => {
+               [...availableSlots].sort((a, b) => {
                           if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
-                          if (bookingSort === 'student_name') return 0
+                          if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
                           return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
                         }).map((slot: any) => {
                         const isPast = new Date(slot.start_time) < new Date()
