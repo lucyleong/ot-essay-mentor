@@ -208,8 +208,25 @@ await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', he
                         {mentors.map((m: any) => (
                           <option key={m.id} value={m.id}>{m.full_name}</option>
                         ))}
-                      </select>
+                                           </select>
                     )}
+                    {entry.status === 'walked_out' && selectedMentor[entry.id] && (
+                      <button
+                        onClick={async () => {
+                          setAssigningId(entry.id)
+                          await fetch(`/api/ccc/assign`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                            body: JSON.stringify({ queueId: entry.id, mentorId: selectedMentor[entry.id] }),
+                          })
+                          setAssigningId(null)
+                          loadData()
+                        }}
+                        disabled={assigningId === entry.id}
+                        style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none', marginTop: 4 }}
+                      >
+                        {assigningId === entry.id ? 'Assigning...' : 'Assign'}
+                      </button>
                   </div>
                 </div>
               ))}
