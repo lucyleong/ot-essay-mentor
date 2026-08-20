@@ -321,8 +321,8 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
           </p>
         </div>
       ) : (
-        days.map(dateKey => (
-          <div key={dateKey} style={{ marginBottom: 20 }}>
+days.filter(dateKey => (slots[dateKey] ?? []).length > 0).map(dateKey => (
+            <div key={dateKey} style={{ marginBottom: 20 }}>
             <p style={{
               fontSize: 15, fontWeight: 600, letterSpacing: '.02em',
               textTransform: 'uppercase', color: '#2C2C2A',
