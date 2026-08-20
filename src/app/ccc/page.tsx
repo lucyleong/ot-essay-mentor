@@ -152,7 +152,7 @@ export default function CCCPage() {
                   </button>
                   <button
                     onClick={async () => {
-                      await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
+await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', headers: await getAuthHeader() })
                       loadData()
                     }}
                     style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
