@@ -43,8 +43,17 @@ export default function CCCPage() {
 
     const queueData = await queueRes.json()
     const mentorsData = await mentorsRes.json()
-    setQueue(queueData.queue ?? [])
-    setMentors(mentorsData.mentors ?? [])
+   setQueue(queueData.queue ?? [])
+    const mentorList = mentorsData.mentors ?? []
+    setMentors(mentorList)
+    // Auto-select if only one mentor available
+    if (mentorList.length === 1) {
+      const defaultSelections: Record<string, string> = {}
+      ;(queueData.queue ?? []).forEach((entry: any) => {
+        defaultSelections[entry.id] = mentorList[0].id
+      })
+      setSelectedMentor(defaultSelections)
+    }
     setLoading(false)
   }
 
