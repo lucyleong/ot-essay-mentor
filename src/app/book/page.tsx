@@ -303,8 +303,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
       One appointment per student at a time only. Please complete your appointment before booking a new one.
     </p>
     <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>
-      {total} open slot{total !== 1 ? 's' : ''} available in the next 8 days
-    </p>
+{total} open slot{total !== 1 ? 's' : ''} available in the next 8 days · New appointments added daily    </p>
   </div>
 
       {loading ? (
@@ -317,8 +316,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
           textAlign: 'center',
         }}>
           <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
-            No appointments available in the next 8 days. Please check back soon.
-          </p>
+No appointments available in the next 8 days. New slots are added daily — please check back tomorrow!          </p>
         </div>
       ) : (
 days.filter(dateKey => (slots[dateKey] ?? []).length > 0).map(dateKey => (
