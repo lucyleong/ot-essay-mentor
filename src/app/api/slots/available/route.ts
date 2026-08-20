@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       duration_minutes,
       meeting_type,
       google_meet_link,
-      mentor_profiles!inner (
+mentor_profiles!appointment_slots_mentor_id_fkey!inner (
         id,
         full_name,
         department,
