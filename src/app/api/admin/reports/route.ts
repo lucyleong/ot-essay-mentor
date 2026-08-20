@@ -218,10 +218,14 @@ export async function GET(request: NextRequest) {
 const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
 
   // Mentor activity
-  const { data: mentorActivity } = await supabase
+let mentorActivityQuery = supabase
     .from('student_bookings')
     .select(`appointment_slots ( mentor_profiles ( full_name ) )`)
     .is('cancelled_at', null)
+
+  if (meetingType) mentorActivityQuery = mentorActivityQuery.eq('meeting_type', meetingType)
+
+  const { data: mentorActivity } = await mentorActivityQuery
 
   const mentorMap: Record<string, number> = {}
   ;(mentorActivity ?? []).forEach((b: any) => {
