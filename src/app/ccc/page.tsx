@@ -226,7 +226,8 @@ await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', he
                         style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none', marginTop: 4 }}
                       >
                         {assigningId === entry.id ? 'Assigning...' : 'Assign'}
-                      </button>
+                                          </button>
+                    )}
                   </div>
                 </div>
               ))}
