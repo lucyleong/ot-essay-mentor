@@ -1012,8 +1012,10 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     {availableSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
-               [...availableSlots].sort((a, b) => {
-                          if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
+[...availableSlots].filter((slot: any) => {
+                          if (mentorFilter !== 'all' && slot.mentor_profiles?.full_name !== mentorFilter) return false
+                          return true
+                        }).sort((a, b) => {                          if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
                           if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
                           return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
                         }).map((slot: any) => {
