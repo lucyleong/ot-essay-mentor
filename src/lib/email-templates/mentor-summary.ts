@@ -111,7 +111,7 @@ Hello, ${d.mentorName.split(' ')[0]}!
     </a>
 
     <p style="font-size:12px;color:#888780;margin:16px 0 0;line-height:1.6;">
-This summary was sent the day before. Student confirmation statuses reflect replies received as of this email.    </p>`
+Student confirmation statuses reflect replies received as of the date and time of this email.    </p>`
 
   return { subject, html: emailLayout(content, subject) }
 }
