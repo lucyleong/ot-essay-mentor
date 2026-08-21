@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
   const { data: bookings } = await supabase
     .from('student_bookings')
     .select(`
-      id, student_name, student_email, student_phone,
-      confirmation_code, booked_at, cancelled_at,
+     id, student_name, student_email, student_phone,
+      confirmation_code, booked_at, cancelled_at, meeting_type,
       appointment_slots (
         start_time, end_time, meeting_type,
         mentor_profiles ( full_name )
@@ -116,7 +116,7 @@ formatShortDateNumericPST(b.booked_at),
       b.cancelled_at ? 'Yes' : 'No',
       apptDate,
       apptTime,
-      slot?.meeting_type ?? '',
+slot?.meeting_type ?? b.meeting_type ?? '',
       mentor?.full_name ?? '',
       ...sortedQuestions.map(([order]) => answerMap.get(order) ?? ''),
       survey.sessionEase ?? '',
