@@ -78,9 +78,22 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     handleAnswerChange(questionId, updated)
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+ async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (emailError) return
+
+    // Validate required multiselect questions
+    const requiredMultiselect = questions.filter(q => 
+      q.sort_order > 4 && q.is_required && q.question_type === 'multiselect'
+    )
+    for (const q of requiredMultiselect) {
+      const value = answers[q.id]
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        setError(`Please answer: ${q.question_text}`)
+        return
+      }
+    }
+
     setSubmitting(true)
     setError('')
 
