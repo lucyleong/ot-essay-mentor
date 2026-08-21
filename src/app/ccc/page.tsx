@@ -176,9 +176,9 @@ await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', he
                   borderRadius: 12, padding: '16px 20px', marginBottom: 10,
                   opacity: 0.6,
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <p style={{ fontWeight: 500, fontSize: 15, margin: 0, textDecoration: 'line-through', color: '#888780' }}>
                           {entry.student_name}
                         </p>
