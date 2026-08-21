@@ -19,8 +19,10 @@ type SummaryData = {
   issuesUrl:    string
 }
 export function mentorMorningSummaryEmail(d: SummaryData) {
-  const today        = format(new Date(), 'EEEE, MMMM d, yyyy')
-  const count        = d.appointments.length
+const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const today = format(tomorrow, 'EEEE, MMMM d, yyyy')
+    const count        = d.appointments.length
   const confirmed    = d.appointments.filter(a => a.smsStatus === 'confirmed').length
   const noReply      = d.appointments.filter(a => a.smsStatus === 'no_reply').length
   const noSms        = d.appointments.filter(a => a.smsStatus === 'no_sms').length
