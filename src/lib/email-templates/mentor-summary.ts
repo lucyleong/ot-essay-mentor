@@ -93,7 +93,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
 
   const content = `
     <h1 style="margin:0 0 4px;font-size:22px;font-weight:500;color:#2C2C2A;">
-Good evening, ${d.mentorName.split(' ')[0]}!
+Hello, ${d.mentorName.split(' ')[0]}!
     </h1>
     <p style="margin:0 0 24px;font-size:15px;color:#5F5E5A;">
       Here are your appointments for tomorrow, ${today}.
@@ -109,7 +109,7 @@ Good evening, ${d.mentorName.split(' ')[0]}!
     </a>
 
     <p style="font-size:12px;color:#888780;margin:16px 0 0;line-height:1.6;">
-This summary was sent the evening before. Student confirmation statuses reflect replies received as of this email.    </p>`
+This summary was sent the day before. Student confirmation statuses reflect replies received as of this email.    </p>`
 
   return { subject, html: emailLayout(content, subject) }
 }
