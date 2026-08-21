@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+const tomorrow = new Date()
+tomorrow.setDate(tomorrow.getDate() + 1)
+const today = tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
 
   const { data: bookings } = await supabase
     .from('student_bookings')
