@@ -36,6 +36,7 @@ export default function CheckInPage() {
   const [showMentor, setShowMentor] = useState(false)
   const [isReturning, setIsReturning] = useState(false)
 const [returningName, setReturningName] = useState('')
+  const [bookingId, setBookingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/bookings/questions')
@@ -128,6 +129,8 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       return
     }
 
+    const data = await res.json()
+    setBookingId(data.bookingId ?? null)
     setSubmitted(true)
   }
 
@@ -148,6 +151,33 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
             A mentor will be with you shortly. Please have a seat and wait to be called.
           </p>
         </div>
+        {bookingId && (
+          <div style={{
+            background: '#ffffff',
+            border: '0.5px solid #e8e6de',
+            borderRadius: 12,
+            padding: '1.25rem',
+            marginBottom: 16,
+          }}>
+            <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 8px', color: '#2C2C2A' }}>
+              Have an essay draft?
+            </p>
+            <p style={{ fontSize: 13, color: '#5F5E5A', margin: '0 0 12px' }}>
+              Share it now so your mentor can review it before you're called.
+            </p>
+            <a href={`/book/${bookingId}/essays`} style={{
+              display: 'inline-block',
+              background: '#534AB7',
+              color: '#ffffff',
+              textDecoration: 'none',
+              fontSize: 13,
+              padding: '8px 20px',
+              borderRadius: 8,
+            }}>
+              Upload your essay →
+            </a>
+          </div>
+        )}
         <div style={{
           background: '#ffffff',
           border: '0.5px solid #e8e6de',
