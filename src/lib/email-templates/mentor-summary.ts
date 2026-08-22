@@ -17,12 +17,10 @@ type SummaryData = {
   appointments: Appointment[]
   dashboardUrl: string
   issuesUrl:    string
+  summaryDate:  string
 }
 export function mentorMorningSummaryEmail(d: SummaryData) {
-const nowPSTStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
-  const tomorrow = new Date(nowPSTStr + 'T12:00:00')
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const today = format(tomorrow, 'EEEE, MMMM d, yyyy')
+  const today = format(new Date(d.summaryDate + 'T12:00:00'), 'EEEE, MMMM d, yyyy')
     const count        = d.appointments.length
   const confirmed    = d.appointments.filter(a => a.smsStatus === 'confirmed').length
   const noReply      = d.appointments.filter(a => a.smsStatus === 'no_reply').length
