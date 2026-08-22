@@ -14,9 +14,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-const tomorrow = new Date()
-tomorrow.setDate(tomorrow.getDate() + 1)
-const today = tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+// Get current date in PST/PDT
+  const nowPST = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+  const tomorrowPST = new Date(nowPST + 'T12:00:00')
+  tomorrowPST.setDate(tomorrowPST.getDate() + 1)
+  const today = tomorrowPST.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
 
   const { data: bookings } = await supabase
     .from('student_bookings')
