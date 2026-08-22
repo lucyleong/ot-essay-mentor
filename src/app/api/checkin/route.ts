@@ -17,6 +17,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 422 })
   }
 
+  if (!body.aiStatementSignature || !body.aiStatementSignature.trim()) {
+    return NextResponse.json(
+      { error: 'Please type your name to sign the AI statement.' },
+      { status: 422 }
+    )
+  }
+
   const studentName  = `${body.firstName} ${body.lastName}`
   const studentEmail = body.studentEmail.toLowerCase().trim()
 
@@ -63,6 +70,7 @@ export async function POST(request: NextRequest) {
       confirmation_code: generateCode(),
       meeting_type:      'in_person',
       queue_id:          queueEntry.id,
+      ai_statement_signature: body.aiStatementSignature.trim(),
     })
     .select()
     .single()
