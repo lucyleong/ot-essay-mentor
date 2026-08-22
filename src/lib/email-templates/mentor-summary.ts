@@ -19,7 +19,8 @@ type SummaryData = {
   issuesUrl:    string
 }
 export function mentorMorningSummaryEmail(d: SummaryData) {
-const tomorrow = new Date()
+const nowPSTStr = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+  const tomorrow = new Date(nowPSTStr + 'T12:00:00')
   tomorrow.setDate(tomorrow.getDate() + 1)
   const today = format(tomorrow, 'EEEE, MMMM d, yyyy')
     const count        = d.appointments.length
