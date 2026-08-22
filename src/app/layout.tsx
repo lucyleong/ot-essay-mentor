@@ -15,11 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Oakland Tech College Essay Mentor Program",
   description: "Free college essay support for Oakland Tech seniors",
-  icons: {
-    icon: [
-      { url: '/bulldog.png', type: 'image/png' },
+ icon: [
+      { url: '/bulldog.png?v=2', type: 'image/png' },
     ],
-    apple: '/bulldog.png',
+    apple: '/bulldog.png?v=2',
   },
 };
 
