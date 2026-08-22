@@ -35,6 +35,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: err.message }, { status: 422 })
   }
 
+  // Require the AI statement to be signed
+  if (!body.aiStatementSignature || !body.aiStatementSignature.trim()) {
+    return NextResponse.json(
+      { error: 'Please type your name to sign the AI statement.' },
+      { status: 422 }
+    )
+  }
+
 const { data: existingBookings } = await supabase
     .from('student_bookings')
     .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
@@ -95,6 +103,7 @@ const { data: existingBookings } = await supabase
       student_phone:     body.studentPhone,
       sms_consent:       !!body.smsConsent,
       confirmation_code: confirmationCode,
+      ai_statement_signature: body.aiStatementSignature.trim(),
     })
     .select()
     .single()
