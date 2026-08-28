@@ -349,10 +349,10 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
     const mentorId = helpedByMentorId[queueId]
     if (!mentorId) return
     setResolvingWalkinId(queueId)
-    await fetch(`/api/mentor/walkin-queue/${queueId}/claim`, {
+    await fetch('/api/ccc/assign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
-      body: JSON.stringify({ mentorId }),
+      body: JSON.stringify({ queueId, mentorId }),
     })
     setResolvingWalkinId(null)
     loadData()

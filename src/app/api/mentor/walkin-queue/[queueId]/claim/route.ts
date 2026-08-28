@@ -8,7 +8,7 @@ const serviceSupabase = createClient(
 )
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ queueId: string }> }
 ) {
   const supabase = await createServerSupabaseClient()
@@ -17,33 +17,13 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const isAdmin = user.app_metadata?.role === 'admin'
-  const isCCC = user.app_metadata?.role === 'ccc'
+  const { data: mentor } = await supabase
+    .from('mentor_profiles')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .single()
 
-  let mentor: { id: string } | null = null
-
-  if (isAdmin || isCCC) {
-    // Admin/CCC must say which mentor gets credit — there's no self to default to
-    const body = await request.json().catch(() => ({}))
-    if (!body.mentorId) {
-      return NextResponse.json({ error: 'Missing mentorId' }, { status: 400 })
-    }
-    const { data: targetMentor } = await serviceSupabase
-      .from('mentor_profiles')
-      .select('id')
-      .eq('id', body.mentorId)
-      .single()
-    if (!targetMentor) return NextResponse.json({ error: 'Mentor not found' }, { status: 404 })
-    mentor = targetMentor
-  } else {
-    const { data: ownMentor } = await supabase
-      .from('mentor_profiles')
-      .select('id')
-      .eq('auth_user_id', user.id)
-      .single()
-    if (!ownMentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
-    mentor = ownMentor
-  }
+  if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
   // Update walk-in queue status
   const { error } = await serviceSupabase
