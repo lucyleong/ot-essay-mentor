@@ -36,43 +36,81 @@ export async function POST(request: NextRequest) {
   }
 
   // Update permanent booking with mentor's slot
-  const { data: booking } = await supabase
+  const { data: booking, error: bookingLookupError } = await supabase
     .from('student_bookings')
     .select('id')
     .eq('queue_id', queueId)
-    .single()
+    .maybeSingle()
 
-  if (booking) {
-    let { data: slot } = await supabase
+  if (bookingLookupError) {
+    return NextResponse.json(
+      { error: `Marked helped, but failed to look up booking: ${bookingLookupError.message}` },
+      { status: 500 }
+    )
+  }
+
+  if (!booking) {
+    return NextResponse.json(
+      { error: `Marked helped, but no student_bookings row found for queue entry ${queueId}` },
+      { status: 404 }
+    )
+  }
+
+  let { data: slot, error: slotLookupError } = await supabase
+    .from('appointment_slots')
+    .select('id')
+    .eq('mentor_id', mentorId)
+    .eq('meeting_type', 'in_person')
+    .gte('start_time', new Date().toISOString().split('T')[0])
+    .maybeSingle()
+
+  if (slotLookupError) {
+    return NextResponse.json(
+      { error: `Marked helped, but failed to look up existing slot: ${slotLookupError.message}` },
+      { status: 500 }
+    )
+  }
+
+  if (!slot) {
+    const { data: newSlot, error: slotInsertError } = await supabase
       .from('appointment_slots')
-      .select('id')
-      .eq('mentor_id', mentorId)
-      .eq('meeting_type', 'in_person')
-      .gte('start_time', new Date().toISOString().split('T')[0])
-      .maybeSingle()
+      .insert({
+        mentor_id:    mentorId,
+        start_time:   new Date().toISOString(),
+        end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
+        meeting_type: 'in_person',
+        is_booked:    true,
+        is_cancelled: false,
+      })
+      .select()
+      .single()
 
-    if (!slot) {
-      const { data: newSlot } = await supabase
-        .from('appointment_slots')
-        .insert({
-          mentor_id:    mentorId,
-          start_time:   new Date().toISOString(),
-          end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
-          meeting_type: 'in_person',
-          is_booked:    true,
-          is_cancelled: false,
-        })
-        .select()
-        .single()
-      slot = newSlot
+    if (slotInsertError) {
+      return NextResponse.json(
+        { error: `Marked helped, but failed to create a slot: ${slotInsertError.message}` },
+        { status: 500 }
+      )
     }
+    slot = newSlot
+  }
 
-  if (slot) {
-      await supabase
-        .from('student_bookings')
-        .update({ slot_id: slot.id, cancelled_at: null })
-        .eq('id', booking.id)
-    }
+  if (!slot) {
+    return NextResponse.json(
+      { error: 'Marked helped, but no slot was available or created' },
+      { status: 500 }
+    )
+  }
+
+  const { error: linkError } = await supabase
+    .from('student_bookings')
+    .update({ slot_id: slot.id, cancelled_at: null })
+    .eq('id', booking.id)
+
+  if (linkError) {
+    return NextResponse.json(
+      { error: `Marked helped, but failed to link the slot to the booking: ${linkError.message}` },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({ ok: true })
