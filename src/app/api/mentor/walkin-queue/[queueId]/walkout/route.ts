@@ -29,12 +29,19 @@ export async function POST(
   if (!mentor && !isCCC && !isAdmin) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
 
   // Update walk-in queue status to walked_out
-  const { error } = await serviceSupabase
+  const { data: updatedRows, error } = await serviceSupabase
     .from('walkin_queue')
     .update({ status: 'walked_out' })
     .eq('id', queueId)
+    .select()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (!updatedRows || updatedRows.length === 0) {
+    return NextResponse.json(
+      { error: `No walk-in queue entry found with id ${queueId}` },
+      { status: 404 }
+    )
+  }
 
   // Mark the permanent booking as cancelled since they walked out
   const { data: booking } = await serviceSupabase

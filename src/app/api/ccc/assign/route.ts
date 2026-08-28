@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing queueId or mentorId' }, { status: 400 })
   }
 
-  const { error } = await supabase
+  const { data: updatedRows, error } = await supabase
     .from('walkin_queue')
     .update({
       status: 'helped',
@@ -25,8 +25,15 @@ export async function POST(request: NextRequest) {
       helped_at: new Date().toISOString(),
     })
     .eq('id', queueId)
+    .select()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (!updatedRows || updatedRows.length === 0) {
+    return NextResponse.json(
+      { error: `No walk-in queue entry found with id ${queueId}` },
+      { status: 404 }
+    )
+  }
 
   // Update permanent booking with mentor's slot
   const { data: booking } = await supabase
