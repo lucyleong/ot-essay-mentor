@@ -96,6 +96,7 @@ const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' |
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
 const [resolvingWalkinId, setResolvingWalkinId] = useState<string | null>(null)
+const [helpedByMentorId, setHelpedByMentorId] = useState<Record<string, string>>({})
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
@@ -342,6 +343,19 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
     setLoading(false)
+  }
+
+  async function markWalkinHelped(queueId: string) {
+    const mentorId = helpedByMentorId[queueId]
+    if (!mentorId) return
+    setResolvingWalkinId(queueId)
+    await fetch(`/api/mentor/walkin-queue/${queueId}/claim`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+      body: JSON.stringify({ mentorId }),
+    })
+    setResolvingWalkinId(null)
+    loadData()
   }
 
   async function handleSignOut() {
@@ -1335,13 +1349,30 @@ const exportHeaders = await getAuthHeader()
                     </p>
                     <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 12, padding: '.75rem 1rem' }}>
                       {unresolvedWalkins.map((entry: any) => (
-                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '0.5px solid #F0C8C8' }}>
-                          <div style={{ flex: 1 }}>
+                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 0', borderBottom: '0.5px solid #F0C8C8', flexWrap: 'wrap' }}>
+                          <div style={{ flex: 1, minWidth: 160 }}>
                             <p style={{ fontWeight: 500, fontSize: 13, margin: 0, color: '#2C2C2A' }}>{entry.student_name}</p>
                             <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
                               {entry.student_email} · Checked in {formatDateTimePST(entry.checked_in_at)}
                             </p>
                           </div>
+                          <select
+                            value={helpedByMentorId[entry.id] ?? ''}
+                            onChange={e => setHelpedByMentorId(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                            style={{ fontSize: 12, padding: '4px 8px', height: 30, width: 'auto' }}
+                          >
+                            <option value="">Helped by...</option>
+                            {mentors.filter(m => m.is_active).map(m => (
+                              <option key={m.id} value={m.id}>{m.full_name}</option>
+                            ))}
+                          </select>
+                          <button
+                            disabled={resolvingWalkinId === entry.id || !helpedByMentorId[entry.id]}
+                            onClick={() => markWalkinHelped(entry.id)}
+                            style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, background: '#582C83', color: '#ffffff', border: 'none' }}
+                          >
+                            {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as helped'}
+                          </button>
                           <button
                             disabled={resolvingWalkinId === entry.id}
                             onClick={async () => {
