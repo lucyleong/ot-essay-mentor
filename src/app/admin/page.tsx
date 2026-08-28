@@ -94,6 +94,8 @@ const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
+const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
+const [resolvingWalkinId, setResolvingWalkinId] = useState<string | null>(null)
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
@@ -323,6 +325,10 @@ const slotsRes  = await fetch('/api/admin/slots/available', { headers: authHeade
 const walkinRes = await fetch('/api/ccc/queue', { headers: authHeader })
     const walkinData = await walkinRes.json()
     setWalkinQueue(walkinData.queue ?? [])
+
+const unresolvedRes = await fetch('/api/admin/walkin-queue/unresolved', { headers: authHeader })
+    const unresolvedData = await unresolvedRes.json()
+    setUnresolvedWalkins(unresolvedData.queue ?? [])
 
 const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: authHeader })
     const scheduleSlotsData = await scheduleSlotsRes.json()
@@ -1318,6 +1324,45 @@ const exportHeaders = await getAuthHeader()
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Today's in-person walk-in students
                 </p>
+
+                {unresolvedWalkins.length > 0 && (
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px', color: '#791F1F' }}>
+                      Unresolved from previous days
+                    </h2>
+                    <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
+                      These students checked in but were never marked helped or walked out — likely no mentor was available that day.
+                    </p>
+                    <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 12, padding: '.75rem 1rem' }}>
+                      {unresolvedWalkins.map((entry: any) => (
+                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '0.5px solid #F0C8C8' }}>
+                          <div style={{ flex: 1 }}>
+                            <p style={{ fontWeight: 500, fontSize: 13, margin: 0, color: '#2C2C2A' }}>{entry.student_name}</p>
+                            <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
+                              {entry.student_email} · Checked in {formatDateTimePST(entry.checked_in_at)}
+                            </p>
+                          </div>
+                          <button
+                            disabled={resolvingWalkinId === entry.id}
+                            onClick={async () => {
+                              setResolvingWalkinId(entry.id)
+                              await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, {
+                                method: 'POST',
+                                headers: await getAuthHeader(),
+                              })
+                              setResolvingWalkinId(null)
+                              loadData()
+                            }}
+                            style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0 }}
+                          >
+                            {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as walked out'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {walkinQueue.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
                     <p style={{ color: '#888780', margin: 0 }}>No walk-in students today.</p>

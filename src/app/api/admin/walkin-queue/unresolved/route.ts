@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { requireAdminOrCCC } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,14 +8,13 @@ const supabase = createClient(
 )
 
 export async function GET(request: NextRequest) {
-  const auth = await requireAdminOrCCC(request)
+  const auth = await requireAdmin(request)
   if ('error' in auth) return auth.error
-  
+
+  // Start of today in Pacific time, DST-aware
   const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const startOfDayPST = new Date(nowPST)
   startOfDayPST.setHours(0, 0, 0, 0)
-  const endOfDayPST = new Date(nowPST)
-  endOfDayPST.setHours(23, 59, 59, 999)
 
   const dstStart = new Date(Date.UTC(nowPST.getFullYear(), 2, 1))
   dstStart.setUTCDate(1 + (7 - dstStart.getUTCDay()) % 7 + 7)
@@ -24,22 +23,16 @@ export async function GET(request: NextRequest) {
   const isPDT = new Date() >= dstStart && new Date() < dstEnd
   const offsetMs = isPDT ? 7 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000
 
-  const startUTC = new Date(startOfDayPST.getTime() + offsetMs).toISOString()
-  const endUTC = new Date(endOfDayPST.getTime() + offsetMs).toISOString()
+  const startOfTodayUTC = new Date(startOfDayPST.getTime() + offsetMs).toISOString()
 
-  const { data: queue } = await supabase
+  const { data: queue, error } = await supabase
     .from('walkin_queue')
-   .select(`
-      id, student_name, status, checked_in_at, helped_at, helped_by_mentor_id,
-      mentor_profiles ( full_name ),
-      walkin_queue_answers (
-        answer_text,
-        intake_questions ( question_text )
-      )
-    `)
-    .gte('checked_in_at', startUTC)
-    .lte('checked_in_at', endUTC)
+    .select('id, student_name, student_email, student_phone, checked_in_at')
+    .eq('status', 'waiting')
+    .lt('checked_in_at', startOfTodayUTC)
     .order('checked_in_at', { ascending: true })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ queue: queue ?? [] })
 }
