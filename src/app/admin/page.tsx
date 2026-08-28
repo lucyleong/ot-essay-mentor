@@ -349,12 +349,17 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
     const mentorId = helpedByMentorId[queueId]
     if (!mentorId) return
     setResolvingWalkinId(queueId)
-    await fetch('/api/ccc/assign', {
+    const res = await fetch('/api/ccc/assign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
       body: JSON.stringify({ queueId, mentorId }),
     })
     setResolvingWalkinId(null)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      alert(`Failed to mark as helped: ${data.error ?? res.statusText}`)
+      return
+    }
     loadData()
   }
 
@@ -1377,11 +1382,16 @@ const exportHeaders = await getAuthHeader()
                             disabled={resolvingWalkinId === entry.id}
                             onClick={async () => {
                               setResolvingWalkinId(entry.id)
-                              await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, {
+                              const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, {
                                 method: 'POST',
                                 headers: await getAuthHeader(),
                               })
                               setResolvingWalkinId(null)
+                              if (!res.ok) {
+                                const data = await res.json().catch(() => ({}))
+                                alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                                return
+                              }
                               loadData()
                             }}
                             style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0 }}
