@@ -80,13 +80,25 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     handleAnswerChange(questionId, updated)
   }
 
+  // Single source of truth for whether a question is actually shown to this
+  // student, so validation and submission can never drift from what's rendered.
+  function isQuestionVisible(q: Question) {
+    if (q.sort_order <= 4) return false
+    if (q.question_text === 'Which mentor did you work with?' && !showMentor) return false
+    if (q.question_text === 'I Want Help With') return true
+    if (q.question_text === 'I am also working with a private counselor hired by my family') return true
+    // Hide demographic questions for returning students
+    if (isReturning) return false
+    return true
+  }
+
  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (emailError) return
 
     // Validate required multiselect questions
-    const requiredMultiselect = questions.filter(q => 
-      q.sort_order > 4 && q.is_required && q.question_type === 'multiselect'
+    const requiredMultiselect = questions.filter(q =>
+      isQuestionVisible(q) && q.is_required && q.question_type === 'multiselect'
     )
     for (const q of requiredMultiselect) {
       const value = answers[q.id]
@@ -100,8 +112,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     setError('')
 
     const formattedAnswers = questions
-      .filter(q => q.sort_order > 4)
-       .filter(q => q.question_text !== 'Which mentor(s) have you worked with?' || showMentor)
+      .filter(isQuestionVisible)
       .flatMap(q => {
         const value = answers[q.id]
         if (Array.isArray(value)) {
@@ -312,15 +323,7 @@ placeholder="you@example.com"
         )}
 
       {questions
-          .filter(q => {
-            if (q.sort_order <= 4) return false
-if (q.question_text === 'Which mentor did you work with?' && !showMentor) return false            // Always show these questions even for returning students
-            if (q.question_text === 'I Want Help With') return true
-            if (q.question_text === 'I am also working with a private counselor hired by my family') return true
-            // Hide demographic questions for returning students
-            if (isReturning) return false
-            return true
-          })
+          .filter(isQuestionVisible)
           .sort((a, b) => a.sort_order - b.sort_order)
           .map(q => (
             <div key={q.id} style={{ marginBottom: 14 }}>
