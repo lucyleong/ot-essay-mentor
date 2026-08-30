@@ -39,10 +39,17 @@ export async function POST(request: NextRequest) {
   const oldSlot = (booking as any).appointment_slots
 
   // Cancel the old mentor's slot
-  await supabase
+  const { error: cancelError } = await supabase
     .from('appointment_slots')
     .update({ is_cancelled: true, is_booked: false })
     .eq('id', booking.slot_id)
+
+  if (cancelError) {
+    return NextResponse.json(
+      { error: `Failed to cancel the old slot: ${cancelError.message}` },
+      { status: 500 }
+    )
+  }
 
   // Get new mentor's name
   const { data: newMentor } = await supabase
@@ -67,7 +74,7 @@ export async function POST(request: NextRequest) {
   if (existingSlot) {
     // Use existing slot
     newSlotId = existingSlot.id
-    await supabase
+    const { error: reuseError } = await supabase
       .from('appointment_slots')
       .update({
         is_booked: true,
@@ -75,9 +82,16 @@ export async function POST(request: NextRequest) {
         google_calendar_event_id: oldSlot.google_calendar_event_id,
       })
       .eq('id', newSlotId)
+
+    if (reuseError) {
+      return NextResponse.json(
+        { error: `Failed to update the new mentor's slot: ${reuseError.message}` },
+        { status: 500 }
+      )
+    }
   } else {
     // Create a new slot for the new mentor inheriting the Meet link
-    const { data: newSlot } = await supabase
+    const { data: newSlot, error: createError } = await supabase
       .from('appointment_slots')
       .insert({
         mentor_id:                newMentorId,
@@ -93,15 +107,27 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (!newSlot) return NextResponse.json({ error: 'Failed to create new slot' }, { status: 500 })
+    if (createError || !newSlot) {
+      return NextResponse.json(
+        { error: `Failed to create new slot: ${createError?.message ?? 'unknown error'}` },
+        { status: 500 }
+      )
+    }
     newSlotId = newSlot.id
   }
 
   // Update the booking to point to the new slot
-  await supabase
+  const { error: linkError } = await supabase
     .from('student_bookings')
     .update({ slot_id: newSlotId })
     .eq('id', bookingId)
+
+  if (linkError) {
+    return NextResponse.json(
+      { error: `Slot was created but the booking failed to link to it: ${linkError.message}` },
+      { status: 500 }
+    )
+  }
 
   // Email the student about the mentor change
   try {
