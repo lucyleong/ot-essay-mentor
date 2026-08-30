@@ -322,7 +322,14 @@ async function getAuthHeader(): Promise<Record<string, string>> {
   }
 
   async function loadData() {
-const authHeader = await getAuthHeader()
+let authHeader = await getAuthHeader()
+    if (!authHeader.Authorization) {
+      // Right after a fresh login the auth session can take a moment to be
+      // ready — wait and grab it again rather than firing every request
+      // below with no auth token.
+      await new Promise(resolve => setTimeout(resolve, 800))
+      authHeader = await getAuthHeader()
+    }
    const mentorRes  = await fetch('/api/admin/mentors/list', { headers: authHeader })
        const mentorData = await mentorRes.json()
 
@@ -441,7 +448,15 @@ async function toggleMentorVirtual(mentor: Mentor) {
   async function loadReports() {
     setReportsLoading(true)
     const params = reportsMeetingType !== 'all' ? `?type=${reportsMeetingType}` : ''
-const res  = await fetch(`/api/admin/reports${params}`, { headers: await getAuthHeader() })
+
+    let res = await fetch(`/api/admin/reports${params}`, { headers: await getAuthHeader() })
+    if (!res.ok) {
+      // Right after a fresh login the auth session can take a moment to be
+      // ready — retry once rather than silently showing blank reports.
+      await new Promise(resolve => setTimeout(resolve, 800))
+      res = await fetch(`/api/admin/reports${params}`, { headers: await getAuthHeader() })
+    }
+
     const data = await res.json()
     setReports(data)
     setReportsLoading(false)
