@@ -218,26 +218,13 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
     }
   }, [activePanel, reports, chartsReady])
   useEffect(() => {
-    console.log('[demographics-debug] effect ran:', {
-      activePanel,
-      hasDemographics: !!reports?.demographics,
-      chartsReady,
-      chartGlobal: typeof (window as any).Chart,
-    })
     if (activePanel === 'reports' && reports?.demographics && chartsReady) {
-console.log('[demographics-debug] condition passed, drawing charts')
-console.log('[demographics-debug] all canvases in document:', Array.from(document.querySelectorAll('canvas')).map(c => c.id))
-console.log('[demographics-debug] reports panel container found:', !!document.querySelector('[data-panel="reports"]'))
-console.log('[demographics-debug] document.readyState:', document.readyState, 'body children:', document.body.children.length)
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
-        console.log('[demographics-debug] renderPie', canvasId, 'canvas found:', !!canvas, 'attemptsLeft:', attemptsLeft)
         if (!canvas) {
           if (attemptsLeft > 0) {
             setTimeout(() => renderPie(canvasId, entries, attemptsLeft - 1), 150)
-          } else {
-            console.error('[demographics-debug] renderPie', canvasId, 'gave up, canvas never found')
           }
           return
         }
@@ -267,9 +254,8 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
               },
             },
           })
-          console.log('[demographics-debug] renderPie', canvasId, 'chart constructed OK')
         } catch (err) {
-          console.error('[demographics-debug] renderPie', canvasId, 'threw:', err)
+          console.error('renderPie', canvasId, 'failed:', err)
         }
       }
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
