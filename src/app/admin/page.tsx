@@ -226,6 +226,9 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
     })
     if (activePanel === 'reports' && reports?.demographics && chartsReady) {
 console.log('[demographics-debug] condition passed, drawing charts')
+console.log('[demographics-debug] all canvases in document:', Array.from(document.querySelectorAll('canvas')).map(c => c.id))
+console.log('[demographics-debug] reports panel container found:', !!document.querySelector('[data-panel="reports"]'))
+console.log('[demographics-debug] document.readyState:', document.readyState, 'body children:', document.body.children.length)
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][], attemptsLeft = 5) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
@@ -1143,7 +1146,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
 
 {/* REPORTS */}
             {activePanel === 'reports' && (
-              <div>
+              <div data-panel="reports">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <div>
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
