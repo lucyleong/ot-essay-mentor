@@ -22,7 +22,7 @@ export async function GET(
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
  const isAdmin = user.app_metadata?.role === 'admin'
 

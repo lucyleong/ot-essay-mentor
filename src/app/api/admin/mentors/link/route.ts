@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     .eq('email', user.email)
     .is('auth_user_id', null)
     .neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
-    .single()
+    .maybeSingle()
 
   if (!profile) return NextResponse.json({ linked: false })
 
