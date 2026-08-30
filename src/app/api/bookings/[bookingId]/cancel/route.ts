@@ -34,10 +34,17 @@ export async function POST(
   }
 
   // Cancel the booking
-  await supabase
+  const { error: cancelBookingError } = await supabase
     .from('student_bookings')
     .update({ cancelled_at: new Date().toISOString() })
     .eq('id', bookingId)
+
+  if (cancelBookingError) {
+    return NextResponse.json(
+      { error: `Failed to cancel booking: ${cancelBookingError.message}` },
+      { status: 500 }
+    )
+  }
 
  // Free up the slot only if before 10pm PST for next-day appointments
   const slotStart = new Date((booking as any).appointment_slots?.start_time)

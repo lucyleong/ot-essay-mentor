@@ -122,10 +122,14 @@ if (bookingError) {
     )
   }
   // Mark the slot as booked
-  await supabase
+  const { error: markBookedError } = await supabase
     .from('appointment_slots')
     .update({ is_booked: true })
     .eq('id', body.slotId)
+
+  if (markBookedError) {
+    console.error('Failed to mark slot as booked:', markBookedError)
+  }
 
 // Check for duplicate phone number across upcoming bookings and alert if found
   if (body.studentPhone) {
