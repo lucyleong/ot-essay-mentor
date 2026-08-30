@@ -34,7 +34,7 @@ export default function LoginPage() {
       .from('mentor_profiles')
       .select('id')
       .eq('auth_user_id', data.user.id)
-      .single()
+      .maybeSingle()
 
    // If no profile found by auth_user_id, try linking by email via API
     if (!mentor) {
