@@ -51,6 +51,22 @@ function shortenLabel(label: string) {
 
 export default function AdminPage() {
 const [activePanel, setActivePanel] = useState('reports')
+const [chartsReady, setChartsReady] = useState(false)
+
+  // Chart.js loads from an external <script> tag with no React signal when
+  // it's ready — poll for it so chart effects don't silently no-op if the
+  // reports data arrives before the script finishes loading.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if ((window as any).Chart) { setChartsReady(true); return }
+    const interval = setInterval(() => {
+      if ((window as any).Chart) {
+        setChartsReady(true)
+        clearInterval(interval)
+      }
+    }, 200)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -152,7 +168,7 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
   }, [activePanel])
 
   useEffect(() => {
-    if (activePanel === 'reports' && reports?.surveys?.mentorIssues?.length > 0 && typeof window !== 'undefined' && (window as any).Chart) {
+    if (activePanel === 'reports' && reports?.surveys?.mentorIssues?.length > 0 && chartsReady) {
       const canvas = document.getElementById('mentor-issues-chart') as HTMLCanvasElement
       if (!canvas) return
 
@@ -193,9 +209,9 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
         },
       })
     }
-  }, [activePanel, reports])
+  }, [activePanel, reports, chartsReady])
   useEffect(() => {
-    if (activePanel === 'reports' && reports?.demographics && typeof window !== 'undefined' && (window as any).Chart) {
+    if (activePanel === 'reports' && reports?.demographics && chartsReady) {
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][]) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
@@ -276,7 +292,7 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
       renderHorizontalBar('bar-ethnicity', reports.demographics.ethnicity)
       renderHorizontalBar('bar-help-with', reports.demographics.helpWith)
     }
-  }, [activePanel, reports])
+  }, [activePanel, reports, chartsReady])
 
  function toLA(dateStr: string, timeStr: string): Date {
   // Calculate DST boundaries for the year
@@ -1084,7 +1100,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <div>
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
-                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics - if not loading, refresh by pressing Command + R</p>
+                    <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
                   </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     {reports && (
