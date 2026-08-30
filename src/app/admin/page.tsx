@@ -168,10 +168,10 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
   }, [activePanel])
 
   useEffect(() => {
-    function drawMentorIssuesChart(attemptsLeft = 5) {
+    function drawMentorIssuesChart(attemptsLeft = 40) {
       const canvas = document.getElementById('mentor-issues-chart') as HTMLCanvasElement
       if (!canvas) {
-        if (attemptsLeft > 0) requestAnimationFrame(() => drawMentorIssuesChart(attemptsLeft - 1))
+        if (attemptsLeft > 0) setTimeout(() => drawMentorIssuesChart(attemptsLeft - 1), 150)
         return
       }
 
@@ -230,12 +230,12 @@ console.log('[demographics-debug] all canvases in document:', Array.from(documen
 console.log('[demographics-debug] reports panel container found:', !!document.querySelector('[data-panel="reports"]'))
 console.log('[demographics-debug] document.readyState:', document.readyState, 'body children:', document.body.children.length)
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
-    function renderPie(canvasId: string, entries: [string, number][], attemptsLeft = 5) {
+    function renderPie(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         console.log('[demographics-debug] renderPie', canvasId, 'canvas found:', !!canvas, 'attemptsLeft:', attemptsLeft)
         if (!canvas) {
           if (attemptsLeft > 0) {
-            requestAnimationFrame(() => renderPie(canvasId, entries, attemptsLeft - 1))
+            setTimeout(() => renderPie(canvasId, entries, attemptsLeft - 1), 150)
           } else {
             console.error('[demographics-debug] renderPie', canvasId, 'gave up, canvas never found')
           }
@@ -280,11 +280,11 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
       renderPie('pie-immigrants', reports.demographics.immigrants)
       renderPie('pie-teachers', reports.demographics.teachers)
 
-      function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 5) {
+      function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         if (!canvas) {
           if (attemptsLeft > 0) {
-            requestAnimationFrame(() => renderHorizontalBar(canvasId, entries, attemptsLeft - 1))
+            setTimeout(() => renderHorizontalBar(canvasId, entries, attemptsLeft - 1), 150)
           }
           return
         }
