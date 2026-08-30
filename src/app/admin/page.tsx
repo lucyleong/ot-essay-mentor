@@ -211,36 +211,49 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
     }
   }, [activePanel, reports, chartsReady])
   useEffect(() => {
+    console.log('[demographics-debug] effect ran:', {
+      activePanel,
+      hasDemographics: !!reports?.demographics,
+      chartsReady,
+      chartGlobal: typeof (window as any).Chart,
+    })
     if (activePanel === 'reports' && reports?.demographics && chartsReady) {
+console.log('[demographics-debug] condition passed, drawing charts')
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
     function renderPie(canvasId: string, entries: [string, number][]) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
+        console.log('[demographics-debug] renderPie', canvasId, 'canvas found:', !!canvas, 'entries:', entries)
         if (!canvas) return
         const existing = (window as any).Chart.getChart(canvas)
         if (existing) existing.destroy()
 
-        new (window as any).Chart(canvas, {
-          type: 'pie',
-          data: {
-            labels: entries.map(([label, count]) => `${label} (${count})`),
-            datasets: [{
-              data: entries.map(([, count]) => count),
-              backgroundColor: entries.map((_, i) => pieColors[i % pieColors.length]),
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
-              datalabels: {
-                color: '#ffffff',
-                font: { weight: 500, size: 12 },
-                formatter: (value: number) => value > 0 ? value : '',
+        try {
+          new (window as any).Chart(canvas, {
+            type: 'pie',
+            data: {
+              labels: entries.map(([label, count]) => `${label} (${count})`),
+              datasets: [{
+                data: entries.map(([, count]) => count),
+                backgroundColor: entries.map((_, i) => pieColors[i % pieColors.length]),
+              }],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
+                datalabels: {
+                  color: '#ffffff',
+                  font: { weight: 500, size: 12 },
+                  formatter: (value: number) => value > 0 ? value : '',
+                },
               },
             },
-          },
-        })
+          })
+          console.log('[demographics-debug] renderPie', canvasId, 'chart constructed OK')
+        } catch (err) {
+          console.error('[demographics-debug] renderPie', canvasId, 'threw:', err)
+        }
       }
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
       renderPie('pie-mentor-activity', reports.mentorActivity)
