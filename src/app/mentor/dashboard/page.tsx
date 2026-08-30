@@ -125,7 +125,7 @@ const timeOptions = generateTimeOptions()
       .from('mentor_profiles')
       .select('id, full_name, email, is_virtual_available, bio')
       .eq('auth_user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (!mentorData) { router.push('/login'); return }
     setMentor(mentorData)
@@ -135,7 +135,7 @@ const { data: endDateSetting } = await supabase
       .from('program_settings')
       .select('value')
       .eq('key', 'program_end_date')
-      .single()
+      .maybeSingle()
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
     const bookingsRes = await fetch('/api/mentor/bookings')

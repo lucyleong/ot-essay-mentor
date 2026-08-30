@@ -383,7 +383,7 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
       .from('program_settings')
       .select('value')
       .eq('key', 'program_end_date')
-      .single()
+      .maybeSingle()
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
     setLoading(false)

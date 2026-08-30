@@ -77,7 +77,7 @@ const email = decodeURIComponent(emailParam)
       .from('mentor_profiles')
       .select('id')
       .eq('auth_user_id', user.id)
-      .single()
+      .maybeSingle()
 
     // Check if user is an admin
     const { data: { user: fullUser } } = await supabase.auth.getUser()

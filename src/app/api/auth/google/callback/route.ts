@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     .from('program_settings')
     .select('value')
     .eq('key', 'google_oauth_state')
-    .single()
+    .maybeSingle()
 
   if (!state || !storedState || state !== storedState.value) {
     return NextResponse.redirect(

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 

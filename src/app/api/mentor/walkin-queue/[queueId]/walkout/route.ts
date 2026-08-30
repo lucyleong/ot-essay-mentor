@@ -24,7 +24,7 @@ export async function POST(
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!mentor && !isCCC && !isAdmin) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
 
@@ -48,7 +48,7 @@ export async function POST(
     .from('student_bookings')
     .select('id')
     .eq('queue_id', queueId)
-    .single()
+    .maybeSingle()
 
   if (booking) {
     await serviceSupabase

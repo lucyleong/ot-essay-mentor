@@ -11,7 +11,7 @@ export async function GET() {
     .from('mentor_profiles')
     .select('id, is_in_person_available')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 

@@ -19,7 +19,7 @@ export async function POST(
     .select('id')
     .eq('booking_id', bookingId)
     .eq('respondent_type', 'mentor')
-    .single()
+    .maybeSingle()
 
   if (existing) return NextResponse.json({ ok: true }) // Already submitted, silently succeed
 

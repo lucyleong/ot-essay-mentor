@@ -14,13 +14,13 @@ export async function GET(request: NextRequest) {
     .from('program_settings')
     .select('value')
     .eq('key', 'google_auth_token')
-    .single()
+    .maybeSingle()
 
   const { data: storedExpiry } = await supabase
     .from('program_settings')
     .select('value')
     .eq('key', 'google_auth_token_expiry')
-    .single()
+    .maybeSingle()
 
   const isExpired = storedExpiry ? new Date(storedExpiry.value) < new Date() : true
 

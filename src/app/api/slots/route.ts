@@ -34,7 +34,7 @@ export async function GET() {
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     .from('mentor_profiles')
     .select('id')
     .eq('auth_user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!mentor) return NextResponse.json({ error: 'Not a mentor' }, { status: 403 })
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     .from('program_settings')
     .select('value')
     .eq('key', 'program_end_date')
-    .single()
+    .maybeSingle()
 
   const programEndDate = endDateSetting?.value
 
