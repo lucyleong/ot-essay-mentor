@@ -185,7 +185,9 @@ export async function GET(request: NextRequest) {
     .eq('respondent_type', 'mentor')
 
   const noShows   = (noShowData ?? []).filter(r => r.additional_answers?.no_show === 'Yes').length
-  const meetIssues = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes').length
+  const meetIssues = (noShowData ?? []).filter(r => (r.additional_answers?.meet_issue ?? '').startsWith('Yes')).length
+  const meetIssuesDidNotMeet = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - did not meet').length
+  const meetIssuesStillMet   = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - still met').length
 
   // Intake answers joined with student email for deduplication
  let intakeQuery = supabase
@@ -300,6 +302,8 @@ let mentorActivityQuery = supabase
       inPerson:  inPersonBookings ?? 0,
       noShows,
       meetIssues,
+      meetIssuesDidNotMeet,
+      meetIssuesStillMet,
       totalSlots:    totalSlots ?? 0,
       unbookedSlots: unbookedSlots ?? 0,
     },

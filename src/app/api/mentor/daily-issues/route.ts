@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     studentName: b.student_name,
     startTime: b.appointment_slots.start_time,
     noShow: surveyMap.get(b.id)?.no_show === 'Yes',
-    meetIssue: surveyMap.get(b.id)?.meet_issue === 'Yes',
+    meetIssue: surveyMap.get(b.id)?.meet_issue ?? 'No',
   }))
 
   return NextResponse.json(result)
@@ -85,6 +85,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 })
   }
 
+  const validMeetIssueValues = ['No', 'Yes - still met', 'Yes - did not meet']
+  if (meetIssue !== undefined && !validMeetIssueValues.includes(meetIssue)) {
+    return NextResponse.json({ error: 'Invalid meetIssue value' }, { status: 400 })
+  }
+
   // Check if a survey response already exists for this booking
   const { data: existing } = await supabase
     .from('survey_responses')
@@ -95,7 +100,7 @@ export async function POST(request: NextRequest) {
 
   const additionalAnswers = {
     no_show:    noShow ? 'Yes' : 'No',
-    meet_issue: meetIssue ? 'Yes' : 'No',
+    meet_issue: meetIssue ?? 'No',
   }
 
  if (existing) {

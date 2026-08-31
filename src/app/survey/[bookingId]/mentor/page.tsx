@@ -103,6 +103,30 @@ export default function MentorSurveyPage({
     )
   }
 
+  function MeetIssueButtons({ value, onChange }: { value: string | null; onChange: (v: string) => void }) {
+    const options = ['No', 'Yes - still met', 'Yes - did not meet']
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+        {options.map(opt => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            style={{
+              width: '100%', padding: '10px 14px', borderRadius: 8, fontSize: 14, textAlign: 'left',
+              fontWeight: value === opt ? 600 : 400,
+              background: value === opt ? '#534AB7' : '#ffffff',
+              color:      value === opt ? '#ffffff' : '#2C2C2A',
+              border:     `0.5px solid ${value === opt ? '#534AB7' : '#D3D1C7'}`,
+              cursor: 'pointer',
+            }}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <main style={{ maxWidth: 500, margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -133,7 +157,7 @@ export default function MentorSurveyPage({
         <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
           Did the student have issues connecting on Google Meet?
         </p>
-        <YesNoButtons value={meetIssue} onChange={setMeetIssue} />
+        <MeetIssueButtons value={meetIssue} onChange={setMeetIssue} />
       </div>
 
       <button

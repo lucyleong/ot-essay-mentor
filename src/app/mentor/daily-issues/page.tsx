@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { formatTimePST } from '@/lib/utils'
 
+type MeetIssue = 'No' | 'Yes - still met' | 'Yes - did not meet'
+
 type DayBooking = {
   bookingId: string
   studentName: string
   startTime: string
   noShow: boolean
-  meetIssue: boolean
+  meetIssue: MeetIssue
 }
 
 export default function DailyIssuesPage() {
@@ -27,17 +29,15 @@ export default function DailyIssuesPage() {
       })
   }, [])
 
- async function toggle(bookingId: string, field: 'noShow' | 'meetIssue') {
+ async function toggleNoShow(bookingId: string) {
     const currentBooking = bookings.find(b => b.bookingId === bookingId)
     if (!currentBooking) return
 
     setSaving(bookingId)
-
-    const newNoShow    = field === 'noShow'    ? !currentBooking.noShow    : currentBooking.noShow
-    const newMeetIssue = field === 'meetIssue' ? !currentBooking.meetIssue : currentBooking.meetIssue
+    const newNoShow = !currentBooking.noShow
 
     setBookings(prev => prev.map(b =>
-      b.bookingId === bookingId ? { ...b, noShow: newNoShow, meetIssue: newMeetIssue } : b
+      b.bookingId === bookingId ? { ...b, noShow: newNoShow } : b
     ))
 
     await fetch('/api/mentor/daily-issues', {
@@ -46,7 +46,30 @@ export default function DailyIssuesPage() {
       body: JSON.stringify({
         bookingId,
         noShow: newNoShow,
-        meetIssue: newMeetIssue,
+        meetIssue: currentBooking.meetIssue,
+      }),
+    })
+
+    setSaving(null)
+  }
+
+  async function setMeetIssue(bookingId: string, meetIssue: MeetIssue) {
+    const currentBooking = bookings.find(b => b.bookingId === bookingId)
+    if (!currentBooking) return
+
+    setSaving(bookingId)
+
+    setBookings(prev => prev.map(b =>
+      b.bookingId === bookingId ? { ...b, meetIssue } : b
+    ))
+
+    await fetch('/api/mentor/daily-issues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookingId,
+        noShow: currentBooking.noShow,
+        meetIssue,
       }),
     })
 
@@ -80,9 +103,9 @@ export default function DailyIssuesPage() {
             <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
 {formatTimePST(b.startTime)}
             </p>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
               <button
-                onClick={() => toggle(b.bookingId, 'noShow')}
+                onClick={() => toggleNoShow(b.bookingId)}
 disabled={saving !== null}
                 style={{
                   fontSize: 12, padding: '6px 14px', borderRadius: 20,
@@ -93,18 +116,21 @@ disabled={saving !== null}
               >
                 {b.noShow ? '✓ No-show' : 'No-show'}
               </button>
-              <button
-                onClick={() => toggle(b.bookingId, 'meetIssue')}
-disabled={saving !== null}
+              <select
+                value={b.meetIssue}
+                onChange={e => setMeetIssue(b.bookingId, e.target.value as MeetIssue)}
+                disabled={saving !== null}
                 style={{
-                  fontSize: 12, padding: '6px 14px', borderRadius: 20,
-                  background: b.meetIssue ? '#FAEEDA' : '#ffffff',
-                  border: `0.5px solid ${b.meetIssue ? '#C9851A' : '#D3D1C7'}`,
-                  color: b.meetIssue ? '#854F0B' : '#5F5E5A',
+                  fontSize: 12, padding: '6px 10px', borderRadius: 20, height: 'auto',
+                  background: b.meetIssue === 'No' ? '#ffffff' : '#FAEEDA',
+                  border: `0.5px solid ${b.meetIssue === 'No' ? '#D3D1C7' : '#C9851A'}`,
+                  color: b.meetIssue === 'No' ? '#5F5E5A' : '#854F0B',
                 }}
               >
-                {b.meetIssue ? '✓ Connection issue' : 'Connection issue'}
-              </button>
+                <option value="No">No connection issue</option>
+                <option value="Yes - still met">Connection issue - still met</option>
+                <option value="Yes - did not meet">Connection issue - did not meet</option>
+              </select>
             </div>
           </div>
         ))
