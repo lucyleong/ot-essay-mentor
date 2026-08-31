@@ -114,7 +114,7 @@ const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
 const [resolvingWalkinId, setResolvingWalkinId] = useState<string | null>(null)
 const [helpedByMentorId, setHelpedByMentorId] = useState<Record<string, string>>({})
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
-const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available'>('all')
+const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available' | 'issues'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
 const [programEndDate, setProgramEndDate] = useState('')
 const [settingsOpen, setSettingsOpen] = useState(false)
@@ -853,6 +853,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
                       <option value="available">Open slots</option>
+                      <option value="issues">No shows / connection issues</option>
                     </select>
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -890,6 +891,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     if (bookingStatus === 'upcoming' && (booking.cancelled_at || isPast)) return false
                     if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast)) return false
                     if (bookingStatus === 'cancelled' && !booking.cancelled_at) return false
+                    if (bookingStatus === 'issues' && !booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes' || s.additional_answers?.meet_issue === 'Yes')) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                return true
                   }).sort((a, b) => {
