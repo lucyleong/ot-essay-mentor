@@ -1186,8 +1186,8 @@ const exportHeaders = await getAuthHeader()
                         { label: 'In person', value: reports.bookings.inPerson },
                         { label: 'Canceled', value: reports.bookings.cancelled },
                         { label: 'No shows',  value: reports.bookings.noShows },
-                        { label: 'Meet issues', value: reports.bookings.meetIssues },
-                        { label: 'Meet issue - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
+                        { label: 'Connection issues - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
+                        { label: 'Connection issues - met', value: reports.bookings.meetIssuesStillMet },
                         { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
