@@ -24,7 +24,6 @@ export async function GET(request: NextRequest) {
       )
     `)
     .order('booked_at', { ascending: false })
-    .limit(100)
 
   return NextResponse.json(bookings ?? [])
 }
