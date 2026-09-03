@@ -1335,7 +1335,7 @@ const exportHeaders = await getAuthHeader()
                       
                  {/* Teacher distribution */}
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English / Advisory teacher</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English teacher</p>
                         <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 220 }}>
                           <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
                         </div>
