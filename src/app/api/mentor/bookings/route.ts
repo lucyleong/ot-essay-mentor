@@ -39,6 +39,21 @@ export async function GET() {
   const leadMentorIds = Object.keys(leadMentorNames)
   const mentorIds = [mentor.id, ...leadMentorIds]
 
+  // Find any shadow mentors watching THIS mentor's appointments, so the
+  // dashboard can let them know their schedule is visible to someone else
+  const { data: shadowedByLinks, error: shadowedByError } = await serviceSupabase
+    .from('mentor_shadow_links')
+    .select('mentor_profiles!mentor_shadow_links_shadow_mentor_id_fkey ( full_name )')
+    .eq('lead_mentor_id', mentor.id)
+
+  if (shadowedByError) {
+    return NextResponse.json({ error: shadowedByError.message }, { status: 500 })
+  }
+
+  const shadowedBy = (shadowedByLinks ?? [])
+    .map((link: any) => link.mentor_profiles?.full_name)
+    .filter(Boolean)
+
   // Get all slots for this mentor and any mentors they shadow
   const { data: slots, error: slotsError } = await serviceSupabase
     .from('appointment_slots')
@@ -83,5 +98,5 @@ export async function GET() {
     }
   })
 
-  return NextResponse.json({ mentor, bookings: bookingsWithShadowInfo })
+  return NextResponse.json({ mentor, bookings: bookingsWithShadowInfo, shadowedBy })
 }

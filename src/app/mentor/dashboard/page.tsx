@@ -57,6 +57,7 @@ const [addingSlot,     setAddingSlot]     = useState(false)
 const [slotSuccess,    setSlotSuccess]    = useState('')
 const [slotError,      setSlotError]      = useState('')
 const [allBookings, setAllBookings] = useState<any[]>([])
+const [shadowedBy, setShadowedBy] = useState<string[]>([])
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [isInPersonAvailable, setIsInPersonAvailable] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
@@ -149,6 +150,7 @@ const { data: endDateSetting } = await supabase
     })
     setBookings(filtered)
     setAllBookings(allBookings)
+    setShadowedBy(Array.isArray(bookingsData.shadowedBy) ? bookingsData.shadowedBy : [])
     // Load mentor's slots
    const slotsRes = await fetch('/api/slots')
     const slotsData = await slotsRes.json()
@@ -378,6 +380,15 @@ const todayBookings    = allBookings
           <p style={{ color: '#888780' }}>Loading...</p>
         ) : (
           <>
+            {shadowedBy.length > 0 && (
+              <div style={{
+                background: '#FAEEDA', border: '0.5px solid #E8C77D', borderRadius: 10,
+                padding: '10px 16px', marginBottom: 16, fontSize: 13, color: '#854F0B',
+              }}>
+                {shadowedBy.join(', ')} {shadowedBy.length === 1 ? 'is' : 'are'} shadowing your appointments — they can see your schedule and student profiles.
+              </div>
+            )}
+
             {/* TODAY */}
             {activePanel === 'today' && (
               <div>
