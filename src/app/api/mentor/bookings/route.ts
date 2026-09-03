@@ -1,5 +1,11 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+
+const serviceSupabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET() {
   const supabase = await createServerSupabaseClient()
@@ -15,11 +21,33 @@ export async function GET() {
 
   if (!mentor) return NextResponse.json({ error: 'No mentor profile' }, { status: 404 })
 
-  // Get all slots for this mentor
-  const { data: slots } = await supabase
+  // Find any lead mentors this mentor shadows, so their appointments can be
+  // included below (read-only — the dashboard hides mutation controls for them)
+  const { data: shadowLinks, error: shadowError } = await serviceSupabase
+    .from('mentor_shadow_links')
+    .select('lead_mentor_id, mentor_profiles!mentor_shadow_links_lead_mentor_id_fkey ( full_name )')
+    .eq('shadow_mentor_id', mentor.id)
+
+  if (shadowError) {
+    return NextResponse.json({ error: shadowError.message }, { status: 500 })
+  }
+
+  const leadMentorNames: Record<string, string> = {}
+  ;(shadowLinks ?? []).forEach((link: any) => {
+    leadMentorNames[link.lead_mentor_id] = link.mentor_profiles?.full_name ?? 'their lead mentor'
+  })
+  const leadMentorIds = Object.keys(leadMentorNames)
+  const mentorIds = [mentor.id, ...leadMentorIds]
+
+  // Get all slots for this mentor and any mentors they shadow
+  const { data: slots, error: slotsError } = await serviceSupabase
     .from('appointment_slots')
-    .select('id')
-    .eq('mentor_id', mentor.id)
+    .select('id, mentor_id')
+    .in('mentor_id', mentorIds)
+
+  if (slotsError) {
+    return NextResponse.json({ error: slotsError.message }, { status: 500 })
+  }
 
   const slotIds = (slots ?? []).map(s => s.id)
 
@@ -27,7 +55,7 @@ export async function GET() {
     return NextResponse.json({ mentor, bookings: [] })
   }
 
-  const { data: bookings } = await supabase
+  const { data: bookings, error: bookingsError } = await serviceSupabase
     .from('student_bookings')
     .select(`
     id, student_name, student_email, student_phone,
@@ -41,5 +69,19 @@ export async function GET() {
     .in('slot_id', slotIds)
     .order('booked_at', { ascending: false })
 
-  return NextResponse.json({ mentor, bookings: bookings ?? [] })
+  if (bookingsError) {
+    return NextResponse.json({ error: bookingsError.message }, { status: 500 })
+  }
+
+  const bookingsWithShadowInfo = (bookings ?? []).map((b: any) => {
+    const slotMentorId = b.appointment_slots?.mentor_id
+    const isShadow = !!slotMentorId && slotMentorId !== mentor.id
+    return {
+      ...b,
+      isShadow,
+      leadMentorName: isShadow ? leadMentorNames[slotMentorId] ?? null : null,
+    }
+  })
+
+  return NextResponse.json({ mentor, bookings: bookingsWithShadowInfo })
 }

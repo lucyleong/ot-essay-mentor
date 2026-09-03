@@ -25,6 +25,8 @@ type Booking = {
     google_meet_link: string | null
   }
   student_essays: { id: string }[]
+  isShadow?: boolean
+  leadMentorName?: string | null
 }
 
 type MentorProfile = {
@@ -404,6 +406,11 @@ const todayBookings    = allBookings
                           <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
                             {booking.student_name}
                           </p>
+                          {booking.isShadow && (
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B', flexShrink: 0 }}>
+                              Shadowing {booking.leadMentorName}
+                            </span>
+                          )}
                           {booking.student_essays.length > 0 && (
                             <a
                               href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
@@ -446,7 +453,7 @@ const todayBookings    = allBookings
                          View profile
                         </button>
 
-                        {isFuture(parseISO(booking.appointment_slots.start_time)) && (
+                        {!booking.isShadow && isFuture(parseISO(booking.appointment_slots.start_time)) && (
                           cancellingId === booking.id ? (
                             <>
                               <button
@@ -476,6 +483,7 @@ const todayBookings    = allBookings
                           )
                         )}
 
+                    {!booking.isShadow && (
                     <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
                          {(booking as any).meeting_type !== 'in_person' && <button
                             onClick={() => toggleIssue(booking.id, 'noShow')}
@@ -502,6 +510,7 @@ const todayBookings    = allBookings
                             {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                           </button>}
                         </div>
+                        )}
                       </div>
                     </div>
                   ))
@@ -531,15 +540,23 @@ const todayBookings    = allBookings
                       gap: 10,
                     }}>
                       <div>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-                          {booking.student_name}
-                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
+                            {booking.student_name}
+                          </p>
+                          {booking.isShadow && (
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B', flexShrink: 0 }}>
+                              Shadowing {booking.leadMentorName}
+                            </span>
+                          )}
+                        </div>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {format(parseISO(booking.appointment_slots.start_time), 'EEE MMM d · h:mm a')}
                         </p>
                       </div>
+                      {!booking.isShadow && (
                       <div style={{ display: 'flex', gap: 8 }}>
-                        
+
                       {(booking as any).meeting_type !== 'in_person' && <button
                           onClick={() => toggleIssue(booking.id, 'noShow')}
 
@@ -566,6 +583,7 @@ const todayBookings    = allBookings
                          {bookingIssues[booking.id]?.meetIssue ? '✓ Connection issue' : 'Connection issue'}
                         </button>}
                       </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -599,6 +617,11 @@ const todayBookings    = allBookings
                             <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>
                               {booking.student_name}
                             </p>
+                            {booking.isShadow && (
+                              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B', flexShrink: 0 }}>
+                                Shadowing {booking.leadMentorName}
+                              </span>
+                            )}
                             {booking.student_essays.length > 0 && (
                               <a
                                 href={`/mentor/students/${encodeURIComponent(booking.student_email)}`}
@@ -625,7 +648,8 @@ const todayBookings    = allBookings
                         Profile
                       </button>
 
-                      {cancellingId === booking.id ? (
+                      {!booking.isShadow && (
+                      cancellingId === booking.id ? (
                         <>
                           <button
                             onClick={async () => {
@@ -651,7 +675,7 @@ const todayBookings    = allBookings
                         >
                           Cancel
                         </button>
-                    )}
+                    ))}
                       </div>
                     </div>
                   ))

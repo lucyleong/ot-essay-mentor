@@ -120,6 +120,7 @@ const [programEndDate, setProgramEndDate] = useState('')
 const [settingsOpen, setSettingsOpen] = useState(false)
 const [cancelMentorId, setCancelMentorId] = useState('')
 const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
+const [shadowLinks, setShadowLinks] = useState<any[]>([])
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -359,6 +360,11 @@ let authHeader = await getAuthHeader()
       return a.is_active ? -1 : 1
     })
     setMentors(sortedMentors)
+
+const shadowRes  = await fetch('/api/admin/mentors/shadow', { headers: authHeader })
+    const shadowData = await shadowRes.json()
+    setShadowLinks(Array.isArray(shadowData) ? shadowData : [])
+
 const bookingRes  = await fetch('/api/admin/bookings', { headers: authHeader })
     const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
@@ -439,6 +445,39 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
     setAddSuccess(`${newName} added successfully!`)
     setNewName('')
     setNewEmail('')
+    loadData()
+  }
+
+  async function assignShadow(mentorId: string) {
+    if (!shadowMentorId) return
+    setSavingShadow(true)
+    const res = await fetch('/api/admin/mentors/shadow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+      body: JSON.stringify({ shadowMentorId: mentorId, leadMentorId: shadowMentorId }),
+    })
+    setSavingShadow(false)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      alert(`Failed to save shadow assignment: ${data.error ?? res.statusText}`)
+      return
+    }
+    setShadowingId(null)
+    setShadowMentorId('')
+    loadData()
+  }
+
+  async function removeShadowLink(linkId: string) {
+    const res = await fetch('/api/admin/mentors/shadow', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+      body: JSON.stringify({ id: linkId }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      alert(`Failed to remove shadow assignment: ${data.error ?? res.statusText}`)
+      return
+    }
     loadData()
   }
 
@@ -740,6 +779,56 @@ fontSize: item.indent ? 13 : 15,
                         >
                           Deactivate
                         </button>
+                      </div>
+                      {/* Shadow mentor assignment */}
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
+                        {shadowLinks.filter(l => l.shadow_mentor_id === mentor.id).map(link => (
+                          <span key={link.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                              Shadowing {link.lead_mentor?.full_name}
+                            </span>
+                            <button
+                              onClick={() => removeShadowLink(link.id)}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Remove
+                            </button>
+                          </span>
+                        ))}
+                        {shadowingId === mentor.id ? (
+                          <>
+                            <select
+                              value={shadowMentorId}
+                              onChange={e => setShadowMentorId(e.target.value)}
+                              style={{ fontSize: 12, padding: '4px 8px' }}
+                            >
+                              <option value="">Select lead mentor…</option>
+                              {mentors.filter(m => m.is_active && m.id !== mentor.id).map(m => (
+                                <option key={m.id} value={m.id}>{m.full_name}</option>
+                              ))}
+                            </select>
+                            <button
+                              onClick={() => assignShadow(mentor.id)}
+                              disabled={!shadowMentorId || savingShadow}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              {savingShadow ? 'Saving...' : 'Save'}
+                            </button>
+                            <button
+                              onClick={() => { setShadowingId(null); setShadowMentorId('') }}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => { setShadowingId(mentor.id); setShadowMentorId('') }}
+                            style={{ fontSize: 12, padding: '4px 10px' }}
+                          >
+                            Add shadow assignment
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
