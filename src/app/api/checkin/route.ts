@@ -75,9 +75,14 @@ export async function POST(request: NextRequest) {
     .select()
     .single()
 
- if (bookingError) {
-    console.error('Booking insert error:', bookingError)
-    // Don't fail the check-in if booking fails — queue entry is more important
+  if (bookingError) {
+    // Don't fail the check-in if booking fails — queue entry is more important.
+    // But this leaves the queue entry orphaned (no student_bookings row), so it
+    // silently drops out of mentor activity reporting until manually backfilled.
+    console.error(
+      `CRITICAL: booking insert failed for queue entry ${queueEntry.id} (${studentEmail}):`,
+      bookingError
+    )
   }
 
   // Also save intake answers to booking_question_answers so they show in student profile
