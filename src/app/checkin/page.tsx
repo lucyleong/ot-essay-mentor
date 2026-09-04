@@ -38,6 +38,7 @@ export default function CheckInPage() {
 const [returningName, setReturningName] = useState('')
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [aiStatementSignature, setAiStatementSignature] = useState('')
+  const [invalidQuestionId, setInvalidQuestionId] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/bookings/questions')
@@ -78,6 +79,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       ? current.filter((o: string) => o !== option)
       : [...current, option]
     handleAnswerChange(questionId, updated)
+    if (questionId === invalidQuestionId) setInvalidQuestionId(null)
   }
 
   // Single source of truth for whether a question is actually shown to this
@@ -104,6 +106,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       const value = answers[q.id]
       if (!value || (Array.isArray(value) && value.length === 0)) {
         setError(`Please answer: ${q.question_text}`)
+        setInvalidQuestionId(q.id)
         window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
@@ -111,6 +114,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
 
     setSubmitting(true)
     setError('')
+    setInvalidQuestionId(null)
 
     const formattedAnswers = questions
       .filter(isQuestionVisible)
@@ -356,7 +360,10 @@ placeholder="you@example.com"
               )}
 
               {q.question_type === 'multiselect' && q.options && (
-                <div style={{ border: '0.5px solid #D3D1C7', borderRadius: 8, padding: '8px 12px', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <div style={{
+                  border: `${q.id === invalidQuestionId ? '1.5px' : '0.5px'} solid ${q.id === invalidQuestionId ? '#E24B4A' : '#D3D1C7'}`,
+                  borderRadius: 8, padding: '8px 12px', display: 'flex', flexWrap: 'wrap', gap: 8,
+                }}>
                   {q.options.map((opt: string) => {
                     const selected = (answers[q.id] ?? []).includes(opt)
                     return (
