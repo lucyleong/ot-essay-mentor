@@ -317,6 +317,76 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     }
   }, [activePanel, reports, chartsReady])
 
+  useEffect(() => {
+    if (activePanel !== 'bookings' || bookingStatus !== 'expired' || !chartsReady) return
+
+    function renderBar(canvasId: string, entries: [string, number][], sortByCount: boolean, attemptsLeft = 40) {
+      const canvas = document.getElementById(canvasId) as HTMLCanvasElement
+      if (!canvas) {
+        if (attemptsLeft > 0) setTimeout(() => renderBar(canvasId, entries, sortByCount, attemptsLeft - 1), 150)
+        return
+      }
+      const existing = (window as any).Chart.getChart(canvas)
+      if (existing) existing.destroy()
+
+      const sorted = sortByCount ? [...entries].sort((a, b) => b[1] - a[1]) : entries
+      const barColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#378ADD', '#BA7517', '#639922', '#888780', '#993556', '#0F6E56']
+
+      try {
+        new (window as any).Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: sorted.map(([label]) => label),
+            datasets: [{
+              data: sorted.map(([, count]) => count),
+              backgroundColor: sorted.map((_, i) => barColors[i % barColors.length]),
+            }],
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { beginAtZero: true, ticks: { stepSize: 1 } },
+            },
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: '#ffffff',
+                font: { weight: 500, size: 12 },
+                formatter: (value: number) => value > 0 ? value : '',
+                anchor: 'end',
+                align: 'start',
+              },
+            },
+          },
+        })
+      } catch (err) {
+        console.error('renderBar', canvasId, 'failed:', err)
+      }
+    }
+
+    const weekdayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const expiredSlots = availableSlots
+      .filter((slot: any) => new Date(slot.start_time) < new Date())
+      .filter((slot: any) => mentorFilter === 'all' || slot.mentor_profiles?.full_name === mentorFilter)
+      .filter((slot: any) => bookingMeetingType === 'all' || slot.meeting_type === bookingMeetingType)
+
+    const dayCounts: Record<string, number> = {}
+    const mentorCounts: Record<string, number> = {}
+    expiredSlots.forEach((slot: any) => {
+      const day = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
+      dayCounts[day] = (dayCounts[day] ?? 0) + 1
+      const mentorName = slot.mentor_profiles?.full_name ?? 'Unknown'
+      mentorCounts[mentorName] = (mentorCounts[mentorName] ?? 0) + 1
+    })
+    const sortedDays = weekdayOrder.filter(day => dayCounts[day]).map(day => [day, dayCounts[day]] as [string, number])
+    const sortedMentors = Object.entries(mentorCounts)
+
+    renderBar('bar-expired-by-day', sortedDays, false)
+    renderBar('bar-expired-by-mentor', sortedMentors, true)
+  }, [activePanel, bookingStatus, chartsReady, availableSlots, mentorFilter, bookingMeetingType])
+
  function toLA(dateStr: string, timeStr: string): Date {
   // Calculate DST boundaries for the year
   const [y, m, d] = dateStr.split('-').map(Number)
@@ -1263,30 +1333,17 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
   return (
     <>
       {expiredSlots.length > 0 && (
-        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 12 }}>
-          <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 10px' }}>
-            {expiredSlots.length} expired slot{expiredSlots.length !== 1 ? 's' : ''}
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
-            <div>
-              <p style={{ fontSize: 11, color: '#888780', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '.04em' }}>By day of week</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {sortedDays.map(([day, count]) => (
-                  <span key={day} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-                    {day}: {count}
-                  </span>
-                ))}
-              </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>By day of week</p>
+            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(sortedDays.length * 40 + 60, 160) }}>
+              <canvas id="bar-expired-by-day" role="img" aria-label="Horizontal bar chart of expired slots by day of week"></canvas>
             </div>
-            <div>
-              <p style={{ fontSize: 11, color: '#888780', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '.04em' }}>By mentor</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {sortedMentors.map(([name, count]) => (
-                  <span key={name} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-                    {name}: {count}
-                  </span>
-                ))}
-              </div>
+          </div>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>By mentor</p>
+            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', position: 'relative', height: Math.max(sortedMentors.length * 40 + 60, 160) }}>
+              <canvas id="bar-expired-by-mentor" role="img" aria-label="Horizontal bar chart of expired slots by mentor"></canvas>
             </div>
           </div>
         </div>
