@@ -1030,7 +1030,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     }}>
                      {/* Top row: name + badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
-                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
+                        <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>

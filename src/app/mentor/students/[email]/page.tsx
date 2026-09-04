@@ -1,7 +1,7 @@
 'use client'
-import { useEffect, useState, use } from 'react'
+import { useEffect, useState, use, Suspense } from 'react'
 import { createClient } from '@/lib/supabase-client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import { formatShortDateWithYearPST } from '@/lib/utils'
 
@@ -45,7 +45,7 @@ function shortenLabel(label: string) {
   return label.split(' (')[0]
 }
 
-export default function StudentProfilePage({
+function StudentProfileContent({
   params,
 }: {
   params: Promise<{ email: string }>
@@ -60,6 +60,7 @@ export default function StudentProfilePage({
   const [mentorId,  setMentorId]  = useState<string | null>(null)
 const [showAllEssays, setShowAllEssays] = useState(false)
   const router   = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
   const [copied, setCopied] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -173,7 +174,7 @@ const email = decodeURIComponent(emailParam)
       {/* Back button */}
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
        <button
-        onClick={() => router.push(isAdmin ? '/admin?panel=bookings' : '/mentor/dashboard')}
+        onClick={() => router.push(isAdmin ? `/admin?panel=${searchParams.get('from') ?? 'bookings'}` : '/mentor/dashboard')}
           style={{ fontSize: 13, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
         >
           ← Back to dashboard
@@ -415,5 +416,17 @@ const email = decodeURIComponent(emailParam)
       </div>
 
     </main>
+  )
+}
+
+export default function StudentProfilePage({
+  params,
+}: {
+  params: Promise<{ email: string }>
+}) {
+  return (
+    <Suspense>
+      <StudentProfileContent params={params} />
+    </Suspense>
   )
 }
