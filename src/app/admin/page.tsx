@@ -115,7 +115,7 @@ const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
 const [resolvingWalkinId, setResolvingWalkinId] = useState<string | null>(null)
 const [helpedByMentorId, setHelpedByMentorId] = useState<Record<string, string>>({})
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
-const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available' | 'issues'>('all')
+const [bookingStatus, setBookingStatus] = useState<'all' | 'upcoming' | 'completed' | 'cancelled' | 'available' | 'expired' | 'issues'>('all')
 const [scheduleSlots, setScheduleSlots] = useState<any[]>([])
 const [programEndDate, setProgramEndDate] = useState('')
 const [settingsOpen, setSettingsOpen] = useState(false)
@@ -943,6 +943,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
                       <option value="available">Open slots</option>
+                      <option value="expired">Expired / unclaimed</option>
                       <option value="issues">No shows / connection issues</option>
                     </select>
                   </div>
@@ -970,7 +971,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                   </div>
                 </div>
 
-               {bookingStatus !== 'available' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+               {bookingStatus !== 'available' && bookingStatus !== 'expired' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
               {bookings.filter(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
@@ -1237,6 +1238,88 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     )}
                   </div>
                 )}
+
+{bookingStatus === 'expired' && (() => {
+  const expiredSlots = availableSlots
+    .filter((slot: any) => new Date(slot.start_time) < new Date())
+    .filter((slot: any) => mentorFilter === 'all' || slot.mentor_profiles?.full_name === mentorFilter)
+    .filter((slot: any) => bookingMeetingType === 'all' || slot.meeting_type === bookingMeetingType)
+
+  const weekdayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const dayCounts: Record<string, number> = {}
+  const mentorCounts: Record<string, number> = {}
+  expiredSlots.forEach((slot: any) => {
+    const day = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
+    dayCounts[day] = (dayCounts[day] ?? 0) + 1
+    const mentorName = slot.mentor_profiles?.full_name ?? 'Unknown'
+    mentorCounts[mentorName] = (mentorCounts[mentorName] ?? 0) + 1
+  })
+  const sortedDays = Object.entries(dayCounts).sort((a, b) => weekdayOrder.indexOf(a[0]) - weekdayOrder.indexOf(b[0]))
+  const sortedMentors = Object.entries(mentorCounts).sort((a, b) => b[1] - a[1])
+
+  return (
+    <>
+      {expiredSlots.length > 0 && (
+        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 12 }}>
+          <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 10px' }}>
+            {expiredSlots.length} expired slot{expiredSlots.length !== 1 ? 's' : ''}
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+            <div>
+              <p style={{ fontSize: 11, color: '#888780', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '.04em' }}>By day of week</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {sortedDays.map(([day, count]) => (
+                  <span key={day} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                    {day}: {count}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p style={{ fontSize: 11, color: '#888780', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '.04em' }}>By mentor</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {sortedMentors.map(([name, count]) => (
+                  <span key={name} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                    {name}: {count}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+        {expiredSlots.length === 0 ? (
+          <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No expired slots.</p>
+        ) : (
+          [...expiredSlots].sort((a: any, b: any) => {
+            if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
+            if (bookingSort === 'start_time_asc') return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+            return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
+          }).map((slot: any) => (
+            <div key={slot.id} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
+            }}>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
+                  {slot.mentor_profiles?.full_name}
+                </p>
+                <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                  {formatDateTimePST(slot.start_time)}
+                </p>
+              </div>
+              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  )
+})()}
               </div>
             )}
 
