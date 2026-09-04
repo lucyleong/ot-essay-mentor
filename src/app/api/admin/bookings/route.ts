@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
       ),
       survey_responses (
         additional_answers
-      )
+      ),
+      student_essays ( id )
     `)
     .order('booked_at', { ascending: false })
 
