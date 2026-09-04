@@ -297,6 +297,14 @@ const todayBookings    = allBookings
                   Admin view →
                 </button>
               )}
+              <a
+                href="https://docs.google.com/spreadsheets/d/11PUIeAJk4jnUPTm2YE_bDLLaoWSCV-sV/edit?gid=2044658688#gid=2044658688"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'block', fontSize: 14, color: '#582C83', textDecoration: 'none', marginBottom: 12 }}
+              >
+                Mentor resources ↗
+              </a>
               <button
                 onClick={handleSignOut}
                 style={{ fontSize: 14, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -364,6 +372,14 @@ const todayBookings    = allBookings
               Admin view →
             </button>
           )}
+          <a
+            href="https://docs.google.com/spreadsheets/d/11PUIeAJk4jnUPTm2YE_bDLLaoWSCV-sV/edit?gid=2044658688#gid=2044658688"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'block', fontSize: 12, color: '#582C83', textDecoration: 'none', marginBottom: 8 }}
+          >
+            Mentor resources ↗
+          </a>
           <button
             onClick={handleSignOut}
             style={{ fontSize: 12, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
