@@ -125,6 +125,8 @@ const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
 const [shadowLinks, setShadowLinks] = useState<any[]>([])
 const [resourcesProgramInfo, setResourcesProgramInfo] = useState('')
 const [resourcesEmergencyProcedures, setResourcesEmergencyProcedures] = useState('')
+const [savedResourcesProgramInfo, setSavedResourcesProgramInfo] = useState('')
+const [savedResourcesEmergencyProcedures, setSavedResourcesEmergencyProcedures] = useState('')
 const [savingResources, setSavingResources] = useState(false)
 
 // Add mentor form
@@ -472,8 +474,14 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
       .select('key, value')
       .in('key', ['mentor_resources_program_info', 'mentor_resources_emergency_procedures'])
     ;(resourceSettings ?? []).forEach((s: any) => {
-      if (s.key === 'mentor_resources_program_info') setResourcesProgramInfo(s.value ?? '')
-      if (s.key === 'mentor_resources_emergency_procedures') setResourcesEmergencyProcedures(s.value ?? '')
+      if (s.key === 'mentor_resources_program_info') {
+        setResourcesProgramInfo(s.value ?? '')
+        setSavedResourcesProgramInfo(s.value ?? '')
+      }
+      if (s.key === 'mentor_resources_emergency_procedures') {
+        setResourcesEmergencyProcedures(s.value ?? '')
+        setSavedResourcesEmergencyProcedures(s.value ?? '')
+      }
     })
 
     setLoading(false)
@@ -2017,10 +2025,16 @@ const res = await fetch('/api/admin/end-session', { method: 'POST', headers: awa
                       alert(`Failed to save: ${error.message}`)
                       return
                     }
+                    setSavedResourcesProgramInfo(resourcesProgramInfo)
+                    setSavedResourcesEmergencyProcedures(resourcesEmergencyProcedures)
                     alert('Mentor resources saved!')
                   }}
-                  disabled={savingResources}
-                  style={{ background: '#582C83', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                  disabled={savingResources || (resourcesProgramInfo === savedResourcesProgramInfo && resourcesEmergencyProcedures === savedResourcesEmergencyProcedures)}
+                  style={
+                    resourcesProgramInfo === savedResourcesProgramInfo && resourcesEmergencyProcedures === savedResourcesEmergencyProcedures
+                      ? { fontSize: 13, padding: '8px 16px' }
+                      : { background: '#582C83', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }
+                  }
                 >
                   {savingResources ? 'Saving...' : 'Save'}
                 </button>
