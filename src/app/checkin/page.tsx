@@ -104,6 +104,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
       const value = answers[q.id]
       if (!value || (Array.isArray(value) && value.length === 0)) {
         setError(`Please answer: ${q.question_text}`)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
     }
@@ -139,6 +140,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
     if (!res.ok) {
       const data = await res.json()
       setError(data.error ?? 'Something went wrong. Please try again.')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
 
