@@ -9,6 +9,7 @@ type Mentor = {
   id: string
   full_name: string
   email: string
+  phone: string | null
   is_active: boolean
   is_virtual_available: boolean
   created_at: string
@@ -833,7 +834,9 @@ fontSize: item.indent ? 13 : 15,
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.full_name}</p>
-                          <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.email}</p>
+                          <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {mentor.email}{mentor.phone ? ` · ${mentor.phone}` : ''}
+                          </p>
                         </div>
                       </div>
                       {/* Bottom row: badges + buttons */}
@@ -939,7 +942,9 @@ fontSize: item.indent ? 13 : 15,
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.full_name}</p>
-                              <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mentor.email}</p>
+                              <p style={{ fontSize: 12, color: '#888780', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {mentor.email}{mentor.phone ? ` · ${mentor.phone}` : ''}
+                          </p>
                             </div>
                           </div>
                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>

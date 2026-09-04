@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   
   const { data: mentorData, error } = await supabase
     .from('mentor_profiles')
-    .select('id, full_name, email, is_active, is_virtual_available, created_at')
+    .select('id, full_name, email, phone, is_active, is_virtual_available, created_at')
 .neq('email', process.env.PROGRAM_ACCOUNT_EMAIL!)
     .order('full_name', { ascending: true })
 
