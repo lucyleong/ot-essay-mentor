@@ -126,6 +126,19 @@ const timeOptions = generateTimeOptions()
     }
   }, [activePanel])
 
+ function linkify(text: string) {
+  const urlPattern = /(https?:\/\/[^\s]+)/g
+  return text.split(urlPattern).map((part, i) =>
+    /^https?:\/\//.test(part) ? (
+      <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  )
+ }
+
  function toLA(dateStr: string, timeStr: string): Date {
   // Calculate DST boundaries for the year
   const [y, m, d] = dateStr.split('-').map(Number)
@@ -1334,14 +1347,14 @@ style={{
                 </div>
                 {resourcesProgramInfo && (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 24, whiteSpace: 'pre-wrap', fontSize: 13, lineHeight: 1.6 }}>
-                    {resourcesProgramInfo}
+                    {linkify(resourcesProgramInfo)}
                   </div>
                 )}
 
                 {/* Emergency procedures */}
                 <h2 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 10px' }}>Emergency procedures</h2>
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', whiteSpace: 'pre-wrap', fontSize: 13, lineHeight: 1.6 }}>
-                  {resourcesEmergencyProcedures || (
+                  {resourcesEmergencyProcedures ? linkify(resourcesEmergencyProcedures) : (
                     <span style={{ color: '#888780' }}>Nothing posted yet.</span>
                   )}
                 </div>
