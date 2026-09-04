@@ -1199,12 +1199,14 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                   </div>
                 )}
 
-{bookingStatus === 'available' && bookingMeetingType !== 'in_person' && (
+{bookingStatus === 'available' && bookingMeetingType !== 'in_person' && (() => {
+  const futureSlots = availableSlots.filter((slot: any) => new Date(slot.start_time) >= new Date())
+  return (
                       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                    {availableSlots.length === 0 ? (
+                    {futureSlots.length === 0 ? (
                       <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No available slots.</p>
                     ) : (
-[...availableSlots].filter((slot: any) => {
+[...futureSlots].filter((slot: any) => {
                           if (mentorFilter !== 'all' && slot.mentor_profiles?.full_name !== mentorFilter) return false
                           return true
                         }).sort((a, b) => {                          if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
@@ -1237,7 +1239,8 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                    })
                     )}
                   </div>
-                )}
+  )
+})()}
 
 {bookingStatus === 'expired' && (() => {
   const expiredSlots = availableSlots
