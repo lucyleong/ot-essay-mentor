@@ -1333,6 +1333,10 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
   return (
     <>
       {expiredSlots.length > 0 && (
+        <>
+        <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 12px' }}>
+          {expiredSlots.length} expired slot{expiredSlots.length !== 1 ? 's' : ''}
+        </p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
           <div>
             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>By day of week</p>
@@ -1347,6 +1351,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
             </div>
           </div>
         </div>
+        </>
       )}
 
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
