@@ -1314,6 +1314,9 @@ style={{
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
                     <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>Virtual booking</p>
                     <div id="qr-booking-mentor" style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }} />
+                    <p style={{ fontSize: 13, fontWeight: 500, color: '#3C3489', margin: '0 0 4px', letterSpacing: '.04em' }}>
+                      Sign-up code: {process.env.NEXT_PUBLIC_BOOKING_CODE}
+                    </p>
                     <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
                       otessaymentors.org/book?code={process.env.NEXT_PUBLIC_BOOKING_CODE}
                     </p>
@@ -1321,6 +1324,9 @@ style={{
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
                     <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>In-person check-in</p>
                     <div id="qr-checkin-mentor" style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }} />
+                    <p style={{ fontSize: 13, fontWeight: 500, color: '#3C3489', margin: '0 0 4px', letterSpacing: '.04em' }}>
+                      Sign-up code: {process.env.NEXT_PUBLIC_CHECKIN_CODE}
+                    </p>
                     <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
                       otessaymentors.org/checkin?code={process.env.NEXT_PUBLIC_CHECKIN_CODE}
                     </p>
