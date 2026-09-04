@@ -122,6 +122,9 @@ const [settingsOpen, setSettingsOpen] = useState(false)
 const [cancelMentorId, setCancelMentorId] = useState('')
 const [cancelMentorSlots, setCancelMentorSlots] = useState<any[]>([])
 const [shadowLinks, setShadowLinks] = useState<any[]>([])
+const [resourcesProgramInfo, setResourcesProgramInfo] = useState('')
+const [resourcesEmergencyProcedures, setResourcesEmergencyProcedures] = useState('')
+const [savingResources, setSavingResources] = useState(false)
 
 // Add mentor form
   const [newName,     setNewName]     = useState('')
@@ -463,6 +466,15 @@ const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: aut
       .maybeSingle()
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
+    const { data: resourceSettings } = await supabase
+      .from('program_settings')
+      .select('key, value')
+      .in('key', ['mentor_resources_program_info', 'mentor_resources_emergency_procedures'])
+    ;(resourceSettings ?? []).forEach((s: any) => {
+      if (s.key === 'mentor_resources_program_info') setResourcesProgramInfo(s.value ?? '')
+      if (s.key === 'mentor_resources_emergency_procedures') setResourcesEmergencyProcedures(s.value ?? '')
+    })
+
     setLoading(false)
   }
 
@@ -602,6 +614,7 @@ const navItems = [
   { key: 'settings',  label: 'Settings' },
 { key: 'program',   label: 'Program Settings', indent: true },
 { key: 'qrcodes',   label: 'QR Codes', indent: true },
+{ key: 'resources', label: 'Mentor Resources', indent: true },
 { key: 'calendar',  label: 'Google Calendar', indent: true },
 { key: 'session',   label: 'End Session', indent: true },
   ]
@@ -1948,6 +1961,65 @@ const res = await fetch('/api/admin/end-session', { method: 'POST', headers: awa
                   </div>
                 </div>
              </div>
+            )}
+
+            {/* MENTOR RESOURCES */}
+            {activePanel === 'resources' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Mentor Resources</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Shown on every mentor's dashboard under the Resources tab. Mentor contacts are pulled automatically from the Mentors list above — nothing to edit here.
+                </p>
+
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                    Program info
+                  </label>
+                  <p style={{ fontSize: 12, color: '#888780', margin: '0 0 8px' }}>
+                    Links, essay questions, and anything else mentors need to reference (booking/check-in QR codes are already shown automatically)
+                  </p>
+                  <textarea
+                    value={resourcesProgramInfo}
+                    onChange={e => setResourcesProgramInfo(e.target.value)}
+                    rows={8}
+                    style={{ width: '100%', boxSizing: 'border-box', fontFamily: 'inherit', fontSize: 13, padding: 10 }}
+                  />
+                </div>
+
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>
+                    Emergency procedures
+                  </label>
+                  <textarea
+                    value={resourcesEmergencyProcedures}
+                    onChange={e => setResourcesEmergencyProcedures(e.target.value)}
+                    rows={8}
+                    style={{ width: '100%', boxSizing: 'border-box', fontFamily: 'inherit', fontSize: 13, padding: 10 }}
+                  />
+                </div>
+
+                <button
+                  onClick={async () => {
+                    setSavingResources(true)
+                    const { error } = await supabase
+                      .from('program_settings')
+                      .upsert([
+                        { key: 'mentor_resources_program_info', value: resourcesProgramInfo },
+                        { key: 'mentor_resources_emergency_procedures', value: resourcesEmergencyProcedures },
+                      ], { onConflict: 'key' })
+                    setSavingResources(false)
+                    if (error) {
+                      alert(`Failed to save: ${error.message}`)
+                      return
+                    }
+                    alert('Mentor resources saved!')
+                  }}
+                  disabled={savingResources}
+                  style={{ background: '#582C83', color: '#ffffff', border: 'none', fontSize: 13, padding: '8px 16px' }}
+                >
+                  {savingResources ? 'Saving...' : 'Save'}
+                </button>
+              </div>
             )}
 
            {/* SCHEDULES */}

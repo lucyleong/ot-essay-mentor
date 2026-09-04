@@ -67,6 +67,9 @@ const [menuOpen, setMenuOpen] = useState(false)
 const [isAdmin, setIsAdmin] = useState(false)
 const [bioText, setBioText] = useState('')
 const [bioSaving, setBioSaving] = useState(false)
+const [mentorContacts, setMentorContacts] = useState<{ full_name: string; email: string; phone: string | null }[]>([])
+const [resourcesProgramInfo, setResourcesProgramInfo] = useState('')
+const [resourcesEmergencyProcedures, setResourcesEmergencyProcedures] = useState('')
 const [bioSaveSuccess, setBioSaveSuccess] = useState(false)
 const [isEditingBio, setIsEditingBio] = useState(false)
 const [programEndDate, setProgramEndDate] = useState('')
@@ -97,6 +100,31 @@ const timeOptions = generateTimeOptions()
     
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (activePanel === 'resources' && typeof window !== 'undefined' && (window as any).QRCode) {
+      const bookingEl = document.getElementById('qr-booking-mentor')
+      const checkinEl = document.getElementById('qr-checkin-mentor')
+
+      if (bookingEl) {
+        bookingEl.innerHTML = ''
+        new (window as any).QRCode(bookingEl, {
+          text: `https://www.otessaymentors.org/book?code=${process.env.NEXT_PUBLIC_BOOKING_CODE}`,
+          width: 220,
+          height: 220,
+        })
+      }
+
+      if (checkinEl) {
+        checkinEl.innerHTML = ''
+        new (window as any).QRCode(checkinEl, {
+          text: `https://www.otessaymentors.org/checkin?code=${process.env.NEXT_PUBLIC_CHECKIN_CODE}`,
+          width: 220,
+          height: 220,
+        })
+      }
+    }
+  }, [activePanel])
 
  function toLA(dateStr: string, timeStr: string): Date {
   // Calculate DST boundaries for the year
@@ -171,6 +199,20 @@ const { data: endDateSetting } = await supabase
     }
     setBookingIssues(issuesMap)
 
+    // Load mentor resources (contacts + admin-editable program info / emergency procedures)
+    const contactsRes = await fetch('/api/mentor/contacts')
+    const contactsData = await contactsRes.json()
+    setMentorContacts(Array.isArray(contactsData) ? contactsData : [])
+
+    const { data: resourceSettings } = await supabase
+      .from('program_settings')
+      .select('key, value')
+      .in('key', ['mentor_resources_program_info', 'mentor_resources_emergency_procedures'])
+    ;(resourceSettings ?? []).forEach((s: any) => {
+      if (s.key === 'mentor_resources_program_info') setResourcesProgramInfo(s.value ?? '')
+      if (s.key === 'mentor_resources_emergency_procedures') setResourcesEmergencyProcedures(s.value ?? '')
+    })
+
     setLoading(false)
   }
 async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
@@ -243,6 +285,7 @@ const todayBookings    = allBookings
     { key: 'students', label: 'Students' },
     ...(mentor?.is_virtual_available !== false ? [{ key: 'slots', label: 'My availability' }] : []),
     ...(isInPersonAvailable ? [{ key: 'walkin', label: 'Walk-in Queue' }] : []),
+    { key: 'resources', label: 'Resources' },
     { key: 'profile',  label: 'My Profile' },
   ]
   return (
@@ -297,14 +340,6 @@ const todayBookings    = allBookings
                   Admin view →
                 </button>
               )}
-              <a
-                href="https://docs.google.com/spreadsheets/d/11PUIeAJk4jnUPTm2YE_bDLLaoWSCV-sV/edit?gid=2044658688#gid=2044658688"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'block', fontSize: 14, color: '#582C83', textDecoration: 'none', marginBottom: 12 }}
-              >
-                Mentor resources ↗
-              </a>
               <button
                 onClick={handleSignOut}
                 style={{ fontSize: 14, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -372,14 +407,6 @@ const todayBookings    = allBookings
               Admin view →
             </button>
           )}
-          <a
-            href="https://docs.google.com/spreadsheets/d/11PUIeAJk4jnUPTm2YE_bDLLaoWSCV-sV/edit?gid=2044658688#gid=2044658688"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'block', fontSize: 12, color: '#582C83', textDecoration: 'none', marginBottom: 8 }}
-          >
-            Mentor resources ↗
-          </a>
           <button
             onClick={handleSignOut}
             style={{ fontSize: 12, color: '#888780', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -1252,6 +1279,68 @@ style={{
                 )}
               </div>
            )}
+
+            {/* RESOURCES */}
+            {activePanel === 'resources' && (
+              <div>
+                <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Resources</h1>
+                <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
+                  Mentor contacts, program links, and emergency procedures
+                </p>
+
+                {/* Mentor contacts */}
+                <h2 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 10px' }}>Mentor contacts</h2>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', marginBottom: 24 }}>
+                  {mentorContacts.length === 0 ? (
+                    <p style={{ color: '#888780', fontSize: 13, padding: '10px 0' }}>No active mentors found.</p>
+                  ) : (
+                    mentorContacts.map(m => (
+                      <div key={m.email} style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        padding: '10px 0', borderBottom: '0.5px solid #e8e6de', flexWrap: 'wrap', gap: 6,
+                      }}>
+                        <p style={{ fontWeight: 500, fontSize: 13, margin: 0 }}>{m.full_name}</p>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          {m.email}{m.phone ? ` · ${m.phone}` : ''}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Program info */}
+                <h2 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 10px' }}>Program info</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
+                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>Virtual booking</p>
+                    <div id="qr-booking-mentor" style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }} />
+                    <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
+                      otessaymentors.org/book?code={process.env.NEXT_PUBLIC_BOOKING_CODE}
+                    </p>
+                  </div>
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
+                    <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>In-person check-in</p>
+                    <div id="qr-checkin-mentor" style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }} />
+                    <p style={{ fontSize: 11, color: '#B4B2A9', margin: 0, wordBreak: 'break-all' }}>
+                      otessaymentors.org/checkin?code={process.env.NEXT_PUBLIC_CHECKIN_CODE}
+                    </p>
+                  </div>
+                </div>
+                {resourcesProgramInfo && (
+                  <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 24, whiteSpace: 'pre-wrap', fontSize: 13, lineHeight: 1.6 }}>
+                    {resourcesProgramInfo}
+                  </div>
+                )}
+
+                {/* Emergency procedures */}
+                <h2 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 10px' }}>Emergency procedures</h2>
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', whiteSpace: 'pre-wrap', fontSize: 13, lineHeight: 1.6 }}>
+                  {resourcesEmergencyProcedures || (
+                    <span style={{ color: '#888780' }}>Nothing posted yet.</span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* MY PROFILE */}
             {activePanel === 'profile' && (
