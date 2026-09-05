@@ -1030,11 +1030,15 @@ style={{
                   <button
                     onClick={async () => {
                       const newValue = !isInPersonAvailable
-                      await fetch('/api/mentor/in-person-toggle', {
+                      const res = await fetch('/api/mentor/in-person-toggle', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ isAvailable: newValue }),
                       })
+                      if (!res.ok) {
+                        alert('Failed to update availability. Please try again.')
+                        return
+                      }
                       setIsInPersonAvailable(newValue)
                     }}
                     style={{
