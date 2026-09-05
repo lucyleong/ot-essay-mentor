@@ -98,7 +98,6 @@ console.log('Dashboard URL:', `${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboa
       mentorName:   mentor.full_name,
       appointments,
       dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/mentor/dashboard`,
-      issuesUrl:    `${process.env.NEXT_PUBLIC_APP_URL}/mentor/daily-issues`,
       summaryDate:  today,
     })
 

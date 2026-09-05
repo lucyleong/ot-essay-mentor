@@ -16,7 +16,6 @@ type SummaryData = {
   mentorName:   string
   appointments: Appointment[]
   dashboardUrl: string
-  issuesUrl:    string
   summaryDate:  string
 }
 export function mentorMorningSummaryEmail(d: SummaryData) {
