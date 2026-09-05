@@ -208,7 +208,10 @@ const { data: endDateSetting } = await supabase
     const issuesData = await issuesRes.json()
     const issuesMap: Record<string, { noShow: boolean; meetIssue: boolean }> = {}
     for (const item of (Array.isArray(issuesData) ? issuesData : [])) {
-      issuesMap[item.bookingId] = { noShow: item.noShow, meetIssue: item.meetIssue }
+      // meetIssue comes back as the raw 'No' / 'Yes - still met' / 'Yes - did not meet'
+      // string (needed by the daily-issues page's dropdown) — convert to a real
+      // boolean here since this dashboard only shows a simple checked/unchecked toggle.
+      issuesMap[item.bookingId] = { noShow: item.noShow, meetIssue: String(item.meetIssue).startsWith('Yes') }
     }
     setBookingIssues(issuesMap)
 
@@ -235,17 +238,25 @@ async function toggleIssue(bookingId: string, field: 'noShow' | 'meetIssue') {
     setSavingIssue(bookingId)
     setBookingIssues(prev => ({ ...prev, [bookingId]: updated }))
 
-    await fetch('/api/mentor/daily-issues', {
+    const res = await fetch('/api/mentor/daily-issues', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         bookingId,
         noShow: updated.noShow,
-        meetIssue: updated.meetIssue,
+        // The API stores meetIssue as one of 'No' / 'Yes - still met' /
+        // 'Yes - did not meet' (shared with the daily-issues page's dropdown) —
+        // this dashboard only has a simple toggle, so map to the closest values.
+        meetIssue: updated.meetIssue ? 'Yes - did not meet' : 'No',
       }),
     })
 
     setSavingIssue(null)
+
+    if (!res.ok) {
+      setBookingIssues(prev => ({ ...prev, [bookingId]: current }))
+      alert('Failed to save. Please try again.')
+    }
   }
 
   async function handleSignOut() {
