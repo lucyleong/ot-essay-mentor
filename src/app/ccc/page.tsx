@@ -137,12 +137,17 @@ export default function CCCPage() {
                     onClick={async () => {
                       if (!selectedMentor[entry.id]) return
                       setAssigningId(entry.id)
-                      await fetch(`/api/ccc/assign`, {
+                      const res = await fetch(`/api/ccc/assign`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                         body: JSON.stringify({ queueId: entry.id, mentorId: selectedMentor[entry.id] }),
                       })
                       setAssigningId(null)
+                      if (!res.ok) {
+                        const data = await res.json().catch(() => ({}))
+                        alert(`Failed to assign: ${data.error ?? res.statusText}`)
+                        return
+                      }
                       loadData()
                     }}
                     disabled={!selectedMentor[entry.id] || assigningId === entry.id}
@@ -152,7 +157,12 @@ export default function CCCPage() {
                   </button>
                   <button
                     onClick={async () => {
-await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', headers: await getAuthHeader() })
+                      const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', headers: await getAuthHeader() })
+                      if (!res.ok) {
+                        const data = await res.json().catch(() => ({}))
+                        alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                        return
+                      }
                       loadData()
                     }}
                     style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
@@ -214,12 +224,17 @@ await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', he
                       <button
                         onClick={async () => {
                           setAssigningId(entry.id)
-                          await fetch(`/api/ccc/assign`, {
+                          const res = await fetch(`/api/ccc/assign`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                             body: JSON.stringify({ queueId: entry.id, mentorId: selectedMentor[entry.id] }),
                           })
                           setAssigningId(null)
+                          if (!res.ok) {
+                            const data = await res.json().catch(() => ({}))
+                            alert(`Failed to assign: ${data.error ?? res.statusText}`)
+                            return
+                          }
                           loadData()
                         }}
                         disabled={assigningId === entry.id}
