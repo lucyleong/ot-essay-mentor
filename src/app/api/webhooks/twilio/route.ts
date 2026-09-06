@@ -10,6 +10,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const emptyTwiml = () => new NextResponse('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
+  headers: { 'Content-Type': 'text/xml' }
+})
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
   // Validate Twilio signature
@@ -17,7 +21,7 @@ export async function POST(request: NextRequest) {
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio`
   const params: Record<string, string> = {}
   formData.forEach((value, key) => { params[key] = value.toString() })
-  
+
   const isValid = twilio.validateRequest(
     process.env.TWILIO_AUTH_TOKEN!,
     twilioSignature,
@@ -26,86 +30,104 @@ export async function POST(request: NextRequest) {
   )
 
   if (!isValid) {
+    console.error('Twilio webhook: signature validation failed', { webhookUrl, from: params.From, body: params.Body })
     return new NextResponse('Forbidden', { status: 403 })
   }
-  const from     = formData.get('From') as string  // Student's phone number
-  const body     = (formData.get('Body') as string)?.trim()
+
+  const from = formData.get('From') as string  // Student's phone number
+  const body = (formData.get('Body') as string)?.trim()
 
   if (!from || !body) {
-    return new NextResponse('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
-      headers: { 'Content-Type': 'text/xml' }
-    })
+    return emptyTwiml()
   }
 
-  // Find their most recent upcoming booking
-  const cleanedFrom = from.replace(/\D/g, '').replace(/^1/, '')
+  try {
+    // Find their most recent upcoming booking
+    const cleanedFrom = from.replace(/\D/g, '').replace(/^1/, '')
 
-  const { data: allBookings } = await supabase
-    .from('student_bookings')
-    .select(`
-      id, student_name, student_phone,
-      appointment_slots ( start_time, mentor_profiles ( full_name, email ) )
-    `)
-    .is('cancelled_at', null)
-
-  const bookings = (allBookings ?? []).filter((b: any) => {
-    if (!b.student_phone) return false
-    const cleanedStored = b.student_phone.replace(/\D/g, '').replace(/^1/, '')
-    return cleanedStored === cleanedFrom
-  })
-
-  const upcoming = (bookings ?? []).find((b: any) => {
-    const start = b.appointment_slots?.start_time
-    return start && new Date(start) > new Date()
-  })
-
-  if (!upcoming) {
-    // No upcoming booking found — send helpful reply
-    await sendSMS({
-      to:   from,
-      body: `We couldn't find an upcoming appointment for this number. Visit otessaymentors.org to book one!`,
-    })
-    return new NextResponse('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
-      headers: { 'Content-Type': 'text/xml' }
-    })
-  }
-
-  const slot     = Array.isArray(upcoming.appointment_slots) ? upcoming.appointment_slots[0] : upcoming.appointment_slots
- const apptDate = formatDatePST(slot.start_time)
-  const apptTime = formatTimePST(slot.start_time)
-
-  if (body === '1') {
-    // Confirm
-    await supabase
+    const { data: allBookings, error: bookingsError } = await supabase
       .from('student_bookings')
-      .update({ sms_confirmed_at: new Date().toISOString() })
-      .eq('id', upcoming.id)
+      .select(`
+        id, student_name, student_phone,
+        appointment_slots ( start_time, mentor_profiles ( full_name, email ) )
+      `)
+      .is('cancelled_at', null)
 
-    await sendSMS({
-      to:   from,
-      body: `Your appointment with the Oakland Tech College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`,
+    if (bookingsError) {
+      console.error('Twilio webhook: failed to load bookings', { from, body, error: bookingsError.message })
+      return emptyTwiml()
+    }
+
+    const bookings = (allBookings ?? []).filter((b: any) => {
+      if (!b.student_phone) return false
+      const cleanedStored = b.student_phone.replace(/\D/g, '').replace(/^1/, '')
+      return cleanedStored === cleanedFrom
     })
 
-  } else if (body === '9') {
-    // Cancel
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/bookings/${upcoming.id}/cancel`, {
-      method: 'POST',
+    const upcoming = (bookings ?? []).find((b: any) => {
+      const start = b.appointment_slots?.start_time
+      return start && new Date(start) > new Date()
     })
 
-    await sendSMS({
-      to:   from,
-      body: `Your appointment with the Oakland Tech College Mentor Program has been canceled. Reply HELP for help or STOP to opt-out.`,
-    })
+    if (!upcoming) {
+      // No upcoming booking found — send helpful reply
+      console.error('Twilio webhook: no upcoming booking matched for reply', { from, cleanedFrom, body, candidateCount: bookings.length })
+      await sendSMS({
+        to:   from,
+        body: `We couldn't find an upcoming appointment for this number. Visit otessaymentors.org to book one!`,
+      })
+      return emptyTwiml()
+    }
 
-  } else {
-    // Unrecognized reply
-    await sendSMS({
-      to:   from,
-      body: `Reply 1 to confirm or 9 to cancel your Oakland Tech College Mentor Programappointment on ${apptDate} at ${apptTime}.`,
-    })
+    const slot     = Array.isArray(upcoming.appointment_slots) ? upcoming.appointment_slots[0] : upcoming.appointment_slots
+    const apptDate = formatDatePST(slot.start_time)
+    const apptTime = formatTimePST(slot.start_time)
+
+    if (body === '1') {
+      // Confirm
+      const { error: confirmError } = await supabase
+        .from('student_bookings')
+        .update({ sms_confirmed_at: new Date().toISOString() })
+        .eq('id', upcoming.id)
+
+      if (confirmError) {
+        console.error('Twilio webhook: failed to record confirmation', { bookingId: upcoming.id, from, error: confirmError.message })
+        return emptyTwiml()
+      }
+
+      await sendSMS({
+        to:   from,
+        body: `Your appointment with the Oakland Tech College Mentor Program has been confirmed. Reply HELP for help or STOP to opt-out.`,
+      })
+
+    } else if (body === '9') {
+      // Cancel
+      const cancelRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/bookings/${upcoming.id}/cancel`, {
+        method: 'POST',
+      })
+
+      if (!cancelRes.ok) {
+        const errText = await cancelRes.text().catch(() => '')
+        console.error('Twilio webhook: cancel request failed', { bookingId: upcoming.id, from, status: cancelRes.status, errText })
+        return emptyTwiml()
+      }
+
+      await sendSMS({
+        to:   from,
+        body: `Your appointment with the Oakland Tech College Mentor Program has been canceled. Reply HELP for help or STOP to opt-out.`,
+      })
+
+    } else {
+      // Unrecognized reply
+      await sendSMS({
+        to:   from,
+        body: `Reply 1 to confirm or 9 to cancel your Oakland Tech College Mentor Programappointment on ${apptDate} at ${apptTime}.`,
+      })
+    }
+
+    return emptyTwiml()
+  } catch (err) {
+    console.error('Twilio webhook: unhandled error', { from, body, error: err instanceof Error ? err.message : err })
+    return emptyTwiml()
   }
-
-  return new NextResponse('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
-    headers: { 'Content-Type': 'text/xml' }
-  })
 }
