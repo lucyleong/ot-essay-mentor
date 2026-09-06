@@ -98,10 +98,10 @@ const email = decodeURIComponent(emailParam)
   }
 
   async function saveNote() {
-    if (!newNote.trim() || !mentorId) return
+    if (!newNote.trim() || (!mentorId && !isAdmin)) return
     setSaving(true)
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('mentor_student_notes')
       .insert({
         mentor_id:     mentorId,
@@ -112,12 +112,18 @@ const email = decodeURIComponent(emailParam)
       .select('id, body, is_private, created_at, mentor_id, mentor_profiles(full_name)')
       .single()
 
+    setSaving(false)
+
+    if (error) {
+      alert(`Failed to save note: ${error.message}`)
+      return
+    }
+
     if (data) {
       setNotes(prev => [data, ...prev])
       setNewNote('')
       setIsPrivate(false)
     }
-    setSaving(false)
   }
 
   async function deleteNote(noteId: string) {
@@ -358,7 +364,7 @@ const email = decodeURIComponent(emailParam)
           }}>
             <p style={{ fontSize: 13, lineHeight: 1.6, margin: '0 0 6px' }}>{note.body}</p>
             <p style={{ fontSize: 11, color: '#888780', margin: 0 }}>
-              {note.mentor_profiles?.full_name ?? 'Mentor'} ·{' '}
+              {note.mentor_profiles?.full_name ?? (note.mentor_id ? 'Mentor' : 'Admin')} ·{' '}
               {format(parseISO(note.created_at), 'MMM d, yyyy')} ·{' '}
               {note.is_private ? '🔒 Private' : 'Shared'}
             </p>
