@@ -1395,9 +1395,30 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                         }).sort((a, b) => {                          if (bookingSort === 'start_time_desc') return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
                           if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
                           return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
-                        }).map((slot: any) => {
+                        }).reduce((acc: any[], slot: any, index: number, arr: any[]) => {
+                        // Add a date header whenever the list is in date order and the date changes
+                        if (bookingSort !== 'student_name') {
+                          const dateStr = new Date(slot.start_time).toLocaleDateString('en-US', {
+                            weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles'
+                          })
+                          const prevDateStr = index > 0 ? new Date(arr[index - 1].start_time).toLocaleDateString('en-US', {
+                            weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles'
+                          }) : null
+                          if (dateStr !== prevDateStr) {
+                            acc.push(
+                              <div key={`header-${dateStr}`} style={{
+                                fontSize: 12, fontWeight: 700, color: '#582C83',
+                                padding: '12px 0 4px', borderBottom: '0.5px solid #e8e6de',
+                                textTransform: 'uppercase', letterSpacing: '.06em'
+                              }}>
+                                {dateStr}
+                              </div>
+                            )
+                          }
+                        }
+
                         const isPast = new Date(slot.start_time) < new Date()
-                        return (
+                        acc.push(
                           <div key={slot.id} style={{
                             display: 'flex', alignItems: 'center', gap: 12,
                             padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
@@ -1419,7 +1440,8 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                             </span>
                          </div>
                         )
-                   })
+                        return acc
+                   }, [])
                     )}
                   </div>
   )
