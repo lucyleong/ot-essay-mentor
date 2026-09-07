@@ -40,12 +40,16 @@ async function failAndAlert(context: Record<string, unknown>) {
 }
 
 export async function POST(request: NextRequest) {
-  const formData = await request.formData()
-  // Validate Twilio signature
+  // Read the raw body ourselves (rather than the browser-style formData()
+  // API, which is built for multipart file uploads and doesn't reliably
+  // reproduce the exact same values Twilio used to compute its signature)
+  // so signature validation actually matches what Twilio sent.
+  const rawBody = await request.text()
+  const searchParams = new URLSearchParams(rawBody)
   const twilioSignature = request.headers.get('X-Twilio-Signature') ?? ''
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio`
   const params: Record<string, string> = {}
-  formData.forEach((value, key) => { params[key] = value.toString() })
+  searchParams.forEach((value, key) => { params[key] = value })
 
   const isValid = twilio.validateRequest(
     process.env.TWILIO_AUTH_TOKEN!,
@@ -75,8 +79,8 @@ export async function POST(request: NextRequest) {
     return new NextResponse('Forbidden', { status: 403 })
   }
 
-  const from = formData.get('From') as string  // Student's phone number
-  const body = (formData.get('Body') as string)?.trim()
+  const from = params.From  // Student's phone number
+  const body = params.Body?.trim()
 
   if (!from || !body) {
     return emptyTwiml()
