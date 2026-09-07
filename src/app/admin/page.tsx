@@ -1018,7 +1018,8 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>All appointments</h1>             <p style={{ fontSize: 13, color: '#888780', margin: '0 0 16px' }}>
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} active ·{' '}
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) < new Date()).length} completed ·{' '}
-                  {bookings.filter(b => b.cancelled_at).length} cancelled
+                  {bookings.filter(b => b.cancelled_at).length} cancelled ·{' '}
+                  {new Set(bookings.filter(b => !b.cancelled_at).map(b => b.student_email)).size} unique students
                 </p>
 
     {/* Filters */}
