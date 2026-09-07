@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendSMS } from '@/lib/sms'
+import { sendEmail } from '@/lib/email'
 import { format, parseISO } from 'date-fns'
 import { formatDatePST, formatTimePST } from '@/lib/utils'
 import twilio from 'twilio'
@@ -13,6 +14,30 @@ const supabase = createClient(
 const emptyTwiml = () => new NextResponse('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
   headers: { 'Content-Type': 'text/xml' }
 })
+
+// A non-2xx response tells Twilio to automatically retry the webhook a few
+// times over the next several minutes — use this for failures that might be
+// transient (a database hiccup), so they can self-heal without anyone
+// needing to notice. Also emails the admin immediately, in case it doesn't.
+async function failAndAlert(context: Record<string, unknown>) {
+  console.error('Twilio webhook: failure', context)
+  try {
+    await sendEmail({
+      to:               process.env.PROGRAM_ACCOUNT_EMAIL!,
+      subject:          `Twilio SMS reply failed to process`,
+      html:             `
+        <p>A student's text reply failed to process and may not have been recorded.</p>
+        <pre style="white-space: pre-wrap; font-size: 13px;">${JSON.stringify(context, null, 2)}</pre>
+        <p>Twilio will automatically retry this a few times — if it's a one-off issue it may resolve itself. Worth checking the student's booking directly if you don't hear back that it worked.</p>
+      `,
+      notificationType: 'twilio_webhook_failure',
+      recipientType:    'mentor',
+    })
+  } catch (emailErr) {
+    console.error('Twilio webhook: failed to send failure alert email', emailErr)
+  }
+  return new NextResponse('Internal error', { status: 500 })
+}
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
@@ -31,6 +56,7 @@ export async function POST(request: NextRequest) {
 
   if (!isValid) {
     console.error('Twilio webhook: signature validation failed', { webhookUrl, from: params.From, body: params.Body })
+    // Already a non-2xx status, so Twilio will retry this on its own.
     return new NextResponse('Forbidden', { status: 403 })
   }
 
@@ -54,8 +80,7 @@ export async function POST(request: NextRequest) {
       .is('cancelled_at', null)
 
     if (bookingsError) {
-      console.error('Twilio webhook: failed to load bookings', { from, body, error: bookingsError.message })
-      return emptyTwiml()
+      return failAndAlert({ step: 'load bookings', from, body, error: bookingsError.message })
     }
 
     const bookings = (allBookings ?? []).filter((b: any) => {
@@ -70,7 +95,8 @@ export async function POST(request: NextRequest) {
     })
 
     if (!upcoming) {
-      // No upcoming booking found — send helpful reply
+      // No upcoming booking found — most likely a wrong number or an
+      // already-past appointment, not an app failure, so no retry/alert.
       console.error('Twilio webhook: no upcoming booking matched for reply', { from, cleanedFrom, body, candidateCount: bookings.length })
       await sendSMS({
         to:   from,
@@ -91,8 +117,7 @@ export async function POST(request: NextRequest) {
         .eq('id', upcoming.id)
 
       if (confirmError) {
-        console.error('Twilio webhook: failed to record confirmation', { bookingId: upcoming.id, from, error: confirmError.message })
-        return emptyTwiml()
+        return failAndAlert({ step: 'record confirmation', bookingId: upcoming.id, from, error: confirmError.message })
       }
 
       await sendSMS({
@@ -107,9 +132,13 @@ export async function POST(request: NextRequest) {
       })
 
       if (!cancelRes.ok) {
-        const errText = await cancelRes.text().catch(() => '')
-        console.error('Twilio webhook: cancel request failed', { bookingId: upcoming.id, from, status: cancelRes.status, errText })
-        return emptyTwiml()
+        const errBody = await cancelRes.json().catch(() => ({} as any))
+        const alreadyCancelled = cancelRes.status === 400 && /already canceled/i.test(errBody?.error ?? '')
+
+        if (!alreadyCancelled) {
+          return failAndAlert({ step: 'cancel booking', bookingId: upcoming.id, from, status: cancelRes.status, error: errBody?.error })
+        }
+        // Already cancelled from an earlier (possibly retried) attempt — treat as success below.
       }
 
       await sendSMS({
@@ -118,7 +147,7 @@ export async function POST(request: NextRequest) {
       })
 
     } else {
-      // Unrecognized reply
+      // Unrecognized reply — not a failure, just an unexpected message.
       await sendSMS({
         to:   from,
         body: `Reply 1 to confirm or 9 to cancel your Oakland Tech College Mentor Programappointment on ${apptDate} at ${apptTime}.`,
@@ -127,7 +156,6 @@ export async function POST(request: NextRequest) {
 
     return emptyTwiml()
   } catch (err) {
-    console.error('Twilio webhook: unhandled error', { from, body, error: err instanceof Error ? err.message : err })
-    return emptyTwiml()
+    return failAndAlert({ step: 'unhandled', from, body, error: err instanceof Error ? err.message : err })
   }
 }
