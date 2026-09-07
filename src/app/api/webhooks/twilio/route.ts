@@ -64,16 +64,19 @@ export async function POST(request: NextRequest) {
       webhookUrl,
       params
     )
+    const authToken = process.env.TWILIO_AUTH_TOKEN ?? ''
     console.error('Twilio webhook: signature validation failed', {
-      webhookUrl,
-      from: params.From,
-      body: params.Body,
-      hasAuthToken: !!process.env.TWILIO_AUTH_TOKEN,
-      authTokenLength: process.env.TWILIO_AUTH_TOKEN?.length ?? 0,
+      webhookUrlQuoted: JSON.stringify(webhookUrl),
+      webhookUrlLength: webhookUrl.length,
+      appUrlEnvQuoted: JSON.stringify(process.env.NEXT_PUBLIC_APP_URL ?? ''),
+      authTokenFirst4: authToken.slice(0, 4),
+      authTokenLast4: authToken.slice(-4),
+      authTokenLength: authToken.length,
       receivedSignature: twilioSignature,
       expectedSignature,
       signaturesMatch: expectedSignature === twilioSignature,
-      paramKeys: Object.keys(params),
+      rawBodyQuoted: JSON.stringify(rawBody),
+      allParams: params,
     })
     // Already a non-2xx status, so Twilio will retry this on its own.
     return new NextResponse('Forbidden', { status: 403 })
