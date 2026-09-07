@@ -1020,7 +1020,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     const isNoShow = (b: Booking) => !!b.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
                     const isActive = (b: Booking) => b.meeting_type === 'virtual' && !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()
                     const isCompleted = (b: Booking) => !b.cancelled_at && !isNoShow(b) && !isActive(b)
-                    const isCancelled = (b: Booking) => b.meeting_type === 'virtual' && !!b.cancelled_at
+                    const isCancelled = (b: Booking) => !!b.cancelled_at // includes in-person walk-outs, which use the same cancelled_at
                     const isVirtualNoShow = (b: Booking) => b.meeting_type === 'virtual' && !b.cancelled_at && isNoShow(b)
                     return (
                       <>
