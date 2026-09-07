@@ -103,6 +103,10 @@ const [cancellingId, setCancellingId] = useState<string | null>(null)
 const [availableSlots, setAvailableSlots] = useState<any[]>([])
 const [mentorFilter, setMentorFilter] = useState<string>('all')
 const [transferringId, setTransferringId] = useState<string | null>(null)
+const [reschedulingId, setReschedulingId] = useState<string | null>(null)
+const [rescheduleDate, setRescheduleDate] = useState('')
+const [rescheduleTime, setRescheduleTime] = useState('')
+const [rescheduling, setRescheduling] = useState(false)
 const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
 const [shadowingId, setShadowingId] = useState<string | null>(null)
@@ -1280,6 +1284,76 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                             style={{ fontSize: 12, padding: '4px 10px', color: '#582C83', borderColor: '#C9C5F7' }}
                           >
                             Transfer
+                          </button>
+                        )
+                      )}
+
+                      {/* Reschedule button */}
+                      {!booking.cancelled_at && !isPast && (
+                        reschedulingId === booking.id ? (
+                          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
+                            <input
+                              type="date"
+                              value={rescheduleDate}
+                              onChange={e => setRescheduleDate(e.target.value)}
+                              style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                            />
+                            <select
+                              value={rescheduleTime}
+                              onChange={e => setRescheduleTime(e.target.value)}
+                              style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                            >
+                              <option value="">Select time</option>
+                              {timeOptions.map(t => (
+                                <option key={t.value} value={t.value}>{t.label}</option>
+                              ))}
+                            </select>
+                            <button
+                              onClick={async () => {
+                                if (!rescheduleDate || !rescheduleTime) return
+                                const slot = booking.appointment_slots as any
+                                const durationMs = new Date(slot.end_time).getTime() - new Date(slot.start_time).getTime()
+                                const newStart = toLA(rescheduleDate, rescheduleTime)
+                                const newEnd = new Date(newStart.getTime() + durationMs)
+                                setRescheduling(true)
+                                const res = await fetch('/api/admin/bookings/reschedule', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                  body: JSON.stringify({
+                                    bookingId:    booking.id,
+                                    newStartTime: newStart.toISOString(),
+                                    newEndTime:   newEnd.toISOString(),
+                                  }),
+                                })
+                                const data = await res.json()
+                                setRescheduling(false)
+                                setReschedulingId(null)
+                                setRescheduleDate('')
+                                setRescheduleTime('')
+                                if (res.ok) {
+                                  loadData()
+                                } else {
+                                  alert(data.error ?? 'Reschedule failed')
+                                }
+                              }}
+                              disabled={!rescheduleDate || !rescheduleTime || rescheduling}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#fff', border: 'none' }}
+                            >
+                              {rescheduling ? 'Rescheduling...' : 'Confirm'}
+                            </button>
+                            <button
+                              onClick={() => { setReschedulingId(null); setRescheduleDate(''); setRescheduleTime('') }}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setReschedulingId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#582C83', borderColor: '#C9C5F7' }}
+                          >
+                            Reschedule
                           </button>
                         )
                       )}

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
    .select(`
       id, student_name, student_email, booked_at, cancelled_at, confirmation_code, sms_consent, sms_confirm_sent, sms_confirmed_at, meeting_type,
       appointment_slots (
-        start_time, meeting_type,
+        start_time, end_time, meeting_type,
         mentor_profiles ( full_name )
       ),
       survey_responses (
