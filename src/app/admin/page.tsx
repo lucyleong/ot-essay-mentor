@@ -1024,7 +1024,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     const isVirtualNoShow = (b: Booking) => b.meeting_type === 'virtual' && !b.cancelled_at && isNoShow(b)
                     return (
                       <>
-                        {bookings.filter(isActive).length} active ·{' '}
+                        {bookings.filter(isActive).length} upcoming ·{' '}
                         {bookings.filter(isCompleted).length} completed ·{' '}
                         {bookings.filter(isCancelled).length} cancelled ·{' '}
                         {bookings.filter(isVirtualNoShow).length} no-shows ·{' '}
