@@ -1019,6 +1019,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) >= new Date()).length} active ·{' '}
                   {bookings.filter(b => !b.cancelled_at && new Date((b.appointment_slots as any)?.start_time) < new Date()).length} completed ·{' '}
                   {bookings.filter(b => b.cancelled_at).length} cancelled ·{' '}
+                  {bookings.filter(b => !b.cancelled_at && b.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')).length} no-shows ·{' '}
                   {new Set(bookings.filter(b => !b.cancelled_at).map(b => b.student_email)).size} unique students
                 </p>
 
