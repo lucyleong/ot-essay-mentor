@@ -193,7 +193,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
               padding: '8px 20px',
               borderRadius: 8,
             }}>
-              Upload your essay →
+              Share your essay →
             </a>
           </div>
         )}
