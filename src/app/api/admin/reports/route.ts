@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
   
   const { count: totalBookings } = await bookingsQuery
 
- // Virtual bookings (non-cancelled, non-no-show)
+ // Virtual bookings (non-cancelled, non-no-show, non-connection-issue-did-not-meet)
   const { data: virtualData } = await supabase
     .from('student_bookings')
     .select(`
@@ -145,8 +145,11 @@ export async function GET(request: NextRequest) {
     .eq('meeting_type', 'virtual')
     .is('cancelled_at', null)
 
-  const virtualBookings = (virtualData ?? []).filter(b => 
-    !(b as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
+  const virtualBookings = (virtualData ?? []).filter(b =>
+    !(b as any).survey_responses?.some((s: any) =>
+      s.additional_answers?.no_show === 'Yes' ||
+      s.additional_answers?.meet_issue === 'Yes - did not meet'
+    )
   ).length
 
   const { count: inPersonBookings } = await supabase
