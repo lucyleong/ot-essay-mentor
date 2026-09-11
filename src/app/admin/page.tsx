@@ -1097,8 +1097,11 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
 
               if (bookingMeetingType === 'virtual' && booking.meeting_type !== 'virtual') return false
 if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') return false
+                    const hasNoShowOrConnectionIssue = booking.survey_responses?.some((s: any) =>
+                      s.additional_answers?.no_show === 'Yes' || s.additional_answers?.meet_issue === 'Yes - did not meet'
+                    )
                     if (bookingStatus === 'upcoming' && (booking.cancelled_at || isPast)) return false
-                    if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast)) return false
+                    if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast || hasNoShowOrConnectionIssue)) return false
                     if (bookingStatus === 'cancelled' && !booking.cancelled_at) return false
                     if (bookingStatus === 'issues' && !booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes' || (s.additional_answers?.meet_issue ?? '').startsWith('Yes'))) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
@@ -1155,9 +1158,11 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                      {/* Top row: name + badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                          <span title="Unique student # within this filtered list — sort by Student name to count them in order" style={{ fontSize: 13, color: '#888780', flexShrink: 0 }}>
-                            {studentNumber}.
-                          </span>
+                          {bookingSort === 'student_name' && (
+                            <span title="Unique student # within this filtered list" style={{ fontSize: 13, color: '#888780', flexShrink: 0 }}>
+                              {studentNumber}.
+                            </span>
+                          )}
                           <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
                           {booking.student_essays?.length > 0 && (
                             <a
