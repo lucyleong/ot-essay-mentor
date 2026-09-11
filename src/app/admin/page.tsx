@@ -1089,7 +1089,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
 
                {bookingStatus !== 'available' && bookingStatus !== 'expired' && <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
               {(() => {
-              const visitCounts = new Map<string, number>()
+              const uniqueStudentNumbers = new Map<string, number>()
               return bookings.filter(booking => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
@@ -1119,8 +1119,10 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
               }).reduce((acc: any[], booking, index, arr) => {
                     const startTime = (booking.appointment_slots as any)?.start_time
                     const isPast = startTime ? new Date(startTime) < new Date() : false
-                    const visitNumber = (visitCounts.get(booking.student_email) ?? 0) + 1
-                    visitCounts.set(booking.student_email, visitNumber)
+                    if (!uniqueStudentNumbers.has(booking.student_email)) {
+                      uniqueStudentNumbers.set(booking.student_email, uniqueStudentNumbers.size + 1)
+                    }
+                    const studentNumber = uniqueStudentNumbers.get(booking.student_email)!
 
                     // Add date header if sorting by date and date changes
                     if ((bookingSort === 'start_time_asc' || bookingSort === 'start_time_desc') && startTime) {
@@ -1153,10 +1155,10 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                      {/* Top row: name + badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                          <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
-                          <span title="Appointment # for this student in the list below" style={{ fontSize: 10, padding: '1px 5px', borderRadius: 10, background: '#F1EFE8', color: '#888780', flexShrink: 0 }}>
-                            #{visitNumber}
+                          <span title="Unique student # within this filtered list — sort by Student name to count them in order" style={{ fontSize: 13, color: '#888780', flexShrink: 0 }}>
+                            {studentNumber}.
                           </span>
+                          <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
                           {booking.student_essays?.length > 0 && (
                             <a
                               href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`}
