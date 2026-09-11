@@ -1031,7 +1031,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                         {bookings.filter(isCancelled).length} cancelled ·{' '}
                         {bookings.filter(isVirtualNoShow).length} no-shows ·{' '}
                         {bookings.filter(isVirtualConnectionIssue).length} connection issue - did not meet ·{' '}
-                        {new Set(bookings.filter(b => !b.cancelled_at).map(b => b.student_email)).size} unique students
+                        {new Set(bookings.filter(isCompleted).map(b => b.student_email)).size} unique students helped
                       </>
                     )
                   })()}
