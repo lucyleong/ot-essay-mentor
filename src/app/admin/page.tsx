@@ -1126,6 +1126,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       uniqueStudentNumbers.set(booking.student_email, uniqueStudentNumbers.size + 1)
                     }
                     const studentNumber = uniqueStudentNumbers.get(booking.student_email)!
+                    const isGroupedByStudent = bookingSort === 'student_name'
+                    const isFirstInGroup = !isGroupedByStudent || index === 0 || arr[index - 1].student_email !== booking.student_email
+                    const isLastInGroup = !isGroupedByStudent || index === arr.length - 1 || arr[index + 1].student_email !== booking.student_email
 
                     // Add date header if sorting by date and date changes
                     if ((bookingSort === 'start_time_asc' || bookingSort === 'start_time_desc') && startTime) {
@@ -1153,26 +1156,42 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     acc.push(
                    <div key={booking.id} style={{
 
-                      padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
+                      padding: isFirstInGroup ? '10px 0 4px' : '2px 0 4px',
+                      borderBottom: isLastInGroup ? '0.5px solid #e8e6de' : 'none',
                     }}>
-                     {/* Top row: name + badges */}
+                     {isFirstInGroup && (
+                       <>
+                         {/* Top row: name + essay badge */}
+                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                           {bookingSort === 'student_name' && (
+                             <span title="Unique student # within this filtered list" style={{ fontSize: 13, color: '#888780', flexShrink: 0 }}>
+                               {studentNumber}.
+                             </span>
+                           )}
+                           <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
+                           {booking.student_essays?.length > 0 && (
+                             <a
+                               href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`}
+                               style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
+                             >
+                               {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
+                             </a>
+                           )}
+                         </div>
+                         {/* Second row: email */}
+                         <p style={{ fontSize: 12, color: '#888780', margin: '0 0 1px' }}>
+                           {booking.student_email}
+                         </p>
+                       </>
+                     )}
+                      {/* Per-appointment row: mentor · date · time + type/status badges */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                          {bookingSort === 'student_name' && (
-                            <span title="Unique student # within this filtered list" style={{ fontSize: 13, color: '#888780', flexShrink: 0 }}>
-                              {studentNumber}.
-                            </span>
-                          )}
-                          <a href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`} style={{ fontWeight: 500, fontSize: 13, color: '#582C83', textDecoration: 'none' }}>{booking.student_name}</a>
-                          {booking.student_essays?.length > 0 && (
-                            <a
-                              href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`}
-                              style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
-                            >
-                              {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
-                            </a>
-                          )}
-                        </div>
+                        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
+                          {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
+                          {(booking.appointment_slots as any)?.start_time
+                            ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
+                            : 'No slot'}
+                        </p>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>
@@ -1185,17 +1204,6 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           </span>
                         </div>
                       </div>
-                      {/* Second row: email */}
-                      <p style={{ fontSize: 12, color: '#888780', margin: '0 0 1px' }}>
-                        {booking.student_email}
-                      </p>
-                      {/* Third row: mentor · date · time */}
-                      <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
-                        {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
-                        {(booking.appointment_slots as any)?.start_time
-                          ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
-                          : 'No slot'}
-                      </p>
                      {booking.cancelled_at && (
                         <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
                           Canceled {formatDateTimePST(booking.cancelled_at)}
