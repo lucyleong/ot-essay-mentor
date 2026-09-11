@@ -1103,7 +1103,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                     if (bookingStatus === 'upcoming' && (booking.cancelled_at || isPast)) return false
                     if (bookingStatus === 'completed' && (booking.cancelled_at || !isPast || hasNoShowOrConnectionIssue)) return false
                     if (bookingStatus === 'cancelled' && !booking.cancelled_at) return false
-                    if (bookingStatus === 'issues' && !booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes' || (s.additional_answers?.meet_issue ?? '').startsWith('Yes'))) return false
+                    if (bookingStatus === 'issues' && !booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes' || s.additional_answers?.meet_issue === 'Yes - did not meet')) return false
                     if (mentorFilter !== 'all' && mentorName !== mentorFilter) return false
                return true
                   }).sort((a, b) => {
