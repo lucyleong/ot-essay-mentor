@@ -1589,7 +1589,7 @@ const exportHeaders = await getAuthHeader()
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Connection issues - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
                         { label: 'Connection issues - met', value: reports.bookings.meetIssuesStillMet },
-                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
+                        { label: 'Unique students helped', value: reports.bookings.uniqueStudentsHelped },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
                           <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#582C83' }}>{stat.value}</p>

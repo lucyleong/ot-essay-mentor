@@ -181,6 +181,30 @@ export async function GET(request: NextRequest) {
     .eq('is_booked', false)
     .lt('start_time', new Date().toISOString())
 
+  // Unique students helped - matches the Appointments tab's "isCompleted" definition:
+  // not cancelled, not a no-show, not a connection-issue-did-not-meet, and (for virtual) not still upcoming
+  const { data: helpedData } = await supabase
+    .from('student_bookings')
+    .select(`
+      student_email,
+      meeting_type,
+      appointment_slots ( start_time ),
+      survey_responses ( additional_answers )
+    `)
+    .is('cancelled_at', null)
+
+  const now = new Date()
+  const uniqueStudentsHelped = new Set(
+    (helpedData ?? [])
+      .filter((b: any) => {
+        const isNoShow = b.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
+        const isConnectionIssueDidNotMeet = b.survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet')
+        const isUpcoming = b.meeting_type === 'virtual' && b.appointment_slots?.start_time && new Date(b.appointment_slots.start_time) >= now
+        return !isNoShow && !isConnectionIssueDidNotMeet && !isUpcoming
+      })
+      .map((b: any) => b.student_email)
+  ).size
+
   // No shows and meet issues from mentor surveys
   const { data: noShowData } = await supabase
     .from('survey_responses')
@@ -309,6 +333,7 @@ let mentorActivityQuery = supabase
       meetIssuesStillMet,
       totalSlots:    totalSlots ?? 0,
       unbookedSlots: unbookedSlots ?? 0,
+      uniqueStudentsHelped,
     },
     demographics: {
      firstGen:        firstGenEntries,
