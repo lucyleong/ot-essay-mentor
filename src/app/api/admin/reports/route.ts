@@ -126,6 +126,31 @@ export async function GET(request: NextRequest) {
   const meetingType = request.nextUrl.searchParams.get('type')
    // 'virtual', 'in_person', or null for all
 
+  // Which booking outcomes to include in demographics — checkboxes on the
+  // admin UI, defaulting to upcoming + completed (students who actually
+  // showed up, or still will).
+  const demographicsCategoriesParam = request.nextUrl.searchParams.get('demographicsCategories')
+  const demographicsCategories = demographicsCategoriesParam
+    ? demographicsCategoriesParam.split(',')
+    : ['upcoming', 'completed']
+
+  const now = new Date()
+  function categorizeBooking(booking: {
+    cancelled_at: string | null
+    meeting_type: string
+    start_time: string | null
+    survey_responses: any[] | null
+  }) {
+    if (booking.cancelled_at) return 'cancelled'
+    const isNoShow = booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
+    if (isNoShow) return 'no_show'
+    const isConnectionIssueDidNotMeet = booking.survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet')
+    if (isConnectionIssueDidNotMeet) return 'connection_issue'
+    const isUpcoming = booking.meeting_type === 'virtual' && !!booking.start_time && new Date(booking.start_time) >= now
+    if (isUpcoming) return 'upcoming'
+    return 'completed'
+  }
+
   // Total bookings
   let bookingsQuery = supabase
     .from('student_bookings')
@@ -193,15 +218,14 @@ export async function GET(request: NextRequest) {
     `)
     .is('cancelled_at', null)
 
-  const now = new Date()
   const uniqueStudentsHelped = new Set(
     (helpedData ?? [])
-      .filter((b: any) => {
-        const isNoShow = b.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
-        const isConnectionIssueDidNotMeet = b.survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet')
-        const isUpcoming = b.meeting_type === 'virtual' && b.appointment_slots?.start_time && new Date(b.appointment_slots.start_time) >= now
-        return !isNoShow && !isConnectionIssueDidNotMeet && !isUpcoming
-      })
+      .filter((b: any) => categorizeBooking({
+        cancelled_at: null,
+        meeting_type: b.meeting_type,
+        start_time: b.appointment_slots?.start_time ?? null,
+        survey_responses: b.survey_responses,
+      }) === 'completed')
       .map((b: any) => b.student_email)
   ).size
 
@@ -223,7 +247,11 @@ export async function GET(request: NextRequest) {
       answer_text,
       intake_questions ( question_text, sort_order, question_key ),
       booking_id,
-      student_bookings!booking_question_answers_booking_id_fkey ( student_email, booked_at, cancelled_at, meeting_type )
+      student_bookings!booking_question_answers_booking_id_fkey (
+        student_email, booked_at, cancelled_at, meeting_type,
+        appointment_slots ( start_time ),
+        survey_responses ( additional_answers )
+      )
     `)
 
   if (meetingType) {
@@ -234,8 +262,13 @@ export async function GET(request: NextRequest) {
 
   // Flatten with student email
   const answersWithEmail = (intakeAnswers ?? [])
-    .filter((a: any) => !a.student_bookings?.cancelled_at)
     .filter((a: any) => !meetingType || a.student_bookings?.meeting_type === meetingType)
+    .filter((a: any) => demographicsCategories.includes(categorizeBooking({
+      cancelled_at:      a.student_bookings?.cancelled_at ?? null,
+      meeting_type:      a.student_bookings?.meeting_type,
+      start_time:        a.student_bookings?.appointment_slots?.start_time ?? null,
+      survey_responses:  a.student_bookings?.survey_responses ?? null,
+    })))
     .map((a: any) => ({
       answer_text:      a.answer_text,
       student_email:    a.student_bookings?.student_email,

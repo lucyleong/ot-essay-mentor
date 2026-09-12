@@ -115,6 +115,7 @@ const [savingShadow, setSavingShadow] = useState(false)
 const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
+const [demographicsCategories, setDemographicsCategories] = useState<string[]>(['upcoming', 'completed'])
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
 const [mentorAvailabilityLog, setMentorAvailabilityLog] = useState<any[]>([])
@@ -153,7 +154,7 @@ const [savingResources, setSavingResources] = useState(false)
   }, [])
   useEffect(() => {
     if (activePanel === 'reports') loadReports()
-  }, [reportsMeetingType])
+  }, [reportsMeetingType, demographicsCategories])
 
   useEffect(() => {
     if (activePanel === 'qrcodes' && typeof window !== 'undefined' && (window as any).QRCode) {
@@ -608,7 +609,10 @@ async function toggleMentorVirtual(mentor: Mentor) {
   }
   async function loadReports() {
     setReportsLoading(true)
-    const params = reportsMeetingType !== 'all' ? `?type=${reportsMeetingType}` : ''
+    const searchParams = new URLSearchParams()
+    if (reportsMeetingType !== 'all') searchParams.set('type', reportsMeetingType)
+    searchParams.set('demographicsCategories', demographicsCategories.join(','))
+    const params = `?${searchParams.toString()}`
 
     let res = await fetch(`/api/admin/reports${params}`, { headers: await getAuthHeader() })
     if (!res.ok) {
@@ -1744,6 +1748,28 @@ const exportHeaders = await getAuthHeader()
                           </button>
                         ))}
                       </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
+                      {([
+                        { key: 'upcoming', label: 'Upcoming' },
+                        { key: 'completed', label: 'Completed' },
+                        { key: 'cancelled', label: 'Cancelled' },
+                        { key: 'no_show', label: 'No-shows' },
+                        { key: 'connection_issue', label: 'Connection issue - did not meet' },
+                      ] as const).map(({ key, label }) => (
+                        <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={demographicsCategories.includes(key)}
+                            onChange={e => {
+                              setDemographicsCategories(prev =>
+                                e.target.checked ? [...prev, key] : prev.filter(c => c !== key)
+                              )
+                            }}
+                          />
+                          {label}
+                        </label>
+                      ))}
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
