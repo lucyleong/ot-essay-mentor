@@ -282,18 +282,28 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
   // Mentor activity
 let mentorActivityQuery = supabase
     .from('student_bookings')
-    .select(`appointment_slots ( mentor_profiles ( full_name ) )`)
-    .is('cancelled_at', null)
+    .select(`
+      cancelled_at, meeting_type,
+      appointment_slots ( start_time, mentor_profiles ( full_name ) ),
+      survey_responses ( additional_answers )
+    `)
 
   if (meetingType) mentorActivityQuery = mentorActivityQuery.eq('meeting_type', meetingType)
 
   const { data: mentorActivity } = await mentorActivityQuery
 
   const mentorMap: Record<string, number> = {}
-  ;(mentorActivity ?? []).forEach((b: any) => {
-    const name = b.appointment_slots?.mentor_profiles?.full_name?.split(' ')[0]
-    if (name) mentorMap[name] = (mentorMap[name] ?? 0) + 1
-  })
+  ;(mentorActivity ?? [])
+    .filter((b: any) => demographicsCategories.includes(categorizeBooking({
+      cancelled_at:      b.cancelled_at,
+      meeting_type:      b.meeting_type,
+      start_time:        b.appointment_slots?.start_time ?? null,
+      survey_responses:  b.survey_responses,
+    })))
+    .forEach((b: any) => {
+      const name = b.appointment_slots?.mentor_profiles?.full_name?.split(' ')[0]
+      if (name) mentorMap[name] = (mentorMap[name] ?? 0) + 1
+    })
 
   // Student survey ratings
   const { data: studentSurveys } = await supabase

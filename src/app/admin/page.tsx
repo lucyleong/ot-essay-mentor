@@ -1731,7 +1731,7 @@ const exportHeaders = await getAuthHeader()
                     
                {/* Demographics */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>Intake form responses</p>
+                      <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>Intake form responses &amp; mentor activity</p>
                       <div style={{ display: 'flex', gap: 6 }}>
                         {(['all', 'virtual', 'in_person'] as const).map(t => (
                           <button
