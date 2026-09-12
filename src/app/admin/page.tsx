@@ -1189,15 +1189,15 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                          </p>
                        </>
                      )}
-                      {/* Per-appointment row: mentor · date · time + type/status/sms/issue badges */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2, flexWrap: 'wrap' }}>
+                      {/* Per-appointment row: mentor · date · time + type/status badges */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
                           {(booking.appointment_slots as any)?.start_time
                             ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
                             : 'No slot'}
                         </p>
-                        <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>
                           <span style={{
@@ -1207,39 +1207,42 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           }}>
                             {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
                           </span>
-                          {booking.sms_consent ? (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20,
-                              background: booking.sms_confirmed_at ? '#E1F5EE' : (booking.sms_confirm_sent ? '#FAEEDA' : '#F1EFE8'),
-                              color: booking.sms_confirmed_at ? '#085041' : (booking.sms_confirm_sent ? '#854F0B' : '#5F5E5A'),
-                            }}>
-                              {booking.sms_confirmed_at ? 'SMS confirmed' : (booking.sms_confirm_sent ? 'No reply' : 'No reply')}
-                            </span>
-                          ) : (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
-                              No SMS consent
-                            </span>
-                          )}
-                          {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
-                              No-show
-                            </span>
-                          )}
-                          {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
-                              Connection issue - did not meet
-                            </span>
-                          )}
-                          {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - still met') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
-                              Connection issue - still met
-                            </span>
-                          )}
-                          {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
-                              Connection issue
-                            </span>
-                          )}
                         </div>
+                      </div>
+                      {/* SMS/no-show/connection-issue badges — own row, right-aligned */}
+                      <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', marginBottom: 2 }}>
+                        {booking.sms_consent ? (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20,
+                            background: booking.sms_confirmed_at ? '#E1F5EE' : (booking.sms_confirm_sent ? '#FAEEDA' : '#F1EFE8'),
+                            color: booking.sms_confirmed_at ? '#085041' : (booking.sms_confirm_sent ? '#854F0B' : '#5F5E5A'),
+                          }}>
+                            {booking.sms_confirmed_at ? 'SMS confirmed' : (booking.sms_confirm_sent ? 'No reply' : 'No reply')}
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                            No SMS consent
+                          </span>
+                        )}
+                        {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
+                            No-show
+                          </span>
+                        )}
+                        {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet') && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
+                            Connection issue - did not meet
+                          </span>
+                        )}
+                        {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - still met') && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                            Connection issue - still met
+                          </span>
+                        )}
+                        {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes') && (
+                          <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                            Connection issue
+                          </span>
+                        )}
                       </div>
                      {booking.cancelled_at && (
                         <p style={{ fontSize: 11, color: '#E24B4A', margin: '2px 0 0' }}>
