@@ -1196,13 +1196,17 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           {(booking.appointment_slots as any)?.start_time
                             ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
                             : 'No slot'}
-                          {' · '}
-                          <span style={{
-                            fontWeight: 500,
-                            color: !booking.sms_consent ? '#6B7280' : (booking.sms_confirmed_at ? '#15803D' : '#B45309'),
-                          }}>
-                            {!booking.sms_consent ? 'No SMS consent' : (booking.sms_confirmed_at ? 'Confirmed' : 'No reply')}
-                          </span>
+                          {!booking.cancelled_at && (
+                            <>
+                              {' · '}
+                              <span style={{
+                                fontWeight: 500,
+                                color: !booking.sms_consent ? '#6B7280' : (booking.sms_confirmed_at ? '#15803D' : '#B45309'),
+                              }}>
+                                {!booking.sms_consent ? 'No SMS consent' : (booking.sms_confirmed_at ? 'Confirmed' : 'No reply')}
+                              </span>
+                            </>
+                          )}
                         </p>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
