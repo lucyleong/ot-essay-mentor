@@ -1750,7 +1750,7 @@ const exportHeaders = await getAuthHeader()
                         ))}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 14, flexWrap: 'nowrap', overflowX: 'auto', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A', paddingBottom: 2 }}>
+                    <div className="flex-row" style={{ display: 'flex', gap: 14, flexWrap: 'nowrap', overflowX: 'auto', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A', paddingBottom: 2 }}>
                       {([
                         { key: 'upcoming', label: 'Upcoming' },
                         { key: 'completed', label: 'Completed' },
