@@ -56,47 +56,25 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  let { data: slot, error: slotLookupError } = await supabase
+  // In-person walk-ins have no pre-existing slot to reuse — always create a
+  // fresh one, since reusing a mentor's earlier slot from today would try to
+  // link two bookings to the same slot_id and violate its unique constraint.
+  const { data: slot, error: slotInsertError } = await supabase
     .from('appointment_slots')
-    .select('id')
-    .eq('mentor_id', mentorId)
-    .eq('meeting_type', 'in_person')
-    .gte('start_time', new Date().toISOString().split('T')[0])
-    .maybeSingle()
+    .insert({
+      mentor_id:    mentorId,
+      start_time:   new Date().toISOString(),
+      end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
+      meeting_type: 'in_person',
+      is_booked:    true,
+      is_cancelled: false,
+    })
+    .select()
+    .single()
 
-  if (slotLookupError) {
+  if (slotInsertError) {
     return NextResponse.json(
-      { error: `Marked helped, but failed to look up existing slot: ${slotLookupError.message}` },
-      { status: 500 }
-    )
-  }
-
-  if (!slot) {
-    const { data: newSlot, error: slotInsertError } = await supabase
-      .from('appointment_slots')
-      .insert({
-        mentor_id:    mentorId,
-        start_time:   new Date().toISOString(),
-        end_time:     new Date(Date.now() + 20 * 60000).toISOString(),
-        meeting_type: 'in_person',
-        is_booked:    true,
-        is_cancelled: false,
-      })
-      .select()
-      .single()
-
-    if (slotInsertError) {
-      return NextResponse.json(
-        { error: `Marked helped, but failed to create a slot: ${slotInsertError.message}` },
-        { status: 500 }
-      )
-    }
-    slot = newSlot
-  }
-
-  if (!slot) {
-    return NextResponse.json(
-      { error: 'Marked helped, but no slot was available or created' },
+      { error: `Marked helped, but failed to create a slot: ${slotInsertError.message}` },
       { status: 500 }
     )
   }
