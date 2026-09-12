@@ -1750,7 +1750,7 @@ const exportHeaders = await getAuthHeader()
                         ))}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A' }}>
+                    <div style={{ display: 'flex', gap: 14, flexWrap: 'nowrap', overflowX: 'auto', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A', paddingBottom: 2 }}>
                       {([
                         { key: 'upcoming', label: 'Upcoming' },
                         { key: 'completed', label: 'Completed' },
@@ -1758,7 +1758,7 @@ const exportHeaders = await getAuthHeader()
                         { key: 'no_show', label: 'No-shows' },
                         { key: 'connection_issue', label: 'Connection issue' },
                       ] as const).map(({ key, label }) => (
-                        <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
+                        <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}>
                           <input
                             type="checkbox"
                             checked={pendingDemographicsCategories.includes(key)}
@@ -1777,6 +1777,7 @@ const exportHeaders = await getAuthHeader()
                         style={{
                           fontSize: 11, padding: '3px 12px', borderRadius: 20, background: '#582C83', color: '#ffffff', border: 'none',
                           opacity: [...pendingDemographicsCategories].sort().join(',') === [...demographicsCategories].sort().join(',') ? 0.5 : 1,
+                          flexShrink: 0, whiteSpace: 'nowrap',
                         }}
                       >
                         Apply
