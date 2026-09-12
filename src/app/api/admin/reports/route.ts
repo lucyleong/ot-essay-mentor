@@ -260,15 +260,31 @@ export async function GET(request: NextRequest) {
 
   const { data: intakeAnswers } = await intakeQuery
 
-  // Flatten with student email
-  const answersWithEmail = (intakeAnswers ?? [])
-    .filter((a: any) => !meetingType || a.student_bookings?.meeting_type === meetingType)
-    .filter((a: any) => demographicsCategories.includes(categorizeBooking({
+  // Returning students only get re-asked a couple of intake questions
+  // (help_with, private_counselor) — most demographic answers only exist on
+  // their very first booking. So the category filter decides which STUDENTS
+  // are in scope (via any one of their bookings matching), but once a
+  // student is in scope we pull answers from all of their bookings, not
+  // just the ones matching the filter — otherwise a returning student's
+  // upcoming appointment would show no first-gen/ethnicity/etc. data at all.
+  const eligibleEmails = new Set<string>()
+  ;(intakeAnswers ?? []).forEach((a: any) => {
+    if (meetingType && a.student_bookings?.meeting_type !== meetingType) return
+    const category = categorizeBooking({
       cancelled_at:      a.student_bookings?.cancelled_at ?? null,
       meeting_type:      a.student_bookings?.meeting_type,
       start_time:        a.student_bookings?.appointment_slots?.start_time ?? null,
       survey_responses:  a.student_bookings?.survey_responses ?? null,
-    })))
+    })
+    if (demographicsCategories.includes(category) && a.student_bookings?.student_email) {
+      eligibleEmails.add(a.student_bookings.student_email)
+    }
+  })
+
+  // Flatten with student email
+  const answersWithEmail = (intakeAnswers ?? [])
+    .filter((a: any) => !meetingType || a.student_bookings?.meeting_type === meetingType)
+    .filter((a: any) => eligibleEmails.has(a.student_bookings?.student_email))
     .map((a: any) => ({
       answer_text:      a.answer_text,
       student_email:    a.student_bookings?.student_email,
