@@ -1601,7 +1601,7 @@ const exportHeaders = await getAuthHeader()
                   <div>
                     {/* Booking stats */}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
-                  <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, marginBottom: 20 }}>
+                  <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 8, marginBottom: 20 }}>
                       {[
 { label: 'Virtual',    value: reports.bookings.virtual },
                         { label: 'In person', value: reports.bookings.inPerson },
@@ -1609,6 +1609,7 @@ const exportHeaders = await getAuthHeader()
                         { label: 'No shows',  value: reports.bookings.noShows },
                         { label: 'Connection issues - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
                         { label: 'Connection issues - met', value: reports.bookings.meetIssuesStillMet },
+                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
                         { label: 'Unique students helped', value: reports.bookings.uniqueStudentsHelped },
                       ].map(stat => (
                         <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
