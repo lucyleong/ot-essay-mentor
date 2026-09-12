@@ -1238,7 +1238,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         </span>
                       )}
 
-                      {!booking.cancelled_at && !isPast && (
+                      {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (
                         cancellingId === booking.id ? (
                           <>
                             <button
@@ -1269,7 +1269,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       )}
 
                       {/* Transfer button */}
-                      {!booking.cancelled_at && !isPast && (
+                      {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (
                         transferringId === booking.id ? (
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
                             <select
@@ -1327,7 +1327,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                       )}
 
                       {/* Reschedule button */}
-                      {!booking.cancelled_at && !isPast && (
+                      {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (
                         reschedulingId === booking.id ? (
                           <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
                             <input
@@ -1915,6 +1915,47 @@ const exportHeaders = await getAuthHeader()
                           <p style={{ fontSize: 12, color: '#888780', margin: '2px 0 0' }}>
                             {entry.student_email} · Checked in {formatDateTimePST(entry.checked_in_at)}
                           </p>
+                          {entry.status === 'waiting' && (
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+                              <select
+                                value={helpedByMentorId[entry.id] ?? ''}
+                                onChange={e => setHelpedByMentorId(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                                style={{ fontSize: 12, padding: '4px 8px', height: 30, width: 'auto' }}
+                              >
+                                <option value="">Helped by...</option>
+                                {mentors.filter(m => m.is_active).map(m => (
+                                  <option key={m.id} value={m.id}>{m.full_name}</option>
+                                ))}
+                              </select>
+                              <button
+                                disabled={resolvingWalkinId === entry.id || !helpedByMentorId[entry.id]}
+                                onClick={() => markWalkinHelped(entry.id)}
+                                style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, background: '#582C83', color: '#ffffff', border: 'none' }}
+                              >
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as helped'}
+                              </button>
+                              <button
+                                disabled={resolvingWalkinId === entry.id}
+                                onClick={async () => {
+                                  setResolvingWalkinId(entry.id)
+                                  const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, {
+                                    method: 'POST',
+                                    headers: await getAuthHeader(),
+                                  })
+                                  setResolvingWalkinId(null)
+                                  if (!res.ok) {
+                                    const data = await res.json().catch(() => ({}))
+                                    alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                                    return
+                                  }
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0 }}
+                              >
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as walked out'}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
