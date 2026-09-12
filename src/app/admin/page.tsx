@@ -1211,13 +1211,17 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
 <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>
-                          <span style={{
-                            fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
-                            background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
-                            color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
-                          }}>
-                            {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
-                          </span>
+                          {(booking.cancelled_at || !(booking as any).survey_responses?.some((s: any) =>
+                            s.additional_answers?.no_show === 'Yes' || s.additional_answers?.meet_issue === 'Yes - did not meet'
+                          )) && (
+                            <span style={{
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
+                              background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
+                              color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
+                            }}>
+                              {booking.cancelled_at ? 'Cancelled' : (isPast ? 'Completed' : 'Active')}
+                            </span>
+                          )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (
                             <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
                               No-show
