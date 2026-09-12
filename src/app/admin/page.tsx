@@ -116,6 +116,7 @@ const [deletingMentorId, setDeletingMentorId] = useState<string | null>(null)
 const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 'start_time_desc' | 'student_name'>('booked_at')
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [demographicsCategories, setDemographicsCategories] = useState<string[]>(['upcoming', 'completed'])
+const [pendingDemographicsCategories, setPendingDemographicsCategories] = useState<string[]>(['upcoming', 'completed'])
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
 const [mentorAvailabilityLog, setMentorAvailabilityLog] = useState<any[]>([])
@@ -1755,14 +1756,14 @@ const exportHeaders = await getAuthHeader()
                         { key: 'completed', label: 'Completed' },
                         { key: 'cancelled', label: 'Cancelled' },
                         { key: 'no_show', label: 'No-shows' },
-                        { key: 'connection_issue', label: 'Connection issue - did not meet' },
+                        { key: 'connection_issue', label: 'Connection issue' },
                       ] as const).map(({ key, label }) => (
                         <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
                           <input
                             type="checkbox"
-                            checked={demographicsCategories.includes(key)}
+                            checked={pendingDemographicsCategories.includes(key)}
                             onChange={e => {
-                              setDemographicsCategories(prev =>
+                              setPendingDemographicsCategories(prev =>
                                 e.target.checked ? [...prev, key] : prev.filter(c => c !== key)
                               )
                             }}
@@ -1770,6 +1771,16 @@ const exportHeaders = await getAuthHeader()
                           {label}
                         </label>
                       ))}
+                      <button
+                        onClick={() => setDemographicsCategories(pendingDemographicsCategories)}
+                        disabled={[...pendingDemographicsCategories].sort().join(',') === [...demographicsCategories].sort().join(',')}
+                        style={{
+                          fontSize: 11, padding: '3px 12px', borderRadius: 20, background: '#582C83', color: '#ffffff', border: 'none',
+                          opacity: [...pendingDemographicsCategories].sort().join(',') === [...demographicsCategories].sort().join(',') ? 0.5 : 1,
+                        }}
+                      >
+                        Apply
+                      </button>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
