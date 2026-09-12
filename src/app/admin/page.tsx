@@ -117,6 +117,7 @@ const [bookingSort, setBookingSort] = useState<'booked_at' | 'start_time_asc' | 
 const [reportsMeetingType, setReportsMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
 const [walkinQueue, setWalkinQueue] = useState<any[]>([])
 const [unresolvedWalkins, setUnresolvedWalkins] = useState<any[]>([])
+const [mentorAvailabilityLog, setMentorAvailabilityLog] = useState<any[]>([])
 const [resolvingWalkinId, setResolvingWalkinId] = useState<string | null>(null)
 const [helpedByMentorId, setHelpedByMentorId] = useState<Record<string, string>>({})
 const [bookingMeetingType, setBookingMeetingType] = useState<'all' | 'virtual' | 'in_person'>('all')
@@ -461,6 +462,10 @@ const walkinRes = await fetch('/api/ccc/queue', { headers: authHeader })
 const unresolvedRes = await fetch('/api/admin/walkin-queue/unresolved', { headers: authHeader })
     const unresolvedData = await unresolvedRes.json()
     setUnresolvedWalkins(unresolvedData.queue ?? [])
+
+const availabilityLogRes = await fetch('/api/ccc/mentor-availability-log', { headers: authHeader })
+    const availabilityLogData = await availabilityLogRes.json()
+    setMentorAvailabilityLog(availabilityLogData.log ?? [])
 
 const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: authHeader })
     const scheduleSlotsData = await scheduleSlotsRes.json()
@@ -1815,6 +1820,31 @@ const exportHeaders = await getAuthHeader()
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Today's in-person walk-in students
                 </p>
+
+                {mentorAvailabilityLog.length > 0 && (
+                  <div style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>
+                      Who toggled in-person availability today
+                    </h2>
+                    <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
+                      So you know who to ask about the queue on a given day.
+                    </p>
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                      {mentorAvailabilityLog.map((entry: any) => (
+                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
+                          <p style={{ fontSize: 13, margin: 0 }}>{entry.mentor_profiles?.full_name ?? 'Unknown mentor'}</p>
+                          <span style={{
+                            fontSize: 12, padding: '2px 8px', borderRadius: 20,
+                            background: entry.is_available ? '#E1F5EE' : '#F1EFE8',
+                            color:      entry.is_available ? '#085041' : '#5F5E5A',
+                          }}>
+                            {entry.is_available ? 'Available' : 'Unavailable'} · {formatDateTimePST(entry.toggled_at)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {unresolvedWalkins.length > 0 && (
                   <div style={{ marginBottom: 24 }}>

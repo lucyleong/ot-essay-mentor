@@ -24,5 +24,9 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  await supabase
+    .from('mentor_availability_log')
+    .insert({ mentor_id: mentor.id, is_available: body.isAvailable })
+
   return NextResponse.json({ ok: true })
 }
