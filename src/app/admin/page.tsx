@@ -685,6 +685,7 @@ const navItems = [
       key={item.key}
       onClick={() => {
         setActivePanel(item.key)
+        setMenuOpen(false)
         const url = new URL(window.location.href)
         url.searchParams.set('panel', item.key)
         window.history.pushState({}, '', url)
