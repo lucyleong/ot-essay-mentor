@@ -1,6 +1,11 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 export const revalidate = 0
+
+export const metadata: Metadata = {
+  title: 'Meet the College Essay Mentor Team | Oakland Tech College Essay Mentor Program',
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
