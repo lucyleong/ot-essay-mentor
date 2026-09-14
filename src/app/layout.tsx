@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png?v=4',
   },
+  verification: {
+    google: 'R6HIihHjA2-HCX3-2YMmtR1IzrEFjJVDMUKK2A_Y0nM',
+  },
 };
 
 export const viewport = {
