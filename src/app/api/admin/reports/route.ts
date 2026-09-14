@@ -155,90 +155,8 @@ export async function GET(request: NextRequest) {
   let bookingsQuery = supabase
     .from('student_bookings')
     .select('*', { count: 'exact', head: true })
-  
+
   if (meetingType) bookingsQuery = bookingsQuery.eq('meeting_type', meetingType)
-  
-  const { count: totalBookings } = await bookingsQuery
-
- // Virtual bookings (non-cancelled, non-no-show, non-connection-issue-did-not-meet)
-  const { data: virtualData } = await supabase
-    .from('student_bookings')
-    .select(`
-      id,
-      survey_responses ( additional_answers )
-    `)
-    .eq('meeting_type', 'virtual')
-    .is('cancelled_at', null)
-
-  const virtualBookings = (virtualData ?? []).filter(b =>
-    !(b as any).survey_responses?.some((s: any) =>
-      s.additional_answers?.no_show === 'Yes' ||
-      s.additional_answers?.meet_issue === 'Yes - did not meet'
-    )
-  ).length
-
-  const { count: inPersonBookings } = await supabase
-    .from('student_bookings')
-    .select('*', { count: 'exact', head: true })
-    .eq('meeting_type', 'in_person')
-    .is('cancelled_at', null)
-
-  const { count: activeBookings } = await supabase
-    .from('student_bookings')
-    .select('*', { count: 'exact', head: true })
-    .is('cancelled_at', null)
-
-  const { count: cancelledBookings } = await supabase
-    .from('student_bookings')
-    .select('*', { count: 'exact', head: true })
-    .not('cancelled_at', 'is', null)
-
-  // Unused capacity - slots that were never booked or got cancelled and not rebooked
-  const { count: totalSlots } = await supabase
-    .from('appointment_slots')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_cancelled', false)
-
-  const { count: unbookedSlots } = await supabase
-    .from('appointment_slots')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_cancelled', false)
-    .eq('is_booked', false)
-    .lt('start_time', new Date().toISOString())
-
-  // Unique students helped - matches the Appointments tab's "isCompleted" definition:
-  // not cancelled, not a no-show, not a connection-issue-did-not-meet, and (for virtual) not still upcoming
-  const { data: helpedData } = await supabase
-    .from('student_bookings')
-    .select(`
-      student_email,
-      meeting_type,
-      appointment_slots ( start_time ),
-      survey_responses ( additional_answers )
-    `)
-    .is('cancelled_at', null)
-
-  const uniqueStudentsHelped = new Set(
-    (helpedData ?? [])
-      .filter((b: any) => categorizeBooking({
-        cancelled_at: null,
-        meeting_type: b.meeting_type,
-        start_time: b.appointment_slots?.start_time ?? null,
-        survey_responses: b.survey_responses,
-      }) === 'completed')
-      .map((b: any) => b.student_email)
-  ).size
-
-  // No shows and meet issues from mentor surveys
-  const { data: noShowData } = await supabase
-    .from('survey_responses')
-    .select('additional_answers')
-    .eq('respondent_type', 'mentor')
-
-  const noShows   = (noShowData ?? []).filter(r => r.additional_answers?.no_show === 'Yes').length
-  const meetIssues = (noShowData ?? []).filter(r => (r.additional_answers?.meet_issue ?? '').startsWith('Yes')).length
-  const meetIssuesDidNotMeet = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - did not meet').length
-  const meetIssuesStillMet   = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - still met').length
 
   // Intake answers joined with student email for deduplication
  let intakeQuery = supabase
@@ -258,7 +176,121 @@ export async function GET(request: NextRequest) {
     intakeQuery = intakeQuery.eq('student_bookings.meeting_type', meetingType)
   }
 
-  const { data: intakeAnswers } = await intakeQuery
+  // Mentor activity
+  let mentorActivityQuery = supabase
+    .from('student_bookings')
+    .select(`
+      cancelled_at, meeting_type,
+      appointment_slots ( start_time, mentor_profiles ( full_name ) ),
+      survey_responses ( additional_answers )
+    `)
+
+  if (meetingType) mentorActivityQuery = mentorActivityQuery.eq('meeting_type', meetingType)
+
+  // None of these queries depend on each other's results — fire them all
+  // together instead of waiting for each one before starting the next.
+  const [
+    { count: totalBookings },
+    { data: virtualData },
+    { count: inPersonBookings },
+    { count: activeBookings },
+    { count: cancelledBookings },
+    { count: totalSlots },
+    { count: unbookedSlots },
+    { data: helpedData },
+    { data: noShowData },
+    { data: intakeAnswers },
+    { data: mentorActivity },
+    { data: studentSurveys },
+  ] = await Promise.all([
+    bookingsQuery,
+    // Virtual bookings (non-cancelled, non-no-show, non-connection-issue-did-not-meet)
+    supabase
+      .from('student_bookings')
+      .select(`
+        id,
+        survey_responses ( additional_answers )
+      `)
+      .eq('meeting_type', 'virtual')
+      .is('cancelled_at', null),
+    supabase
+      .from('student_bookings')
+      .select('*', { count: 'exact', head: true })
+      .eq('meeting_type', 'in_person')
+      .is('cancelled_at', null),
+    supabase
+      .from('student_bookings')
+      .select('*', { count: 'exact', head: true })
+      .is('cancelled_at', null),
+    supabase
+      .from('student_bookings')
+      .select('*', { count: 'exact', head: true })
+      .not('cancelled_at', 'is', null),
+    // Unused capacity - slots that were never booked or got cancelled and not rebooked
+    supabase
+      .from('appointment_slots')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_cancelled', false),
+    supabase
+      .from('appointment_slots')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_cancelled', false)
+      .eq('is_booked', false)
+      .lt('start_time', new Date().toISOString()),
+    // Unique students helped - matches the Appointments tab's "isCompleted" definition:
+    // not cancelled, not a no-show, not a connection-issue-did-not-meet, and (for virtual) not still upcoming
+    supabase
+      .from('student_bookings')
+      .select(`
+        student_email,
+        meeting_type,
+        appointment_slots ( start_time ),
+        survey_responses ( additional_answers )
+      `)
+      .is('cancelled_at', null),
+    // No shows and meet issues from mentor surveys
+    supabase
+      .from('survey_responses')
+      .select('additional_answers')
+      .eq('respondent_type', 'mentor'),
+    intakeQuery,
+    mentorActivityQuery,
+    // Student survey ratings
+    supabase
+      .from('survey_responses')
+      .select(`
+        rating_overall, additional_answers,
+        student_bookings (
+          appointment_slots (
+            mentor_profiles ( full_name )
+          )
+        )
+      `)
+      .eq('respondent_type', 'student'),
+  ])
+
+  const virtualBookings = (virtualData ?? []).filter(b =>
+    !(b as any).survey_responses?.some((s: any) =>
+      s.additional_answers?.no_show === 'Yes' ||
+      s.additional_answers?.meet_issue === 'Yes - did not meet'
+    )
+  ).length
+
+  const uniqueStudentsHelped = new Set(
+    (helpedData ?? [])
+      .filter((b: any) => categorizeBooking({
+        cancelled_at: null,
+        meeting_type: b.meeting_type,
+        start_time: b.appointment_slots?.start_time ?? null,
+        survey_responses: b.survey_responses,
+      }) === 'completed')
+      .map((b: any) => b.student_email)
+  ).size
+
+  const noShows   = (noShowData ?? []).filter(r => r.additional_answers?.no_show === 'Yes').length
+  const meetIssues = (noShowData ?? []).filter(r => (r.additional_answers?.meet_issue ?? '').startsWith('Yes')).length
+  const meetIssuesDidNotMeet = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - did not meet').length
+  const meetIssuesStillMet   = (noShowData ?? []).filter(r => r.additional_answers?.meet_issue === 'Yes - still met').length
 
   // Returning students only get re-asked a couple of intake questions
   // (help_with, private_counselor) — most demographic answers only exist on
@@ -295,19 +327,6 @@ export async function GET(request: NextRequest) {
 // First gen (sort_order 15)
 const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
 
-  // Mentor activity
-let mentorActivityQuery = supabase
-    .from('student_bookings')
-    .select(`
-      cancelled_at, meeting_type,
-      appointment_slots ( start_time, mentor_profiles ( full_name ) ),
-      survey_responses ( additional_answers )
-    `)
-
-  if (meetingType) mentorActivityQuery = mentorActivityQuery.eq('meeting_type', meetingType)
-
-  const { data: mentorActivity } = await mentorActivityQuery
-
   const mentorMap: Record<string, number> = {}
   ;(mentorActivity ?? [])
     .filter((b: any) => demographicsCategories.includes(categorizeBooking({
@@ -320,19 +339,6 @@ let mentorActivityQuery = supabase
       const name = b.appointment_slots?.mentor_profiles?.full_name?.split(' ')[0]
       if (name) mentorMap[name] = (mentorMap[name] ?? 0) + 1
     })
-
-  // Student survey ratings
-  const { data: studentSurveys } = await supabase
-    .from('survey_responses')
-    .select(`
-      rating_overall, additional_answers,
-      student_bookings (
-        appointment_slots (
-          mentor_profiles ( full_name )
-        )
-      )
-    `)
-    .eq('respondent_type', 'student')
 
   const ratings = (studentSurveys ?? []).map(s => s.rating_overall).filter(Boolean)
   const avgRating = ratings.length

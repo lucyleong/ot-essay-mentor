@@ -436,54 +436,46 @@ let authHeader = await getAuthHeader()
       await new Promise(resolve => setTimeout(resolve, 800))
       authHeader = await getAuthHeader()
     }
-   const mentorRes  = await fetch('/api/admin/mentors/list', { headers: authHeader })
-       const mentorData = await mentorRes.json()
+    // All of these are independent of each other — fire them together
+    // instead of waiting for each one before starting the next.
+    const [
+      mentorData,
+      shadowData,
+      bookingData,
+      slotsData,
+      walkinData,
+      unresolvedData,
+      availabilityLogData,
+      scheduleSlotsData,
+      { data: endDateSetting },
+      { data: resourceSettings },
+    ] = await Promise.all([
+      fetch('/api/admin/mentors/list', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/admin/mentors/shadow', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/admin/bookings', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/admin/slots/available', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/ccc/queue', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/admin/walkin-queue/unresolved', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/ccc/mentor-availability-log', { headers: authHeader }).then(r => r.json()),
+      fetch('/api/admin/schedules/list', { headers: authHeader }).then(r => r.json()),
+      supabase.from('program_settings').select('value').eq('key', 'program_end_date').maybeSingle(),
+      supabase.from('program_settings').select('key, value').in('key', ['mentor_resources_program_info', 'mentor_resources_emergency_procedures']),
+    ])
 
     const sortedMentors = (mentorData ?? []).sort((a: Mentor, b: Mentor) => {
       if (a.is_active === b.is_active) return 0
       return a.is_active ? -1 : 1
     })
     setMentors(sortedMentors)
-
-const shadowRes  = await fetch('/api/admin/mentors/shadow', { headers: authHeader })
-    const shadowData = await shadowRes.json()
     setShadowLinks(Array.isArray(shadowData) ? shadowData : [])
-
-const bookingRes  = await fetch('/api/admin/bookings', { headers: authHeader })
-    const bookingData = await bookingRes.json()
     setBookings(bookingData ?? [])
-
-const slotsRes  = await fetch('/api/admin/slots/available', { headers: authHeader })
-    const slotsData = await slotsRes.json()
     setAvailableSlots(slotsData ?? [])
-
-const walkinRes = await fetch('/api/ccc/queue', { headers: authHeader })
-    const walkinData = await walkinRes.json()
     setWalkinQueue(walkinData.queue ?? [])
-
-const unresolvedRes = await fetch('/api/admin/walkin-queue/unresolved', { headers: authHeader })
-    const unresolvedData = await unresolvedRes.json()
     setUnresolvedWalkins(unresolvedData.queue ?? [])
-
-const availabilityLogRes = await fetch('/api/ccc/mentor-availability-log', { headers: authHeader })
-    const availabilityLogData = await availabilityLogRes.json()
     setMentorAvailabilityLog(availabilityLogData.log ?? [])
-
-const scheduleSlotsRes = await fetch('/api/admin/schedules/list', { headers: authHeader })
-    const scheduleSlotsData = await scheduleSlotsRes.json()
     setScheduleSlots(scheduleSlotsData ?? [])
-
-    const { data: endDateSetting } = await supabase
-      .from('program_settings')
-      .select('value')
-      .eq('key', 'program_end_date')
-      .maybeSingle()
     if (endDateSetting) setProgramEndDate(endDateSetting.value)
 
-    const { data: resourceSettings } = await supabase
-      .from('program_settings')
-      .select('key, value')
-      .in('key', ['mentor_resources_program_info', 'mentor_resources_emergency_procedures'])
     ;(resourceSettings ?? []).forEach((s: any) => {
       if (s.key === 'mentor_resources_program_info') {
         setResourcesProgramInfo(s.value ?? '')
