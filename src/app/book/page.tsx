@@ -175,6 +175,29 @@ const verified = localStorage.getItem('booking_verified') === process.env.NEXT_P
     e.preventDefault()
     if (!selectedSlot) return
     if (emailError) return
+
+    // Native `required` doesn't apply to multiselect questions (each option
+    // is its own independent checkbox, not a single input), so a required
+    // one like ethnicity could be submitted with nothing selected — check
+    // manually here, using the same visibility rules as what's rendered.
+    const visibleQuestions = questions.filter(q => {
+      if (q.sort_order <= 4) return false
+      if (q.question_text === 'I worked with a College Essay Mentor in Spring 2026 through this program' && isReturning) return false
+      if (q.question_text === 'Which mentor did you work with?' && !showMentor) return false
+      if (isReturning) {
+        const alwaysAskKeys = ['help_with', 'private_counselor']
+        if (!q.question_key || !alwaysAskKeys.includes(q.question_key)) return false
+      }
+      return true
+    })
+    const missingRequired = visibleQuestions.find(q =>
+      q.question_type === 'multiselect' && q.is_required && (answers[q.id] ?? []).length === 0
+    )
+    if (missingRequired) {
+      setError(`Please answer: ${missingRequired.question_text}`)
+      return
+    }
+
     setSubmitting(true)
     setError('')
 
