@@ -64,7 +64,14 @@ export async function POST(request: NextRequest) {
   // that's investigated, log the result and continue processing anyway.
   // Once real replies consistently show isValid: true here, restore the
   // early return below to actually enforce this again.
-  console.log('Twilio webhook: signature check', { isValid, from: params.From, webhookUrl })
+  console.log('Twilio webhook: signature check', {
+    isValid,
+    from: params.From,
+    webhookUrl,
+    twilioSignature,
+    contentType: request.headers.get('Content-Type'),
+    rawBody,
+  })
   if (!isValid) {
     // return new NextResponse('Forbidden', { status: 403 })
   }
