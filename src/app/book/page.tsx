@@ -195,6 +195,9 @@ const verified = localStorage.getItem('booking_verified') === process.env.NEXT_P
     )
     if (missingRequired) {
       setError(`Please answer: ${missingRequired.question_text}`)
+      setTimeout(() => {
+        errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
       return
     }
 
