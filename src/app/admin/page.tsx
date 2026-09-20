@@ -1501,6 +1501,23 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
   const sortedDays = Object.entries(dayCounts).sort((a, b) => weekdayOrder.indexOf(a[0]) - weekdayOrder.indexOf(b[0]))
   const sortedMentors = Object.entries(mentorCounts).sort((a, b) => b[1] - a[1])
 
+  // A mentor's color follows whichever day they're scheduled most often
+  // overall (using every loaded slot, not just expired ones) — so someone
+  // who mostly mentors Sunday but has an occasional Monday slot still shows
+  // consistently as "Sunday-colored" everywhere.
+  const mentorDayFrequency: Record<string, Record<string, number>> = {}
+  availableSlots.forEach((slot: any) => {
+    const name = slot.mentor_profiles?.full_name
+    if (!name) return
+    const day = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
+    if (!mentorDayFrequency[name]) mentorDayFrequency[name] = {}
+    mentorDayFrequency[name][day] = (mentorDayFrequency[name][day] ?? 0) + 1
+  })
+  const mentorMainDay: Record<string, string> = {}
+  Object.entries(mentorDayFrequency).forEach(([name, counts]) => {
+    mentorMainDay[name] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
+  })
+
   return (
     <>
       {expiredSlots.length > 0 && (
@@ -1543,8 +1560,8 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
               Friday:    { bg: '#FAEEDA', text: '#854F0B' },
               Saturday:  { bg: '#EEF3DE', text: '#4C6318' },
             }
-            const dayName = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
-            const { bg, text } = dayColors[dayName] ?? { bg: '#F1EFE8', text: '#5F5E5A' }
+            const mainDay = mentorMainDay[slot.mentor_profiles?.full_name]
+            const { bg, text } = dayColors[mainDay] ?? { bg: '#F1EFE8', text: '#5F5E5A' }
             return (
             <div key={slot.id} style={{
               display: 'flex', alignItems: 'center', gap: 12,
