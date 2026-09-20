@@ -333,14 +333,17 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
   useEffect(() => {
     if (activePanel !== 'bookings' || bookingStatus !== 'expired' || !chartsReady) return
 
-    const dayColors: Record<string, { bg: string; text: string }> = {
-      Sunday:    { bg: '#EEEDFE', text: '#3C3489' },
-      Monday:    { bg: '#E1F5EE', text: '#085041' },
-      Tuesday:   { bg: '#FEF3E8', text: '#9A4E00' },
-      Wednesday: { bg: '#E8F1FD', text: '#1A5EA8' },
-      Thursday:  { bg: '#FCE8F0', text: '#99295A' },
-      Friday:    { bg: '#FAEEDA', text: '#854F0B' },
-      Saturday:  { bg: '#EEF3DE', text: '#4C6318' },
+    // Same bright palette the charts always used — just assigned by day
+    // instead of by position, so each day (and each mentor's primary day)
+    // is consistently the same color instead of shifting around.
+    const dayColors: Record<string, string> = {
+      Sunday:    '#582C83',
+      Monday:    '#1D9E75',
+      Tuesday:   '#D85A30',
+      Wednesday: '#378ADD',
+      Thursday:  '#D4537E',
+      Friday:    '#BA7517',
+      Saturday:  '#639922',
     }
 
     function renderBar(canvasId: string, entries: [string, number][], sortByCount: boolean, colorForLabel: (label: string) => string, attemptsLeft = 40) {
@@ -420,8 +423,8 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
       mentorMainDay[name] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
     })
 
-    renderBar('bar-expired-by-day', sortedDays, false, (day) => dayColors[day]?.text ?? '#5F5E5A')
-    renderBar('bar-expired-by-mentor', sortedMentors, true, (mentor) => dayColors[mentorMainDay[mentor]]?.text ?? '#5F5E5A')
+    renderBar('bar-expired-by-day', sortedDays, false, (day) => dayColors[day] ?? '#888780')
+    renderBar('bar-expired-by-mentor', sortedMentors, true, (mentor) => dayColors[mentorMainDay[mentor]] ?? '#888780')
   }, [activePanel, bookingStatus, chartsReady, availableSlots, mentorFilter, bookingMeetingType])
 
  function toLA(dateStr: string, timeStr: string): Date {
@@ -1525,23 +1528,6 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
   const sortedDays = Object.entries(dayCounts).sort((a, b) => weekdayOrder.indexOf(a[0]) - weekdayOrder.indexOf(b[0]))
   const sortedMentors = Object.entries(mentorCounts).sort((a, b) => b[1] - a[1])
 
-  // A mentor's color follows whichever day they're scheduled most often
-  // overall (using every loaded slot, not just expired ones) — so someone
-  // who mostly mentors Sunday but has an occasional Monday slot still shows
-  // consistently as "Sunday-colored" everywhere.
-  const mentorDayFrequency: Record<string, Record<string, number>> = {}
-  availableSlots.forEach((slot: any) => {
-    const name = slot.mentor_profiles?.full_name
-    if (!name) return
-    const day = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
-    if (!mentorDayFrequency[name]) mentorDayFrequency[name] = {}
-    mentorDayFrequency[name][day] = (mentorDayFrequency[name][day] ?? 0) + 1
-  })
-  const mentorMainDay: Record<string, string> = {}
-  Object.entries(mentorDayFrequency).forEach(([name, counts]) => {
-    mentorMainDay[name] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
-  })
-
   return (
     <>
       {expiredSlots.length > 0 && (
@@ -1574,37 +1560,24 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
             if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
             if (bookingSort === 'start_time_asc') return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
             return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
-          }).map((slot: any) => {
-            const dayColors: Record<string, { bg: string; text: string }> = {
-              Sunday:    { bg: '#EEEDFE', text: '#3C3489' },
-              Monday:    { bg: '#E1F5EE', text: '#085041' },
-              Tuesday:   { bg: '#FEF3E8', text: '#9A4E00' },
-              Wednesday: { bg: '#E8F1FD', text: '#1A5EA8' },
-              Thursday:  { bg: '#FCE8F0', text: '#99295A' },
-              Friday:    { bg: '#FAEEDA', text: '#854F0B' },
-              Saturday:  { bg: '#EEF3DE', text: '#4C6318' },
-            }
-            const mainDay = mentorMainDay[slot.mentor_profiles?.full_name]
-            const { bg, text } = dayColors[mainDay] ?? { bg: '#F1EFE8', text: '#5F5E5A' }
-            return (
+          }).map((slot: any) => (
             <div key={slot.id} style={{
               display: 'flex', alignItems: 'center', gap: 12,
               padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
             }}>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: text }}>
+                <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
                   {slot.mentor_profiles?.full_name}
                 </p>
                 <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                   {formatDateTimePST(slot.start_time)}
                 </p>
               </div>
-              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: bg, color: text }}>
+              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
                 {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })}
               </span>
             </div>
-            )
-          })
+          ))
         )}
       </div>
     </>
