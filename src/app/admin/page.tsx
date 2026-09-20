@@ -1533,24 +1533,37 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
             if (bookingSort === 'student_name') return (a.mentor_profiles?.full_name ?? '').localeCompare(b.mentor_profiles?.full_name ?? '')
             if (bookingSort === 'start_time_asc') return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
             return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
-          }).map((slot: any) => (
+          }).map((slot: any) => {
+            const dayColors: Record<string, { bg: string; text: string }> = {
+              Sunday:    { bg: '#EEEDFE', text: '#3C3489' },
+              Monday:    { bg: '#E1F5EE', text: '#085041' },
+              Tuesday:   { bg: '#FEF3E8', text: '#9A4E00' },
+              Wednesday: { bg: '#E8F1FD', text: '#1A5EA8' },
+              Thursday:  { bg: '#FCE8F0', text: '#99295A' },
+              Friday:    { bg: '#FAEEDA', text: '#854F0B' },
+              Saturday:  { bg: '#EEF3DE', text: '#4C6318' },
+            }
+            const dayName = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
+            const { bg, text } = dayColors[dayName] ?? { bg: '#F1EFE8', text: '#5F5E5A' }
+            return (
             <div key={slot.id} style={{
               display: 'flex', alignItems: 'center', gap: 12,
               padding: '10px 0', borderBottom: '0.5px solid #e8e6de',
             }}>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px' }}>
+                <p style={{ fontWeight: 500, fontSize: 13, margin: '0 0 2px', color: text }}>
                   {slot.mentor_profiles?.full_name}
                 </p>
                 <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                   {formatDateTimePST(slot.start_time)}
                 </p>
               </div>
-              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: bg, color: text }}>
                 {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })}
               </span>
             </div>
-          ))
+            )
+          })
         )}
       </div>
     </>
