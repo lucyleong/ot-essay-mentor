@@ -333,17 +333,26 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
   useEffect(() => {
     if (activePanel !== 'bookings' || bookingStatus !== 'expired' || !chartsReady) return
 
-    function renderBar(canvasId: string, entries: [string, number][], sortByCount: boolean, attemptsLeft = 40) {
+    const dayColors: Record<string, { bg: string; text: string }> = {
+      Sunday:    { bg: '#EEEDFE', text: '#3C3489' },
+      Monday:    { bg: '#E1F5EE', text: '#085041' },
+      Tuesday:   { bg: '#FEF3E8', text: '#9A4E00' },
+      Wednesday: { bg: '#E8F1FD', text: '#1A5EA8' },
+      Thursday:  { bg: '#FCE8F0', text: '#99295A' },
+      Friday:    { bg: '#FAEEDA', text: '#854F0B' },
+      Saturday:  { bg: '#EEF3DE', text: '#4C6318' },
+    }
+
+    function renderBar(canvasId: string, entries: [string, number][], sortByCount: boolean, colorForLabel: (label: string) => string, attemptsLeft = 40) {
       const canvas = document.getElementById(canvasId) as HTMLCanvasElement
       if (!canvas) {
-        if (attemptsLeft > 0) setTimeout(() => renderBar(canvasId, entries, sortByCount, attemptsLeft - 1), 150)
+        if (attemptsLeft > 0) setTimeout(() => renderBar(canvasId, entries, sortByCount, colorForLabel, attemptsLeft - 1), 150)
         return
       }
       const existing = (window as any).Chart.getChart(canvas)
       if (existing) existing.destroy()
 
       const sorted = sortByCount ? [...entries].sort((a, b) => b[1] - a[1]) : entries
-      const barColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#378ADD', '#BA7517', '#639922', '#888780', '#993556', '#0F6E56']
 
       try {
         new (window as any).Chart(canvas, {
@@ -352,7 +361,7 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
             labels: sorted.map(([label]) => label),
             datasets: [{
               data: sorted.map(([, count]) => count),
-              backgroundColor: sorted.map((_, i) => barColors[i % barColors.length]),
+              backgroundColor: sorted.map(([label]) => colorForLabel(label)),
             }],
           },
           options: {
@@ -396,8 +405,23 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
     const sortedDays = weekdayOrder.filter(day => dayCounts[day]).map(day => [day, dayCounts[day]] as [string, number])
     const sortedMentors = Object.entries(mentorCounts)
 
-    renderBar('bar-expired-by-day', sortedDays, false)
-    renderBar('bar-expired-by-mentor', sortedMentors, true)
+    // Same "mentor's primary day" logic as the list below, so the by-mentor
+    // chart's colors match what's shown per mentor in the list.
+    const mentorDayFrequency: Record<string, Record<string, number>> = {}
+    availableSlots.forEach((slot: any) => {
+      const name = slot.mentor_profiles?.full_name
+      if (!name) return
+      const day = new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/Los_Angeles' })
+      if (!mentorDayFrequency[name]) mentorDayFrequency[name] = {}
+      mentorDayFrequency[name][day] = (mentorDayFrequency[name][day] ?? 0) + 1
+    })
+    const mentorMainDay: Record<string, string> = {}
+    Object.entries(mentorDayFrequency).forEach(([name, counts]) => {
+      mentorMainDay[name] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
+    })
+
+    renderBar('bar-expired-by-day', sortedDays, false, (day) => dayColors[day]?.text ?? '#5F5E5A')
+    renderBar('bar-expired-by-mentor', sortedMentors, true, (mentor) => dayColors[mentorMainDay[mentor]]?.text ?? '#5F5E5A')
   }, [activePanel, bookingStatus, chartsReady, availableSlots, mentorFilter, bookingMeetingType])
 
  function toLA(dateStr: string, timeStr: string): Date {
