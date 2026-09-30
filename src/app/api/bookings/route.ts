@@ -110,7 +110,7 @@ const { data: existingBookings } = await supabase
         const nextEligibleDate = formatDatePST(addDays(parseISO(mostRecent.appointment_slots.start_time), 5).toISOString())
         return NextResponse.json(
           {
-            error: `Please wait at least 5 days between virtual appointments. Your last virtual appointment was on ${formatDatePST(mostRecent.appointment_slots.start_time)}. You can book a new virtual appointment on or after ${nextEligibleDate}.`,
+            error: `Please choose a virtual appointment on or after ${nextEligibleDate} — your last one was ${formatDatePST(mostRecent.appointment_slots.start_time)}, and we ask for at least 5 days between virtual appointments.`,
           },
           { status: 409 }
         )
