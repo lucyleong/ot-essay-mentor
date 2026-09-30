@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { assertGmail } from '@/lib/validators'
 import { sendEmail } from '@/lib/email'
 import { studentConfirmationEmail } from '@/lib/email-templates/student-confirmation'
-import { format, parseISO } from 'date-fns'
+import { format, parseISO, addDays, differenceInCalendarDays } from 'date-fns'
 import { addStudentToCalendarEvent } from '@/lib/calendar'
 import { sendSMS } from '@/lib/sms'
 import { formatDatePST, formatTimePST } from '@/lib/utils'
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
 const { data: existingBookings } = await supabase
     .from('student_bookings')
-    .select('id, appointment_slots(start_time, mentor_profiles(full_name))')
+    .select('id, appointment_slots(start_time, meeting_type, mentor_profiles(full_name))')
     .eq('student_email', body.studentEmail.toLowerCase().trim())
     .is('cancelled_at', null)
 
@@ -85,6 +85,37 @@ const { data: existingBookings } = await supabase
       { error: 'Sorry, this slot was just booked by someone else. Please choose another time.' },
       { status: 409 }
     )
+  }
+
+  // Require a 5-day gap since the student's last virtual appointment (kept,
+  // not cancelled). Only applies when booking another virtual slot — a
+  // future upcoming booking of any type is already blocked above, so this
+  // only ever needs to look at past appointments.
+  if (slot.meeting_type === 'virtual') {
+    const pastVirtualBookings: any[] = (existingBookings ?? []).filter((b: any) => {
+      const s = b.appointment_slots
+      return s && s.meeting_type === 'virtual' && new Date(s.start_time) <= new Date()
+    })
+
+    if (pastVirtualBookings.length > 0) {
+      const mostRecent = pastVirtualBookings.reduce((latest: any, b: any) =>
+        new Date(b.appointment_slots.start_time) > new Date(latest.appointment_slots.start_time) ? b : latest
+      )
+      const daysSinceLastVirtual = differenceInCalendarDays(
+        new Date(slot.start_time),
+        new Date(mostRecent.appointment_slots.start_time)
+      )
+
+      if (daysSinceLastVirtual < 5) {
+        const nextEligibleDate = formatDatePST(addDays(parseISO(mostRecent.appointment_slots.start_time), 5).toISOString())
+        return NextResponse.json(
+          {
+            error: `Please wait at least 5 days between virtual appointments. Your last virtual appointment was on ${formatDatePST(mostRecent.appointment_slots.start_time)}. You can book a new virtual appointment starting ${nextEligibleDate}.`,
+          },
+          { status: 409 }
+        )
+      }
+    }
   }
 
   // Generate confirmation code
