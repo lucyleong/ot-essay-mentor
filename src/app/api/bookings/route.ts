@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
 const { data: existingBookings } = await supabase
     .from('student_bookings')
-    .select('id, appointment_slots(start_time, meeting_type, mentor_profiles(full_name))')
+    .select('id, appointment_slots(start_time, meeting_type, mentor_profiles(full_name)), survey_responses(additional_answers)')
     .eq('student_email', body.studentEmail.toLowerCase().trim())
     .is('cancelled_at', null)
 
@@ -87,14 +87,20 @@ const { data: existingBookings } = await supabase
     )
   }
 
-  // Require a 5-day gap since the student's last virtual appointment (kept,
-  // not cancelled). Only applies when booking another virtual slot — a
-  // future upcoming booking of any type is already blocked above, so this
-  // only ever needs to look at past appointments.
+  // Require a 5-day gap since the student's last virtual appointment they
+  // actually kept — not cancelled, and not a later-reported no-show/connection
+  // issue (mentors log those via a post-appointment survey, so cancelled_at
+  // stays null on those bookings). Only applies when booking another virtual
+  // slot — a future upcoming booking of any type is already blocked above,
+  // so this only ever needs to look at past appointments.
   if (slot.meeting_type === 'virtual') {
     const pastVirtualBookings: any[] = (existingBookings ?? []).filter((b: any) => {
       const s = b.appointment_slots
-      return s && s.meeting_type === 'virtual' && new Date(s.start_time) <= new Date()
+      if (!s || s.meeting_type !== 'virtual' || new Date(s.start_time) > new Date()) return false
+      const hadNoShowOrConnectionIssue = (b.survey_responses ?? []).some((sr: any) =>
+        sr.additional_answers?.no_show === 'Yes' || sr.additional_answers?.meet_issue === 'Yes - did not meet'
+      )
+      return !hadNoShowOrConnectionIssue
     })
 
     if (pastVirtualBookings.length > 0) {
