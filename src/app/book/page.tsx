@@ -330,6 +330,9 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
     <p style={{ margin: '0 0 12px' }}>
       One appointment per student at a time only. Please complete your appointment before booking a new one.
     </p>
+    <p style={{ margin: '0 0 12px' }}>
+      We ask that you take at least 5 days between appointments to work on your essay — this helps us make sure every student gets a spot.
+    </p>
     <p style={{ margin: 0, fontSize: 13, color: '#888780' }}>
 {total} open slot{total !== 1 ? 's' : ''} available in the next 8 days · New appointments added daily    </p>
   </div>
