@@ -110,7 +110,7 @@ export async function POST(
         student_name, student_email,
         appointment_slots (
           start_time,
-          mentor_profiles ( full_name )
+          mentor_profiles ( full_name, email )
         )
       `)
       .eq('id', bookingId)
@@ -134,6 +134,24 @@ export async function POST(
         notificationType: 'cancellation_admin',
         recipientType:    'mentor',
       })
+
+      // Also notify the mentor directly — the Google Calendar cancellation
+      // email covers this too, but only if their Calendar notifications are
+      // on, so this is a more reliable backup.
+      if (mentor?.email) {
+        await sendEmail({
+          to:               mentor.email,
+          subject:          `Appointment canceled: ${cancelledBooking.student_name} on ${apptDate}`,
+          html:             `
+            <p>Hi ${mentor.full_name?.split(' ')[0] ?? 'there'},</p>
+            <p>${cancelledBooking.student_name} has canceled their appointment with you.</p>
+            <p><strong>Appointment:</strong> ${apptDate}</p>
+            <p>The slot has been freed up and is available for new bookings.</p>
+          `,
+          notificationType: 'cancellation_mentor',
+          recipientType:    'mentor',
+        })
+      }
     }
   } catch (emailErr) {
     console.error('Cancellation notification email failed:', emailErr)
