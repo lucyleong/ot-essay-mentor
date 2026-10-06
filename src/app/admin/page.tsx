@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
-import { format, parseISO } from 'date-fns'
 import { formatDateTimePST } from '@/lib/utils'
 
 type Mentor = {
@@ -1218,8 +1217,8 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 2 }}>
                         <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>
                           {(booking.appointment_slots as any)?.mentor_profiles?.full_name?.split(' ')[0]} ·{' '}
-                          {(booking.appointment_slots as any)?.start_time
-                            ? format(parseISO((booking.appointment_slots as any).start_time), 'MMM d · h:mm a')
+                          {startTime
+                            ? `${new Date(startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' })} · ${new Date(startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })}`
                             : 'No slot'}
                           {!booking.cancelled_at && (
                             <>
