@@ -70,7 +70,11 @@ export async function POST(
       .eq('id', booking.slot_id)
   }
 
-  // Delete Google Calendar event and clear slot fields
+  // Delete Google Calendar event and clear slot fields. The slot's calendar
+  // reference must be cleared even if the actual Calendar deletion below
+  // fails (e.g. an expired OAuth token) — otherwise a later, unrelated
+  // booking of this same slot would reuse the stale event id and get
+  // patched onto this cancelled booking's old event instead of a fresh one.
   try {
     const { data: slot } = await supabase
       .from('appointment_slots')
@@ -79,18 +83,23 @@ export async function POST(
       .single()
 
     if (slot?.google_calendar_event_id) {
-      const accessToken = await getFreshAccessToken()
+      try {
+        const accessToken = await getFreshAccessToken()
 
-      // Delete the calendar event entirely
-      await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${slot.google_calendar_event_id}?sendUpdates=all`,
-        {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      )
+        // Delete the calendar event entirely
+        await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/primary/events/${slot.google_calendar_event_id}?sendUpdates=all`,
+          {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        )
+      } catch (deleteErr) {
+        console.error('Calendar event deletion failed on cancel (clearing slot reference anyway):', deleteErr)
+      }
 
-      // Clear calendar fields from slot
+      // Clear calendar fields from slot regardless of whether the deletion
+      // above succeeded
       await supabase
         .from('appointment_slots')
         .update({
@@ -100,7 +109,7 @@ export async function POST(
         .eq('id', booking.slot_id)
     }
   } catch (calErr) {
-    console.error('Calendar deletion failed on cancel:', calErr)
+    console.error('Calendar cleanup failed on cancel:', calErr)
   }
 // Notify program account of cancellation
   try {
