@@ -11,6 +11,7 @@ type Mentor = {
   phone: string | null
   is_active: boolean
   is_virtual_available: boolean
+  is_in_person_available: boolean
   created_at: string
 }
 
@@ -1926,6 +1927,29 @@ const exportHeaders = await getAuthHeader()
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
                   Today's in-person walk-in students
                 </p>
+
+                <div style={{ marginBottom: 24 }}>
+                  <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>
+                    Currently available for walk-ins
+                  </h2>
+                  <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
+                    Live status, right now — not just who toggled it today (a mentor who left it
+                    on from a previous day won't show up in the toggle log below).
+                  </p>
+                  {mentors.filter(m => m.is_active && m.is_in_person_available).length === 0 ? (
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                      <p style={{ color: '#888780', margin: 0, fontSize: 13 }}>No mentors currently marked available for walk-ins.</p>
+                    </div>
+                  ) : (
+                    <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      {mentors.filter(m => m.is_active && m.is_in_person_available).map(m => (
+                        <span key={m.id} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                          {m.full_name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 {mentorAvailabilityLog.length > 0 && (
                   <div style={{ marginBottom: 24 }}>
