@@ -2051,6 +2051,30 @@ const exportHeaders = await getAuthHeader()
                               </button>
                             </div>
                           )}
+                          {entry.status === 'helped' && (
+                            <div style={{ marginTop: 6 }}>
+                              <button
+                                disabled={resolvingWalkinId === entry.id}
+                                onClick={async () => {
+                                  setResolvingWalkinId(entry.id)
+                                  const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, {
+                                    method: 'POST',
+                                    headers: await getAuthHeader(),
+                                  })
+                                  setResolvingWalkinId(null)
+                                  if (!res.ok) {
+                                    const data = await res.json().catch(() => ({}))
+                                    alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                                    return
+                                  }
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, color: '#791F1F', borderColor: '#F09595' }}
+                              >
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as walked out instead'}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}

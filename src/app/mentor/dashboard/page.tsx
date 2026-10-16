@@ -1211,38 +1211,6 @@ style={{
                               </button>
                             </>
                           )}
-                          {entry.status === 'helped' && (
-                            <button
-                              onClick={async () => {
-                                const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
-                                if (!res.ok) {
-                                  const data = await res.json().catch(() => ({}))
-                                  alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
-                                  return
-                                }
-                                loadData()
-                              }}
-                              style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
-                            >
-                              Walked out
-                            </button>
-                          )}
-                          {entry.status === 'walked_out' && (
-                            <button
-                              onClick={async () => {
-                                const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/claim`, { method: 'POST' })
-                                if (!res.ok) {
-                                  const data = await res.json().catch(() => ({}))
-                                  alert(`Failed to mark as helped: ${data.error ?? res.statusText}`)
-                                  return
-                                }
-                                loadData()
-                              }}
-                              style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none' }}
-                            >
-                              Helped
-                            </button>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -1296,6 +1264,22 @@ style={{
                                 style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#ffffff', border: 'none', flexShrink: 0 }}
                               >
                                 Helped
+                              </button>
+                            )}
+                            {entry.status === 'helped' && (
+                              <button
+                                onClick={async () => {
+                                  const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST' })
+                                  if (!res.ok) {
+                                    const data = await res.json().catch(() => ({}))
+                                    alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                                    return
+                                  }
+                                  loadData()
+                                }}
+                                style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595', flexShrink: 0 }}
+                              >
+                                Walked out
                               </button>
                             )}
                           </div>
