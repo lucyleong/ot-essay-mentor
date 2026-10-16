@@ -1304,6 +1304,47 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         )
                       )}
 
+                      {/* Cancel button — in-person (e.g. correcting a walk-in
+                          accidentally marked helped), any date, not just today */}
+                      {!booking.cancelled_at && booking.meeting_type === 'in_person' && (
+                        cancellingId === booking.id ? (
+                          <>
+                            <button
+                              onClick={async () => {
+                                const res = await fetch('/api/admin/bookings/cancel-in-person', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                  body: JSON.stringify({ bookingId: booking.id }),
+                                })
+                                setCancellingId(null)
+                                if (!res.ok) {
+                                  const data = await res.json().catch(() => ({}))
+                                  alert(`Failed to cancel: ${data.error ?? res.statusText}`)
+                                  return
+                                }
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => setCancellingId(null)}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </>
+                       ) : (
+                          <button
+                            onClick={() => setCancellingId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                          >
+                            Cancel
+                          </button>
+                        )
+                      )}
+
                       {/* Transfer button */}
                       {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (
                         transferringId === booking.id ? (
