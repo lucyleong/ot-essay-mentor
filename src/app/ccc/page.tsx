@@ -243,6 +243,22 @@ export default function CCCPage() {
                         {assigningId === entry.id ? 'Assigning...' : 'Assign'}
                                           </button>
                     )}
+                    {entry.status === 'helped' && (
+                      <button
+                        onClick={async () => {
+                          const res = await fetch(`/api/mentor/walkin-queue/${entry.id}/walkout`, { method: 'POST', headers: await getAuthHeader() })
+                          if (!res.ok) {
+                            const data = await res.json().catch(() => ({}))
+                            alert(`Failed to mark as walked out: ${data.error ?? res.statusText}`)
+                            return
+                          }
+                          loadData()
+                        }}
+                        style={{ fontSize: 12, padding: '5px 14px', color: '#791F1F', borderColor: '#F09595' }}
+                      >
+                        Walked out
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
