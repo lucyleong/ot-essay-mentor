@@ -47,12 +47,7 @@ export async function POST(request: NextRequest) {
   const rawBody = await request.text()
   const searchParams = new URLSearchParams(rawBody)
   const twilioSignature = request.headers.get('X-Twilio-Signature') ?? ''
-  // TEMPORARY, at Twilio support's request: hardcoded exactly as it appears
-  // in the Messaging Service's webhook settings, instead of building it from
-  // NEXT_PUBLIC_APP_URL, to rule out a mismatch (trailing slash, protocol,
-  // etc.) between the env var and the configured webhook URL. Revert to the
-  // env-var version once Twilio confirms whether this changes `isValid`.
-  const webhookUrl = 'https://otessaymentors.org/api/webhooks/twilio'
+  const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/twilio`
   const params: Record<string, string> = {}
   searchParams.forEach((value, key) => { params[key] = value })
 
