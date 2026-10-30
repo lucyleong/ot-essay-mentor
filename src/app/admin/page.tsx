@@ -1278,30 +1278,68 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
 
                       {/* Restore button — in-person only, undoes a cancellation
                           (e.g. correcting a walk-in accidentally marked walked
-                          out). Doesn't need a mentor picker since the original
-                          slot and helped_by_mentor_id were never touched. */}
+                          out). If a mentor was already on record (helped,
+                          then cancelled), no picker needed — just restores
+                          to them. If never assigned (e.g. walked out straight
+                          from waiting), a mentor has to be picked now. */}
                       {booking.cancelled_at && booking.meeting_type === 'in_person' && (
-                        <button
-                          disabled={restoringId === booking.id}
-                          onClick={async () => {
-                            setRestoringId(booking.id)
-                            const res = await fetch('/api/admin/bookings/restore-in-person', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
-                              body: JSON.stringify({ bookingId: booking.id }),
-                            })
-                            setRestoringId(null)
-                            if (!res.ok) {
-                              const data = await res.json().catch(() => ({}))
-                              alert(`Failed to restore: ${data.error ?? res.statusText}`)
-                              return
-                            }
-                            loadData()
-                          }}
-                          style={{ fontSize: 12, padding: '4px 10px', color: '#085041', borderColor: '#A8DDC9', marginTop: 4 }}
-                        >
-                          {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
-                        </button>
+                        (booking as any).appointment_slots ? (
+                          <button
+                            disabled={restoringId === booking.id}
+                            onClick={async () => {
+                              setRestoringId(booking.id)
+                              const res = await fetch('/api/admin/bookings/restore-in-person', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                body: JSON.stringify({ bookingId: booking.id }),
+                              })
+                              setRestoringId(null)
+                              if (!res.ok) {
+                                const data = await res.json().catch(() => ({}))
+                                alert(`Failed to restore: ${data.error ?? res.statusText}`)
+                                return
+                              }
+                              loadData()
+                            }}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#085041', borderColor: '#A8DDC9', marginTop: 4 }}
+                          >
+                            {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
+                          </button>
+                        ) : (
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 4 }}>
+                            <select
+                              value={helpedByMentorId[booking.id] ?? ''}
+                              onChange={e => setHelpedByMentorId(prev => ({ ...prev, [booking.id]: e.target.value }))}
+                              style={{ fontSize: 12, padding: '4px 8px', height: 30, width: 'auto' }}
+                            >
+                              <option value="">Helped by...</option>
+                              {mentors.filter(m => m.is_active).map(m => (
+                                <option key={m.id} value={m.id}>{m.full_name}</option>
+                              ))}
+                            </select>
+                            <button
+                              disabled={restoringId === booking.id || !helpedByMentorId[booking.id]}
+                              onClick={async () => {
+                                setRestoringId(booking.id)
+                                const res = await fetch('/api/admin/bookings/restore-in-person', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                  body: JSON.stringify({ bookingId: booking.id, mentorId: helpedByMentorId[booking.id] }),
+                                })
+                                setRestoringId(null)
+                                if (!res.ok) {
+                                  const data = await res.json().catch(() => ({}))
+                                  alert(`Failed to restore: ${data.error ?? res.statusText}`)
+                                  return
+                                }
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#ffffff', border: 'none' }}
+                            >
+                              {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
+                            </button>
+                          </div>
+                        )
                       )}
 
                       {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (

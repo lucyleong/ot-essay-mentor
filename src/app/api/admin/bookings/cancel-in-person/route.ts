@@ -19,14 +19,13 @@ export async function POST(request: NextRequest) {
 
   const { data: booking } = await supabase
     .from('student_bookings')
-    .select('id, cancelled_at, queue_id, appointment_slots ( meeting_type )')
+    .select('id, cancelled_at, queue_id, meeting_type')
     .eq('id', bookingId)
     .single()
 
   if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
 
-  const slot = (booking as any).appointment_slots
-  if (slot?.meeting_type !== 'in_person') {
+  if (booking.meeting_type !== 'in_person') {
     return NextResponse.json({ error: 'This booking is not an in-person appointment' }, { status: 400 })
   }
 
