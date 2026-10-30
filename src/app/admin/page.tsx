@@ -2140,6 +2140,27 @@ const exportHeaders = await getAuthHeader()
                               </button>
                             </div>
                           )}
+                          {entry.status === 'walked_out' && (
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 6 }}>
+                              <select
+                                value={helpedByMentorId[entry.id] ?? ''}
+                                onChange={e => setHelpedByMentorId(prev => ({ ...prev, [entry.id]: e.target.value }))}
+                                style={{ fontSize: 12, padding: '4px 8px', height: 30, width: 'auto' }}
+                              >
+                                <option value="">Helped by...</option>
+                                {mentors.filter(m => m.is_active).map(m => (
+                                  <option key={m.id} value={m.id}>{m.full_name}</option>
+                                ))}
+                              </select>
+                              <button
+                                disabled={resolvingWalkinId === entry.id || !helpedByMentorId[entry.id]}
+                                onClick={() => markWalkinHelped(entry.id)}
+                                style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, background: '#582C83', color: '#ffffff', border: 'none' }}
+                              >
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as helped instead'}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
