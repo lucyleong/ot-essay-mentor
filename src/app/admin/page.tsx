@@ -100,6 +100,7 @@ const [endingSession,     setEndingSession]     = useState(false)
 const [sessionEnded,      setSessionEnded]      = useState(false)
 const [showAllComments, setShowAllComments] = useState(false)
 const [cancellingId, setCancellingId] = useState<string | null>(null)
+const [restoringId, setRestoringId] = useState<string | null>(null)
 const [availableSlots, setAvailableSlots] = useState<any[]>([])
 const [mentorFilter, setMentorFilter] = useState<string>('all')
 const [transferringId, setTransferringId] = useState<string | null>(null)
@@ -1275,6 +1276,34 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                         </p>
                       )}
 
+                      {/* Restore button — in-person only, undoes a cancellation
+                          (e.g. correcting a walk-in accidentally marked walked
+                          out). Doesn't need a mentor picker since the original
+                          slot and helped_by_mentor_id were never touched. */}
+                      {booking.cancelled_at && booking.meeting_type === 'in_person' && (
+                        <button
+                          disabled={restoringId === booking.id}
+                          onClick={async () => {
+                            setRestoringId(booking.id)
+                            const res = await fetch('/api/admin/bookings/restore-in-person', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                              body: JSON.stringify({ bookingId: booking.id }),
+                            })
+                            setRestoringId(null)
+                            if (!res.ok) {
+                              const data = await res.json().catch(() => ({}))
+                              alert(`Failed to restore: ${data.error ?? res.statusText}`)
+                              return
+                            }
+                            loadData()
+                          }}
+                          style={{ fontSize: 12, padding: '4px 10px', color: '#085041', borderColor: '#A8DDC9', marginTop: 4 }}
+                        >
+                          {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
+                        </button>
+                      )}
+
                       {!booking.cancelled_at && !isPast && booking.meeting_type === 'virtual' && (
                         cancellingId === booking.id ? (
                           <>
@@ -1341,7 +1370,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             onClick={() => setCancellingId(booking.id)}
                             style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
                           >
-                            Cancel
+                            Mark as walked out instead
                           </button>
                         )
                       )}
