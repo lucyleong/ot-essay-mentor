@@ -88,7 +88,7 @@ export async function POST(
 
   const { error: linkError } = await serviceSupabase
     .from('student_bookings')
-    .update({ slot_id: newSlot.id })
+    .update({ slot_id: newSlot.id, cancelled_at: null })
     .eq('id', booking.id)
 
   if (linkError) {
