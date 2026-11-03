@@ -58,6 +58,16 @@ export async function POST(request: NextRequest) {
     params
   )
 
+  // TEMPORARY, at Twilio support's request: compute the expected signature
+  // ourselves (same helper validateRequest uses internally) and log it next
+  // to what Twilio actually sent, plus the parsed params object, to pinpoint
+  // whether a specific field is missing/altered during parsing.
+  const expectedSignature = twilio.getExpectedTwilioSignature(
+    process.env.TWILIO_AUTH_TOKEN!,
+    webhookUrl,
+    params
+  )
+
   // TEMPORARY: signature validation is currently failing for every request
   // despite a matching URL and auth token (root cause not yet found — see
   // Twilio support ticket). Rather than block real student replies while
@@ -69,6 +79,8 @@ export async function POST(request: NextRequest) {
     from: params.From,
     webhookUrl,
     twilioSignature,
+    expectedSignature,
+    params,
     contentType: request.headers.get('Content-Type'),
     rawBody,
   })
