@@ -68,6 +68,16 @@ export async function POST(request: NextRequest) {
     params
   )
 
+  // TEMPORARY: testing a specific theory — that the Messaging Service
+  // computed its signature before attaching MessagingServiceSid, so it's
+  // present in the body we receive but wasn't part of what got hashed.
+  const { MessagingServiceSid, ...paramsWithoutMessagingServiceSid } = params
+  const expectedSignatureWithoutMessagingServiceSid = twilio.getExpectedTwilioSignature(
+    process.env.TWILIO_AUTH_TOKEN!,
+    webhookUrl,
+    paramsWithoutMessagingServiceSid
+  )
+
   // TEMPORARY: signature validation is currently failing for every request
   // despite a matching URL and auth token (root cause not yet found — see
   // Twilio support ticket). Rather than block real student replies while
@@ -80,6 +90,7 @@ export async function POST(request: NextRequest) {
     webhookUrl,
     twilioSignature,
     expectedSignature,
+    expectedSignatureWithoutMessagingServiceSid,
     params,
     contentType: request.headers.get('Content-Type'),
     rawBody,
