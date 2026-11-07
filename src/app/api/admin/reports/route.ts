@@ -119,6 +119,71 @@ function getOtherResponses(answers: any[], questionKey: string): string[] {
   return otherResponses
 }
 
+// Computes aggregate student-survey stats for a given set of survey rows.
+// The rows are already scoped by the caller's meeting-type filter (if any —
+// same ?type= param used across the rest of this report). In-person
+// responses never set rating_overall or mentor_on_time (those questions
+// aren't asked), so avgRating and the mentorOnTime breakdown naturally come
+// back empty/null when viewing in-person-only results.
+function computeSurveyStats(surveyRows: any[]) {
+  const ratings = surveyRows.map(s => s.rating_overall).filter(Boolean)
+  const avgRating = ratings.length
+    ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+    : null
+
+  const mentorOnTimeMap: Record<string, number> = { Yes: 0, No: 0 }
+  const nextStepsMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
+  const workAgainMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
+
+  const mentorIssuesMap: Record<string, { lateCount: number; wouldNotWorkAgainCount: number; noNextStepsCount: number; details: any[] }> = {}
+
+  surveyRows.forEach((s: any) => {
+    const onTime    = s.additional_answers?.mentor_on_time
+    const nextSteps = s.additional_answers?.next_steps
+    const workAgain = s.additional_answers?.work_again
+    const mentorName = s.student_bookings?.appointment_slots?.mentor_profiles?.full_name ?? 'Unknown'
+
+    if (onTime    && mentorOnTimeMap[onTime]    !== undefined) mentorOnTimeMap[onTime]++
+    if (nextSteps && nextStepsMap[nextSteps]     !== undefined) nextStepsMap[nextSteps]++
+    if (workAgain && workAgainMap[workAgain]     !== undefined) workAgainMap[workAgain]++
+
+    // Track issues per mentor
+    if (onTime === 'No' || workAgain === 'No' || nextSteps === 'No') {
+      if (!mentorIssuesMap[mentorName]) {
+        mentorIssuesMap[mentorName] = { lateCount: 0, wouldNotWorkAgainCount: 0, noNextStepsCount: 0, details: [] }
+      }
+      if (onTime === 'No') mentorIssuesMap[mentorName].lateCount++
+      if (workAgain === 'No') mentorIssuesMap[mentorName].wouldNotWorkAgainCount++
+      if (nextSteps === 'No') mentorIssuesMap[mentorName].noNextStepsCount++
+      mentorIssuesMap[mentorName].details.push({
+        onTime: onTime === 'No',
+        wouldNotWorkAgain: workAgain === 'No',
+        noNextSteps: nextSteps === 'No',
+      })
+    }
+  })
+
+  const mentorIssues = Object.entries(mentorIssuesMap).map(([name, data]) => ({
+    mentorName: name,
+    lateCount: data.lateCount,
+    wouldNotWorkAgainCount: data.wouldNotWorkAgainCount,
+    noNextStepsCount: data.noNextStepsCount,
+    totalIssues: data.lateCount + data.wouldNotWorkAgainCount + data.noNextStepsCount,
+  })).sort((a, b) => b.totalIssues - a.totalIssues)
+
+  return {
+    avgRating,
+    totalResponses: surveyRows.length,
+    mentorOnTime: Object.entries(mentorOnTimeMap),
+    nextSteps:    Object.entries(nextStepsMap),
+    workAgain:    Object.entries(workAgainMap),
+    howHeard:     surveyRows
+      .map((s: any) => s.additional_answers?.how_heard)
+      .filter((a: any) => a && a.trim().length > 0),
+    mentorIssues,
+  }
+}
+
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin(request)
   if ('error' in auth) return auth.error
@@ -186,6 +251,22 @@ export async function GET(request: NextRequest) {
     `)
 
   if (meetingType) mentorActivityQuery = mentorActivityQuery.eq('meeting_type', meetingType)
+
+  // Student survey ratings
+  let studentSurveysQuery = supabase
+    .from('survey_responses')
+    .select(`
+      rating_overall, additional_answers,
+      student_bookings (
+        meeting_type,
+        appointment_slots (
+          mentor_profiles ( full_name )
+        )
+      )
+    `)
+    .eq('respondent_type', 'student')
+
+  if (meetingType) studentSurveysQuery = studentSurveysQuery.eq('student_bookings.meeting_type', meetingType)
 
   // None of these queries depend on each other's results — fire them all
   // together instead of waiting for each one before starting the next.
@@ -255,18 +336,7 @@ export async function GET(request: NextRequest) {
       .eq('respondent_type', 'mentor'),
     intakeQuery,
     mentorActivityQuery,
-    // Student survey ratings
-    supabase
-      .from('survey_responses')
-      .select(`
-        rating_overall, additional_answers,
-        student_bookings (
-          appointment_slots (
-            mentor_profiles ( full_name )
-          )
-        )
-      `)
-      .eq('respondent_type', 'student'),
+    studentSurveysQuery,
   ])
 
   const virtualBookings = (virtualData ?? []).filter(b =>
@@ -340,50 +410,7 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
       if (name) mentorMap[name] = (mentorMap[name] ?? 0) + 1
     })
 
-  const ratings = (studentSurveys ?? []).map(s => s.rating_overall).filter(Boolean)
-  const avgRating = ratings.length
-    ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
-    : null
-
-  const mentorOnTimeMap: Record<string, number> = { Yes: 0, No: 0 }
-  const nextStepsMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
-  const workAgainMap: Record<string, number> = { Yes: 0, No: 0, 'Not sure': 0 }
-
-  const mentorIssuesMap: Record<string, { lateCount: number; wouldNotWorkAgainCount: number; noNextStepsCount: number; details: any[] }> = {}
-
-  ;(studentSurveys ?? []).forEach((s: any) => {
-    const onTime    = s.additional_answers?.mentor_on_time
-    const nextSteps = s.additional_answers?.next_steps
-    const workAgain = s.additional_answers?.work_again
-    const mentorName = s.student_bookings?.appointment_slots?.mentor_profiles?.full_name ?? 'Unknown'
-
-    if (onTime    && mentorOnTimeMap[onTime]    !== undefined) mentorOnTimeMap[onTime]++
-    if (nextSteps && nextStepsMap[nextSteps]     !== undefined) nextStepsMap[nextSteps]++
-    if (workAgain && workAgainMap[workAgain]     !== undefined) workAgainMap[workAgain]++
-
-    // Track issues per mentor
-    if (onTime === 'No' || workAgain === 'No' || nextSteps === 'No') {
-      if (!mentorIssuesMap[mentorName]) {
-        mentorIssuesMap[mentorName] = { lateCount: 0, wouldNotWorkAgainCount: 0, noNextStepsCount: 0, details: [] }
-      }
-      if (onTime === 'No') mentorIssuesMap[mentorName].lateCount++
-      if (workAgain === 'No') mentorIssuesMap[mentorName].wouldNotWorkAgainCount++
-      if (nextSteps === 'No') mentorIssuesMap[mentorName].noNextStepsCount++
-      mentorIssuesMap[mentorName].details.push({
-        onTime: onTime === 'No',
-        wouldNotWorkAgain: workAgain === 'No',
-        noNextSteps: nextSteps === 'No',
-      })
-    }
-  })
-
-  const mentorIssues = Object.entries(mentorIssuesMap).map(([name, data]) => ({
-    mentorName: name,
-    lateCount: data.lateCount,
-    wouldNotWorkAgainCount: data.wouldNotWorkAgainCount,
-    noNextStepsCount: data.noNextStepsCount,
-    totalIssues: data.lateCount + data.wouldNotWorkAgainCount + data.noNextStepsCount,
-  })).sort((a, b) => b.totalIssues - a.totalIssues)
+  const surveyStats = computeSurveyStats(studentSurveys ?? [])
 
  return NextResponse.json({
     bookings: {
@@ -411,16 +438,6 @@ ethnicity:       countMultiselect(answersWithEmail, 'ethnicity'),
       lgbtq:           countUnique(answersWithEmail, 'lgbtq'),
     },
     mentorActivity: Object.entries(mentorMap).sort((a, b) => b[1] - a[1]),
-    surveys: {
-      avgRating,
-      totalResponses: ratings.length,
-      mentorOnTime:   Object.entries(mentorOnTimeMap),
-      nextSteps:      Object.entries(nextStepsMap),
-      workAgain:      Object.entries(workAgainMap),
-      howHeard:       (studentSurveys ?? [])
-        .map((s: any) => s.additional_answers?.how_heard)
-        .filter((a: any) => a && a.trim().length > 0),
-      mentorIssues,
-    },
+    surveys: surveyStats,
   })
 }

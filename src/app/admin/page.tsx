@@ -1755,7 +1755,9 @@ const exportHeaders = await getAuthHeader()
                     {/* Survey stats */}
                     {reports.surveys.totalResponses > 0 && (
                       <div style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 12, padding: '1rem', marginBottom: 20 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Student surveys from virtual appointments ({reports.surveys.totalResponses} responses)</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>
+                          Student surveys from {reportsMeetingType === 'all' ? 'virtual and in-person' : reportsMeetingType === 'virtual' ? 'virtual' : 'in-person'} appointments ({reports.surveys.totalResponses} responses)
+                        </p>
                      {/* Mentor issues - full width, moved to top */}
                       {reports.surveys.mentorIssues?.length > 0 && (
                         <div style={{ marginBottom: 20 }}>
@@ -1782,16 +1784,19 @@ const exportHeaders = await getAuthHeader()
                         </div>
                       )}
 
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
-                          {/* Avg ease of connecting */}
+                      <div style={{ display: 'grid', gridTemplateColumns: reportsMeetingType === 'in_person' ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+                          {/* Avg ease of connecting — not asked of in-person students */}
+                          {reportsMeetingType !== 'in_person' && reports.surveys.avgRating !== null && (
                           <div>
                             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
                             <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
                               <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#582C83' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
                             </div>
                           </div>
+                          )}
 
-                          {/* Mentor on time */}
+                          {/* Mentor on time — not asked of in-person students */}
+                          {reportsMeetingType !== 'in_person' && (
                           <div>
                             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Mentor on time</p>
                             <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
@@ -1803,6 +1808,7 @@ const exportHeaders = await getAuthHeader()
                               ))}
                             </div>
                           </div>
+                          )}
 
                           {/* Next steps */}
                           <div>
