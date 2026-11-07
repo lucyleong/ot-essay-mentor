@@ -10,6 +10,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  // Optional one-time backfill: { "inPersonBackfillHours": 168 } widens the
+  // in-person lookback to a full range (now minus N hours, through now)
+  // instead of the normal narrow rolling window. Virtual timing/window is
+  // never affected by this. Omit the body (as the regular cron does) for
+  // normal operation.
+  const body = await request.json().catch(() => ({}))
+  const backfillHours = typeof body?.inPersonBackfillHours === 'number' ? body.inPersonBackfillHours : null
+
   const supabase = await createServerSupabaseClient()
   const now = new Date()
 
@@ -36,8 +44,12 @@ export async function POST(request: NextRequest) {
   // end_time, since the 20-minute slot duration isn't a meaningful signal
   // here. Excludes anyone marked walked out — checked explicitly below
   // rather than relying on the embedded-resource filter alone.
-  const oneHourAgo = new Date(now.getTime() - 60 * 60_000).toISOString()
-  const oneHourThirtyAgo = new Date(now.getTime() - 90 * 60_000).toISOString()
+  const inPersonWindowEnd = backfillHours
+    ? now.toISOString()
+    : new Date(now.getTime() - 60 * 60_000).toISOString()
+  const inPersonWindowStart = backfillHours
+    ? new Date(now.getTime() - backfillHours * 60 * 60_000).toISOString()
+    : new Date(now.getTime() - 90 * 60_000).toISOString()
 
   const { data: inPersonBookings } = await supabase
     .from('student_bookings')
@@ -51,8 +63,8 @@ export async function POST(request: NextRequest) {
     `)
     .is('cancelled_at', null)
     .eq('meeting_type', 'in_person')
-    .lte('appointment_slots.start_time', oneHourAgo)
-    .gte('appointment_slots.start_time', oneHourThirtyAgo)
+    .lte('appointment_slots.start_time', inPersonWindowEnd)
+    .gte('appointment_slots.start_time', inPersonWindowStart)
 
   const bookings = [...(virtualBookings ?? []), ...(inPersonBookings ?? [])]
 
