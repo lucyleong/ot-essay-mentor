@@ -410,7 +410,12 @@ const firstGenEntries = countUnique(answersWithEmail, 'first_gen')
       if (name) mentorMap[name] = (mentorMap[name] ?? 0) + 1
     })
 
-  const surveyStats = computeSurveyStats(studentSurveys ?? [])
+  // The query-level filter on this nested field isn't reliable on its own
+  // (same reason answersWithEmail re-filters intakeAnswers below) — always
+  // pair it with an explicit JS-level filter.
+  const filteredStudentSurveys = (studentSurveys ?? [])
+    .filter((s: any) => !meetingType || s.student_bookings?.meeting_type === meetingType)
+  const surveyStats = computeSurveyStats(filteredStudentSurveys)
 
  return NextResponse.json({
     bookings: {

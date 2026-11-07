@@ -1703,6 +1703,23 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
                   </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    {/* Filters everything below: bookings, surveys, and demographics */}
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {(['all', 'virtual', 'in_person'] as const).map(t => (
+                        <button
+                          key={t}
+                          onClick={() => setReportsMeetingType(t)}
+                          style={{
+                            fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                            background: reportsMeetingType === t ? '#582C83' : '#ffffff',
+                            color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
+                            border: `0.5px solid ${reportsMeetingType === t ? '#582C83' : '#D3D1C7'}`,
+                          }}
+                        >
+                          {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
+                        </button>
+                      ))}
+                    </div>
                     {reports && (
                       <button
                        onClick={async () => {
@@ -1867,22 +1884,6 @@ const exportHeaders = await getAuthHeader()
                {/* Demographics */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>Intake form responses &amp; mentor activity</p>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        {(['all', 'virtual', 'in_person'] as const).map(t => (
-                          <button
-                            key={t}
-                            onClick={() => setReportsMeetingType(t)}
-                            style={{
-                              fontSize: 11, padding: '3px 10px', borderRadius: 20,
-                              background: reportsMeetingType === t ? '#582C83' : '#ffffff',
-                              color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
-                              border: `0.5px solid ${reportsMeetingType === t ? '#582C83' : '#D3D1C7'}`,
-                            }}
-                          >
-                            {t === 'all' ? 'All' : t === 'virtual' ? 'Virtual' : 'In Person'}
-                          </button>
-                        ))}
-                      </div>
                     </div>
                     <div className="flex-row" style={{ display: 'flex', gap: 14, flexWrap: 'nowrap', overflowX: 'auto', alignItems: 'center', marginBottom: 14, fontSize: 12, color: '#5F5E5A', paddingBottom: 2 }}>
                       {([
