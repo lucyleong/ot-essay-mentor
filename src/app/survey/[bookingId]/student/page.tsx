@@ -42,9 +42,15 @@ const [howHeard,      setHowHeard]      = useState('')
     init()
   }, [])
 
-async function handleSubmit() {
+  const isInPerson = booking?.meeting_type === 'in_person'
+
+  async function handleSubmit() {
     setSubmitting(true)
-       if (!sessionEase || !mentorOnTime || !nextSteps || !workAgain) {
+    if (!isInPerson && (!sessionEase || !mentorOnTime)) {
+      setError('Please answer all required questions before submitting.')
+      return
+    }
+    if (!nextSteps || !workAgain) {
       setError('Please answer all required questions before submitting.')
       return
     }
@@ -53,10 +59,9 @@ async function handleSubmit() {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
-        rating_overall:     sessionEase,
+        rating_overall:     isInPerson ? null : sessionEase,
         additional_answers: {
-          session_ease:  sessionEase,
-          mentor_on_time: mentorOnTime,
+          ...(isInPerson ? {} : { session_ease: sessionEase, mentor_on_time: mentorOnTime }),
           next_steps:    nextSteps,
           work_again:    workAgain,
           how_heard:     howHeard,
@@ -131,7 +136,8 @@ async function handleSubmit() {
         </div>
       )}
 
-      {/* Q1 */}
+      {/* Q1 — skipped for in-person, doesn't apply to a walk-in */}
+      {!isInPerson && (
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 4px' }}>
           Were you able to get into your session easily?
@@ -139,8 +145,10 @@ async function handleSubmit() {
         <p style={{ fontSize: 12, color: '#888780', margin: '0 0 4px' }}>1 = Very difficult · 5 = Very easy</p>
         <RatingButtons value={sessionEase} onChange={setSessionEase} />
       </div>
+      )}
 
-      {/* Q2 */}
+      {/* Q2 — skipped for in-person */}
+      {!isInPerson && (
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>
           Was your mentor on time?
@@ -158,6 +166,7 @@ async function handleSubmit() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Q3 */}
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 12 }}>
@@ -215,7 +224,7 @@ async function handleSubmit() {
 
       <button
         onClick={handleSubmit}
-        disabled={!sessionEase || !mentorOnTime || !nextSteps || !workAgain || submitting}
+        disabled={(!isInPerson && (!sessionEase || !mentorOnTime)) || !nextSteps || !workAgain || submitting}
         style={{ width: '100%', fontSize: 14, background: '#534AB7', color: '#ffffff', border: 'none' }}
       >
         {submitting ? 'Submitting...' : 'Submit feedback'}

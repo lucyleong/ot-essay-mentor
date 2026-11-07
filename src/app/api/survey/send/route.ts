@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   // and haven't had surveys sent yet
   const tenMinutesAgo = new Date(now.getTime() - 30 * 60_000).toISOString()
 
-  const { data: bookings } = await supabase
+  const { data: virtualBookings } = await supabase
     .from('student_bookings')
     .select(`
       id, student_name, student_email,
@@ -31,13 +31,40 @@ export async function POST(request: NextRequest) {
     .lte('appointment_slots.end_time', now.toISOString())
     .gte('appointment_slots.end_time', tenMinutesAgo)
 
+  // In-person: send 1 hour after being marked helped (= the slot's
+  // start_time, set at the moment "Helped" is clicked) rather than
+  // end_time, since the 20-minute slot duration isn't a meaningful signal
+  // here. Excludes anyone marked walked out — checked explicitly below
+  // rather than relying on the embedded-resource filter alone.
+  const oneHourAgo = new Date(now.getTime() - 60 * 60_000).toISOString()
+  const oneHourThirtyAgo = new Date(now.getTime() - 90 * 60_000).toISOString()
+
+  const { data: inPersonBookings } = await supabase
+    .from('student_bookings')
+    .select(`
+      id, student_name, student_email,
+      walkin_queue ( status ),
+      appointment_slots (
+        start_time, end_time,
+        mentor_profiles ( full_name, email )
+      )
+    `)
+    .is('cancelled_at', null)
+    .eq('meeting_type', 'in_person')
+    .lte('appointment_slots.start_time', oneHourAgo)
+    .gte('appointment_slots.start_time', oneHourThirtyAgo)
+
+  const bookings = [...(virtualBookings ?? []), ...(inPersonBookings ?? [])]
+
   let sent = 0
 
-  for (const booking of bookings ?? []) {
+  for (const booking of bookings) {
     const slot   = booking.appointment_slots as any
     const mentor = slot?.mentor_profiles
+    const queueStatus = (booking as any).walkin_queue?.status
 
     if (!slot || !mentor) continue
+    if ((booking as any).walkin_queue && queueStatus !== 'helped') continue
 
     // Check if survey email already sent (regardless of whether they filled it out)
     const { data: existingEmail } = await supabase
