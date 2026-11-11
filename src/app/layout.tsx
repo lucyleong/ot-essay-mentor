@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Matches oaklandtech.ousd.org's own typeface (Source Sans Pro, since
+// renamed Source Sans 3 on Google Fonts) for brand consistency with the
+// school site students already know.
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
+  weight: "variable",
   subsets: ["latin"],
 });
 
@@ -42,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${sourceSans.variable} h-full antialiased`}
     >
 <body className="min-h-full flex flex-col">
         {children}
