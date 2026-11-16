@@ -1379,42 +1379,27 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           upcoming virtual cancellations use the button above
                           instead, which also frees the slot and notifies. */}
                       {!booking.cancelled_at && isPast && booking.meeting_type === 'virtual' && (
-                        cancellingId === booking.id ? (
-                          <>
-                            <button
-                              onClick={async () => {
-                                const res = await fetch('/api/admin/bookings/cancel-in-person', {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
-                                  body: JSON.stringify({ bookingId: booking.id }),
-                                })
-                                setCancellingId(null)
-                                if (!res.ok) {
-                                  const data = await res.json().catch(() => ({}))
-                                  alert(`Failed to cancel: ${data.error ?? res.statusText}`)
-                                  return
-                                }
-                                loadData()
-                              }}
-                              style={{ fontSize: 12, padding: '4px 10px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              onClick={() => setCancellingId(null)}
-                              style={{ fontSize: 12, padding: '4px 10px' }}
-                            >
-                              Never mind
-                            </button>
-                          </>
-                       ) : (
-                          <button
-                            onClick={() => setCancellingId(booking.id)}
-                            style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
-                          >
-                            Mark as canceled
-                          </button>
-                        )
+                        <button
+                          disabled={cancellingId === booking.id}
+                          onClick={async () => {
+                            setCancellingId(booking.id)
+                            const res = await fetch('/api/admin/bookings/cancel-in-person', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                              body: JSON.stringify({ bookingId: booking.id }),
+                            })
+                            setCancellingId(null)
+                            if (!res.ok) {
+                              const data = await res.json().catch(() => ({}))
+                              alert(`Failed to cancel: ${data.error ?? res.statusText}`)
+                              return
+                            }
+                            loadData()
+                          }}
+                          style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                        >
+                          {cancellingId === booking.id ? 'Canceling...' : 'Mark as canceled'}
+                        </button>
                       )}
 
                       {/* Cancel button — in-person (e.g. correcting a walk-in
