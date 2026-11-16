@@ -68,6 +68,14 @@ export async function POST(request: NextRequest) {
     params
   )
 
+  // TEMPORARY: also try the "www" and bare-apex variants of the webhook URL
+  // regardless of what NEXT_PUBLIC_APP_URL is set to, to pin down which
+  // exact URL string Twilio actually signed against.
+  const wwwUrl = webhookUrl.replace('https://otessaymentors.org', 'https://www.otessaymentors.org')
+  const apexUrl = webhookUrl.replace('https://www.otessaymentors.org', 'https://otessaymentors.org')
+  const expectedSignatureWww = twilio.getExpectedTwilioSignature(process.env.TWILIO_AUTH_TOKEN!, wwwUrl, params)
+  const expectedSignatureApex = twilio.getExpectedTwilioSignature(process.env.TWILIO_AUTH_TOKEN!, apexUrl, params)
+
   // TEMPORARY: signature validation is currently failing for every request
   // despite a matching URL and auth token (root cause not yet found — see
   // Twilio support ticket). Rather than block real student replies while
@@ -80,6 +88,13 @@ export async function POST(request: NextRequest) {
     webhookUrl,
     twilioSignature,
     expectedSignature,
+    expectedSignatureWww,
+    expectedSignatureApex,
+    matchesWww: twilioSignature === expectedSignatureWww,
+    matchesApex: twilioSignature === expectedSignatureApex,
+    requestHost: request.headers.get('host'),
+    forwardedHost: request.headers.get('x-forwarded-host'),
+    requestUrl: request.url,
     params,
     contentType: request.headers.get('Content-Type'),
     rawBody,
