@@ -25,10 +25,6 @@ export async function POST(request: NextRequest) {
 
   if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
 
-  if (booking.meeting_type !== 'in_person') {
-    return NextResponse.json({ error: 'This booking is not an in-person appointment' }, { status: 400 })
-  }
-
   if (booking.cancelled_at) {
     return NextResponse.json({ error: 'Already cancelled' }, { status: 400 })
   }

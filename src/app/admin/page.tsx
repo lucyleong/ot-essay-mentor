@@ -1282,7 +1282,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           then cancelled), no picker needed — just restores
                           to them. If never assigned (e.g. walked out straight
                           from waiting), a mentor has to be picked now. */}
-                      {booking.cancelled_at && booking.meeting_type === 'in_person' && (
+                      {booking.cancelled_at && (
                         (booking as any).appointment_slots ? (
                           <button
                             disabled={restoringId === booking.id}
@@ -1303,7 +1303,9 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             }}
                             style={{ fontSize: 12, padding: '4px 10px', color: '#085041', borderColor: '#A8DDC9', marginTop: 4 }}
                           >
-                            {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
+                            {restoringId === booking.id
+                              ? 'Restoring...'
+                              : (booking.meeting_type === 'in_person' ? 'Mark as helped instead' : 'Undo cancellation')}
                           </button>
                         ) : (
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 4 }}>
@@ -1368,6 +1370,49 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
                           >
                             Cancel
+                          </button>
+                        )
+                      )}
+
+                      {/* Cancel button — completed virtual appointments, for
+                          correcting a mistaken record after the fact. Live/
+                          upcoming virtual cancellations use the button above
+                          instead, which also frees the slot and notifies. */}
+                      {!booking.cancelled_at && isPast && booking.meeting_type === 'virtual' && (
+                        cancellingId === booking.id ? (
+                          <>
+                            <button
+                              onClick={async () => {
+                                const res = await fetch('/api/admin/bookings/cancel-in-person', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                  body: JSON.stringify({ bookingId: booking.id }),
+                                })
+                                setCancellingId(null)
+                                if (!res.ok) {
+                                  const data = await res.json().catch(() => ({}))
+                                  alert(`Failed to cancel: ${data.error ?? res.statusText}`)
+                                  return
+                                }
+                                loadData()
+                              }}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#E24B4A', color: '#ffffff', border: 'none' }}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => setCancellingId(null)}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </>
+                       ) : (
+                          <button
+                            onClick={() => setCancellingId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
+                          >
+                            Mark as canceled
                           </button>
                         )
                       )}
