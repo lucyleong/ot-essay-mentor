@@ -79,6 +79,9 @@ html, body {
     grid-template-columns: repeat(3, 1fr) !important;
     font-size: 11px !important;
   }
+  .demographics-pie-grid {
+    grid-template-columns: 1fr !important;
+  }
   .mentor-layout {
     flex-direction: column !important;
   }

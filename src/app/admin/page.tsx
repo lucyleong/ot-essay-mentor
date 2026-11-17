@@ -1965,7 +1965,7 @@ const exportHeaders = await getAuthHeader()
                         Apply
                       </button>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+                    <div className="demographics-pie-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
 
                  {/* Mentor activity */}
                       <div>
