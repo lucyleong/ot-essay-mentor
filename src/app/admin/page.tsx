@@ -345,16 +345,16 @@ const [savingResources, setSavingResources] = useState(false)
           console.error('renderPie', canvasId, 'failed:', err)
         }
       }
-      renderPie('pie-lgbtq', reports.demographics.lgbtq)
+      renderPie('pie-lgbtq', reports.demographics.lgbtq, false)
       // Mentor/teacher lists can grow long, so their legend is a custom HTML
       // list below the chart instead (see PieLegend) — keeps the pie itself
       // a fixed, consistent size instead of chart.js stretching or shrinking
       // it to make room for an unpredictable number of legend rows.
       renderPie('pie-mentor-activity', reports.mentorActivity, false)
       renderPie('pie-teachers', reports.demographics.teachers, false)
-      renderPie('pie-first-gen', reports.demographics.firstGen)
+      renderPie('pie-first-gen', reports.demographics.firstGen, false)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor, false)
-      renderPie('pie-immigrants', reports.demographics.immigrants)
+      renderPie('pie-immigrants', reports.demographics.immigrants, false)
 
       function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
@@ -2047,24 +2047,33 @@ const exportHeaders = await getAuthHeader()
                       {/* LGBTQ */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>LGBTQIAA+ / Gender nonconforming</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
-                          <canvas id="pie-lgbtq" role="img" aria-label="Pie chart of LGBTQIAA+ and gender nonconforming responses"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-lgbtq" role="img" aria-label="Pie chart of LGBTQIAA+ and gender nonconforming responses"></canvas>
+                          </div>
+                          <PieLegend entries={reports.demographics.lgbtq ?? []} />
                         </div>
                       </div>
 
                       {/* Immigrants */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Immigrant family</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
-                          <canvas id="pie-immigrants" role="img" aria-label="Pie chart of immigrant family status responses"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-immigrants" role="img" aria-label="Pie chart of immigrant family status responses"></canvas>
+                          </div>
+                          <PieLegend entries={reports.demographics.immigrants ?? []} />
                         </div>
                       </div>
 
   {/* First gen */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>First in family going to college</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
-                          <canvas id="pie-first-gen" role="img" aria-label="Pie chart of first generation college student responses"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-first-gen" role="img" aria-label="Pie chart of first generation college student responses"></canvas>
+                          </div>
+                          <PieLegend entries={reports.demographics.firstGen ?? []} />
                         </div>
                       </div>
 
