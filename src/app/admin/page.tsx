@@ -107,6 +107,21 @@ function SurveyBar({ question, entries }: { question: string; entries: [string, 
   )
 }
 
+function RatingBar({ question, rating, outOf = 5 }: { question: string; rating: number; outOf?: number }) {
+  const pct = Math.max(0, Math.min(1, rating / outOf))
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+        <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>{question}</p>
+        <span style={{ fontSize: 12, color: '#888780' }}>{rating}/{outOf} avg</span>
+      </div>
+      <div style={{ height: 18, borderRadius: 6, overflow: 'hidden', background: '#F1EFE8' }}>
+        <div style={{ width: `${pct * 100}%`, height: '100%', background: '#582C83' }} />
+      </div>
+    </div>
+  )
+}
+
 export default function AdminPage() {
 const [activePanel, setActivePanel] = useState('reports')
 const [chartsReady, setChartsReady] = useState(false)
@@ -1889,25 +1904,16 @@ const exportHeaders = await getAuthHeader()
                         </div>
                       )}
 
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 20, alignItems: 'flex-start' }}>
-                          {/* Avg ease of connecting — not asked of in-person students */}
+                      <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 20 }}>
+                          {/* Ease of connecting / Mentor on time — not asked of in-person students */}
                           {reportsMeetingType !== 'in_person' && reports.surveys.avgRating !== null && (
-                          <div style={{ flex: '0 0 160px' }}>
-                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
-                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
-                              <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#582C83' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
-                            </div>
-                          </div>
+                            <RatingBar question="Ease of connecting" rating={reports.surveys.avgRating} />
                           )}
-
-                          <div style={{ flex: '1 1 360px', background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', gap: 18 }}>
-                            {/* Mentor on time — not asked of in-person students */}
-                            {reportsMeetingType !== 'in_person' && (
-                              <SurveyBar question="Mentor on time" entries={reports.surveys.mentorOnTime} />
-                            )}
-                            <SurveyBar question="Gave next steps" entries={reports.surveys.nextSteps} />
-                            <SurveyBar question="Would work with mentor again" entries={reports.surveys.workAgain} />
-                          </div>
+                          {reportsMeetingType !== 'in_person' && (
+                            <SurveyBar question="Mentor on time" entries={reports.surveys.mentorOnTime} />
+                          )}
+                          <SurveyBar question="Gave next steps" entries={reports.surveys.nextSteps} />
+                          <SurveyBar question="Would work with mentor again" entries={reports.surveys.workAgain} />
                       </div>
 
                       {/* How heard - full width */}
