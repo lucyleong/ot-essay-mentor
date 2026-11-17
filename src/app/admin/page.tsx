@@ -107,8 +107,9 @@ function SurveyBar({ question, entries }: { question: string; entries: [string, 
   )
 }
 
-function RatingBar({ question, rating, outOf = 5 }: { question: string; rating: number; outOf?: number }) {
+function RatingBar({ question, rating, outOf = 5, goodAt = 4 }: { question: string; rating: number; outOf?: number; goodAt?: number }) {
   const pct = Math.max(0, Math.min(1, rating / outOf))
+  const color = rating >= goodAt ? '#1D9E75' : '#E24B4A'
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
@@ -116,7 +117,7 @@ function RatingBar({ question, rating, outOf = 5 }: { question: string; rating: 
         <span style={{ fontSize: 12, color: '#888780' }}>{rating}/{outOf} avg</span>
       </div>
       <div style={{ height: 18, borderRadius: 6, overflow: 'hidden', background: '#F1EFE8' }}>
-        <div style={{ width: `${pct * 100}%`, height: '100%', background: '#582C83' }} />
+        <div style={{ width: `${pct * 100}%`, height: '100%', background: color }} />
       </div>
     </div>
   )
