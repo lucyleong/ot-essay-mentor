@@ -353,7 +353,7 @@ const [savingResources, setSavingResources] = useState(false)
       renderPie('pie-mentor-activity', reports.mentorActivity, false)
       renderPie('pie-teachers', reports.demographics.teachers, false)
       renderPie('pie-first-gen', reports.demographics.firstGen)
-      renderPie('pie-private-counselor', reports.demographics.privateCounselor)
+      renderPie('pie-private-counselor', reports.demographics.privateCounselor, false)
       renderPie('pie-immigrants', reports.demographics.immigrants)
 
       function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
@@ -2028,8 +2028,11 @@ const exportHeaders = await getAuthHeader()
                       {/* Private counselor */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Using private counselor</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: 200 }}>
-                          <canvas id="pie-private-counselor" role="img" aria-label="Pie chart of private counselor usage responses"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-private-counselor" role="img" aria-label="Pie chart of private counselor usage responses"></canvas>
+                          </div>
+                          <PieLegend entries={reports.demographics.privateCounselor ?? []} />
                         </div>
                       </div>
 
