@@ -55,7 +55,7 @@ function shortenLabel(label: string) {
 // immigrant" and "Yes one or both of my parents are immigrants") — only
 // abbreviate the longer parents one for display; leave the other as-is.
 function shortenImmigrantEntries(entries: [string, number][]): [string, number][] {
-  return entries.map(([label, count]) => [/^yes\s+one\s+or\s+both/i.test(label) ? 'Yes, one or both parents' : label, count])
+  return entries.map(([label, count]) => [/^yes,?\s+one\s+or\s+both/i.test(label) ? 'Yes, one or both parents' : label, count])
 }
 
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
