@@ -1763,7 +1763,7 @@ const exportHeaders = await getAuthHeader()
                           a.click()
                           URL.revokeObjectURL(url)
                                                 }}
-                        style={{ fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ fontSize: 12, lineHeight: 1, padding: '4px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         Export CSV
                       </button>
