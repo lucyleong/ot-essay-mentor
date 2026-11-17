@@ -51,6 +51,12 @@ function shortenLabel(label: string) {
   return label.split(' (')[0]
 }
 
+// The intake form's full answer text is long ("Yes one or both of my
+// parents are immigrants") — abbreviate just the "Yes" option for display.
+function shortenImmigrantEntries(entries: [string, number][]): [string, number][] {
+  return entries.map(([label, count]) => [/^yes\b/i.test(label) ? 'Yes, one or both parents' : label, count])
+}
+
 const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
 
 function PieLegend({ entries }: { entries: [string, number][] }) {
@@ -354,7 +360,7 @@ const [savingResources, setSavingResources] = useState(false)
       renderPie('pie-teachers', reports.demographics.teachers, false)
       renderPie('pie-first-gen', reports.demographics.firstGen, false)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor, false)
-      renderPie('pie-immigrants', reports.demographics.immigrants, false)
+      renderPie('pie-immigrants', shortenImmigrantEntries(reports.demographics.immigrants ?? []), false)
 
       function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
@@ -2062,7 +2068,7 @@ const exportHeaders = await getAuthHeader()
                           <div style={{ position: 'relative', height: 200 }}>
                             <canvas id="pie-immigrants" role="img" aria-label="Pie chart of immigrant family status responses"></canvas>
                           </div>
-                          <PieLegend entries={reports.demographics.immigrants ?? []} />
+                          <PieLegend entries={shortenImmigrantEntries(reports.demographics.immigrants ?? [])} />
                         </div>
                       </div>
 
