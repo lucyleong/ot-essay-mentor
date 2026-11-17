@@ -913,41 +913,6 @@ fontSize: item.indent ? 13 : 15,
                   {mentors.filter(m => m.is_active).length} active mentors
                 </p>
 
-                {/* Add mentor form */}
-                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 16 }}>
-                  <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>Add a mentor</p>
-
-                  {addSuccess && (
-                    <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: '#085041' }}>
-                      {addSuccess}
-                    </div>
-                  )}
-                  {addError && (
-                    <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: '#791F1F' }}>
-                      {addError}
-                    </div>
-                  )}
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, alignItems: 'end' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Full name</label>
-                      <input type="text" value={newName} onChange={e => setNewName(e.target.value)} placeholder="e.g. Maria Reyes" style={{ width: '100%', boxSizing: 'border-box' }} />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Email</label>
-                      <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="mentor@email.com" style={{ width: '100%', boxSizing: 'border-box' }} />
-                    </div>
-                 <button onClick={addMentor} disabled={adding} style={{ 
-                        fontSize: 12, whiteSpace: 'nowrap',
-                        background: newName && newEmail ? '#582C83' : undefined,
-                        color: newName && newEmail ? '#ffffff' : undefined,
-                        border: newName && newEmail ? 'none' : undefined,
-                      }}>
-                      {adding ? 'Adding...' : 'Add mentor'}
-                    </button>
-                  </div>
-                </div>
-
                {/* Mentor list */}
                 <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                  {mentors.filter(m => m.is_active).map(mentor => (
@@ -1129,6 +1094,41 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     </div>
                   </>
                 )}
+
+                {/* Add mentor form — moved to the bottom since it's a rare action */}
+                <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginTop: 24 }}>
+                  <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 12px' }}>Add a mentor</p>
+
+                  {addSuccess && (
+                    <div style={{ background: '#E1F5EE', border: '0.5px solid #5DCAA5', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: '#085041' }}>
+                      {addSuccess}
+                    </div>
+                  )}
+                  {addError && (
+                    <div style={{ background: '#FCEBEB', border: '0.5px solid #F09595', borderRadius: 8, padding: '8px 12px', marginBottom: 10, fontSize: 13, color: '#791F1F' }}>
+                      {addError}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, alignItems: 'end' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Full name</label>
+                      <input type="text" value={newName} onChange={e => setNewName(e.target.value)} placeholder="e.g. Maria Reyes" style={{ width: '100%', boxSizing: 'border-box' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#5F5E5A', marginBottom: 4 }}>Email</label>
+                      <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="mentor@email.com" style={{ width: '100%', boxSizing: 'border-box' }} />
+                    </div>
+                 <button onClick={addMentor} disabled={adding} style={{
+                        fontSize: 12, whiteSpace: 'nowrap',
+                        background: newName && newEmail ? '#582C83' : undefined,
+                        color: newName && newEmail ? '#ffffff' : undefined,
+                        border: newName && newEmail ? 'none' : undefined,
+                      }}>
+                      {adding ? 'Adding...' : 'Add mentor'}
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
