@@ -76,7 +76,7 @@ html, body {
     min-width: 0;
   }
   .summary-stats-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(4, 1fr) !important;
   }
   .demographics-pie-grid {
     grid-template-columns: 1fr !important;

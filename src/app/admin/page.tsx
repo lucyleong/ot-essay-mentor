@@ -1853,39 +1853,44 @@ const exportHeaders = await getAuthHeader()
 
                 {reports && (
                   <div>
-                    {/* Booking stats — grouped by meaning: volume (good to see
-                        grow) vs. issues to watch (good to see shrink), so a
-                        glance at the color tells you which is which */}
+                    {/* Booking stats — grouped by meaning via color: volume
+                        (good to see grow, purple) vs. issues to watch (good
+                        to see shrink, amber), all in one compact row so a
+                        glance tells you which numbers need a second look */}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
-
-                    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#5F5E5A', margin: '0 0 8px' }}>Volume</p>
-                    <div className="summary-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 18 }}>
+                    <div className="summary-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 6 }}>
                       {[
-                        { label: 'Virtual', value: reports.bookings.virtual },
-                        { label: 'In person', value: reports.bookings.inPerson },
-                        { label: 'Unique students helped', value: reports.bookings.uniqueStudentsHelped },
-                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
+                        { label: 'Virtual', value: reports.bookings.virtual, group: 'volume' },
+                        { label: 'In person', value: reports.bookings.inPerson, group: 'volume' },
+                        { label: 'Unique helped', value: reports.bookings.uniqueStudentsHelped, group: 'volume' },
+                        { label: 'Expired slots', value: reports.bookings.unbookedSlots, group: 'volume' },
+                        { label: 'Canceled', value: reports.bookings.cancelled, group: 'issue' },
+                        { label: 'No shows', value: reports.bookings.noShows, group: 'issue' },
+                        { label: 'Issue - no meet', value: reports.bookings.meetIssuesDidNotMeet, group: 'issue' },
+                        { label: 'Issue - met', value: reports.bookings.meetIssuesStillMet, group: 'issue' },
                       ].map(stat => (
-                        <div key={stat.label} style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#582C83' }}>{stat.value}</p>
-                          <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
+                        <div
+                          key={stat.label}
+                          style={{
+                            background: stat.group === 'volume' ? '#F0EFFE' : '#FEF3E8',
+                            border: `0.5px solid ${stat.group === 'volume' ? '#C9C5F7' : '#F3D9B8'}`,
+                            borderRadius: 10, padding: '10px 6px', textAlign: 'center',
+                          }}
+                        >
+                          <p style={{ fontSize: 19, fontWeight: 500, margin: '0 0 4px', color: stat.group === 'volume' ? '#582C83' : '#9A4E00' }}>{stat.value}</p>
+                          <p style={{ fontSize: 10.5, color: '#888780', margin: 0 }}>{stat.label}</p>
                         </div>
                       ))}
                     </div>
-
-                    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#9A4E00', margin: '0 0 8px' }}>Issues to watch</p>
-                    <div className="summary-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 20 }}>
-                      {[
-                        { label: 'Canceled', value: reports.bookings.cancelled },
-                        { label: 'No shows', value: reports.bookings.noShows },
-                        { label: 'Connection issues - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
-                        { label: 'Connection issues - met', value: reports.bookings.meetIssuesStillMet },
-                      ].map(stat => (
-                        <div key={stat.label} style={{ background: '#FEF3E8', border: '0.5px solid #F3D9B8', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#9A4E00' }}>{stat.value}</p>
-                          <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
-                        </div>
-                      ))}
+                    <div style={{ display: 'flex', gap: 16, margin: '10px 0 20px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#5F5E5A' }}>
+                        <span style={{ width: 9, height: 9, borderRadius: 2, background: '#582C83' }} />
+                        Volume
+                      </span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#5F5E5A' }}>
+                        <span style={{ width: 9, height: 9, borderRadius: 2, background: '#9A4E00' }} />
+                        Issues to watch
+                      </span>
                     </div>
 
                     {/* Survey stats */}
