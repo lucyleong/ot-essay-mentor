@@ -1853,21 +1853,36 @@ const exportHeaders = await getAuthHeader()
 
                 {reports && (
                   <div>
-                    {/* Booking stats */}
+                    {/* Booking stats — grouped by meaning: volume (good to see
+                        grow) vs. issues to watch (good to see shrink), so a
+                        glance at the color tells you which is which */}
                     <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Bookings</p>
-                  <div className="booking-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 8, marginBottom: 20 }}>
+
+                    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#5F5E5A', margin: '0 0 8px' }}>Volume</p>
+                    <div className="summary-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 18 }}>
                       {[
-{ label: 'Virtual',    value: reports.bookings.virtual },
+                        { label: 'Virtual', value: reports.bookings.virtual },
                         { label: 'In person', value: reports.bookings.inPerson },
+                        { label: 'Unique students helped', value: reports.bookings.uniqueStudentsHelped },
+                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
+                      ].map(stat => (
+                        <div key={stat.label} style={{ background: '#F0EFFE', border: '0.5px solid #C9C5F7', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#582C83' }}>{stat.value}</p>
+                          <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#9A4E00', margin: '0 0 8px' }}>Issues to watch</p>
+                    <div className="summary-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 20 }}>
+                      {[
                         { label: 'Canceled', value: reports.bookings.cancelled },
-                        { label: 'No shows',  value: reports.bookings.noShows },
+                        { label: 'No shows', value: reports.bookings.noShows },
                         { label: 'Connection issues - did not meet', value: reports.bookings.meetIssuesDidNotMeet },
                         { label: 'Connection issues - met', value: reports.bookings.meetIssuesStillMet },
-                        { label: 'Expired slots', value: reports.bookings.unbookedSlots },
-                        { label: 'Unique students helped', value: reports.bookings.uniqueStudentsHelped },
                       ].map(stat => (
-                        <div key={stat.label} style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#582C83' }}>{stat.value}</p>
+                        <div key={stat.label} style={{ background: '#FEF3E8', border: '0.5px solid #F3D9B8', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
+                          <p style={{ fontSize: 24, fontWeight: 500, margin: '0 0 4px', color: '#9A4E00' }}>{stat.value}</p>
                           <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>{stat.label}</p>
                         </div>
                       ))}

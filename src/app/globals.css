@@ -75,9 +75,8 @@ html, body {
     max-width: 100%;
     min-width: 0;
   }
-  .booking-stats-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    font-size: 11px !important;
+  .summary-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
   .demographics-pie-grid {
     grid-template-columns: 1fr !important;
