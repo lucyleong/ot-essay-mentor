@@ -59,6 +59,7 @@ function shortenImmigrantEntries(entries: [string, number][]): [string, number][
   return entries.map(([label, count]) => {
     if (/^yes,?\s+one\s+or\s+both/i.test(label)) return ['One or both parents', count]
     if (/^yes,?\s+i\s+am\s+an\s+immigrant/i.test(label)) return ['I am an immigrant', count]
+    if (/^prefer\s+not\s+to\s+say/i.test(label)) return ['No answer', count]
     return [label, count]
   })
 }
