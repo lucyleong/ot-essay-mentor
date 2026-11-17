@@ -12,6 +12,8 @@ type BookingWithAnswers = {
   student_phone: string | null
   booked_at: string
   cancelled_at: string | null
+  sms_consent: boolean
+  sms_confirmed_at: string | null
   appointment_slots: {
     start_time: string
     end_time: string
@@ -147,7 +149,7 @@ const email = decodeURIComponent(emailParam)
   const upcomingBookings = bookings.filter(b => !b.cancelled_at && b.appointment_slots?.start_time && new Date(b.appointment_slots.start_time) >= now)
   const pastBookings     = bookings.filter(b => b.cancelled_at || !b.appointment_slots?.start_time || new Date(b.appointment_slots.start_time) < now)
 
-  function renderBookingRow(booking: any) {
+  function renderBookingRow(booking: any, showConfirmation = false) {
     const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
     const privateCounselor = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
     const mentorName = booking.appointment_slots?.mentor_profiles?.full_name
@@ -183,12 +185,21 @@ const email = decodeURIComponent(emailParam)
             </span>
           )}
         </p>
-        <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
+        <p style={{ fontSize: 13, color: '#888780', margin: 0, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {mentorName ? `With ${mentorName} · ` : ''}
           {booking.appointment_slots?.start_time
             ? `${format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} – ${format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} · `
             : ''}
           {isInPerson ? 'In person (walk-in)' : 'Virtual'}
+          {showConfirmation && !isInPerson && (
+            <span style={{
+              fontSize: 11, fontWeight: 500, padding: '1px 8px', borderRadius: 20, lineHeight: 1.6,
+              background: !booking.sms_consent ? '#F1EFE8' : (booking.sms_confirmed_at ? '#E1F5EE' : '#FAEEDA'),
+              color: !booking.sms_consent ? '#5F5E5A' : (booking.sms_confirmed_at ? '#085041' : '#854F0B'),
+            }}>
+              {!booking.sms_consent ? 'No SMS consent' : (booking.sms_confirmed_at ? 'Confirmed' : 'Not confirmed yet')}
+            </span>
+          )}
         </p>
         {(helpWith || privateCounselor) && (
           <p style={{ fontSize: 13, color: '#2C2C2A', margin: '6px 0 0' }}>
@@ -256,7 +267,7 @@ const email = decodeURIComponent(emailParam)
           marginBottom: 16,
         }}>
           <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Upcoming appointment</h2>
-          {upcomingBookings.map(renderBookingRow)}
+          {upcomingBookings.map(b => renderBookingRow(b, true))}
         </div>
       )}
 
@@ -360,7 +371,7 @@ const email = decodeURIComponent(emailParam)
       }}>
         <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>Appointment history</h2>
         {pastBookings.length > 0 ? (
-          pastBookings.map(renderBookingRow)
+          pastBookings.map(b => renderBookingRow(b))
         ) : (
           <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>No prior appointments.</p>
         )}
