@@ -885,7 +885,7 @@ fontSize: item.indent ? 13 : 15,
                       {/* Bottom row: badges + buttons */}
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                         <span style={{
-                          fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                          fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1,
                           background: mentor.is_virtual_available ? '#EEEDFE' : '#F1EFE8',
                           color: mentor.is_virtual_available ? '#3C3489' : '#5F5E5A',
                         }}>
@@ -898,7 +898,7 @@ fontSize: item.indent ? 13 : 15,
                           {mentor.is_virtual_available ? 'No virtual' : 'Add to virtual'}
                         </button>
                         <span style={{
-                          fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                          fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1,
                           background: '#E1F5EE', color: '#085041',
                         }}>
                           Active
@@ -914,7 +914,7 @@ fontSize: item.indent ? 13 : 15,
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
                         {shadowLinks.filter(l => l.shadow_mentor_id === mentor.id).map(link => (
                           <span key={link.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1, background: '#FAEEDA', color: '#854F0B' }}>
                               Shadowing {link.lead_mentor?.full_name}
                             </span>
                             <button
@@ -992,7 +992,7 @@ fontSize: item.indent ? 13 : 15,
                           </div>
                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
                             <span style={{
-                              fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1,
                               background: '#FCEBEB', color: '#791F1F',
                             }}>
                               Inactive
@@ -1074,7 +1074,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     <select
                       value={bookingMeetingType}
                       onChange={e => setBookingMeetingType(e.target.value as any)}
-                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, lineHeight: 1, height: 28, width: 'auto' }}
                     >
                       <option value="all">All types</option>
                       <option value="virtual">Virtual</option>
@@ -1083,7 +1083,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     <select
                       value={bookingStatus}
                       onChange={e => setBookingStatus(e.target.value as any)}
-                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, lineHeight: 1, height: 28, width: 'auto' }}
                     >
                     <option value="all">Bookings: All</option>
                       <option value="upcoming">Upcoming</option>
@@ -1098,7 +1098,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     <select
                       value={mentorFilter}
                       onChange={e => setMentorFilter(e.target.value)}
-                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, lineHeight: 1, height: 28, width: 'auto' }}
                     >
                       <option value="all">All mentors</option>
                       {mentors.filter(m => m.full_name !== process.env.PROGRAM_ACCOUNT_EMAIL).map(m => (
@@ -1108,7 +1108,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                     <select
                       value={bookingSort}
                       onChange={e => setBookingSort(e.target.value as any)}
-                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, height: 28, width: 'auto' }}
+                      style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, lineHeight: 1, height: 28, width: 'auto' }}
                     >
                       <option value="booked_at">Most recent booking</option>
                       <option value="start_time_asc">Appointment date ↑</option>
@@ -1203,7 +1203,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                            {booking.student_essays?.length > 0 && (
                              <a
                                href={`/mentor/students/${encodeURIComponent((booking as any).student_email)}?from=${activePanel}`}
-                               style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
+                               style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1, background: '#EEEDFE', color: '#3C3489', textDecoration: 'none', flexShrink: 0 }}
                              >
                                {booking.student_essays.length} essay{booking.student_essays.length !== 1 ? 's' : ''}
                              </a>
@@ -1235,13 +1235,13 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           )}
                         </p>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-<span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
+<span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: booking.meeting_type === 'in_person' ? '#FEF3E8' : '#E8F1FD', color: booking.meeting_type === 'in_person' ? '#9A4E00' : '#1A5EA8' }}>                            {booking.meeting_type === 'in_person' ? 'In Person' : 'Virtual'}
                           </span>
                           {(booking.cancelled_at || !(booking as any).survey_responses?.some((s: any) =>
                             s.additional_answers?.no_show === 'Yes' || s.additional_answers?.meet_issue === 'Yes - did not meet'
                           )) && (
                             <span style={{
-                              fontSize: 11, padding: '2px 8px', borderRadius: 20, flexShrink: 0,
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1, flexShrink: 0,
                               background: booking.cancelled_at ? '#F1EFE8' : (isPast ? '#EEEDFE' : '#E1F5EE'),
                               color: booking.cancelled_at ? '#5F5E5A' : (isPast ? '#3C3489' : '#085041'),
                             }}>
@@ -1249,22 +1249,22 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             </span>
                           )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
+                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#FCEBEB', color: '#791F1F' }}>
                               No-show
                             </span>
                           )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FCEBEB', color: '#791F1F' }}>
+                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#FCEBEB', color: '#791F1F' }}>
                               Connection issue - did not meet
                             </span>
                           )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - still met') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#FAEEDA', color: '#854F0B' }}>
                               Connection issue - still met
                             </span>
                           )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#FAEEDA', color: '#854F0B' }}>
+                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#FAEEDA', color: '#854F0B' }}>
                               Connection issue
                             </span>
                           )}
@@ -1633,7 +1633,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                               </p>
                             </div>
                             <span style={{
-                              fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                              fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1,
                               background: isPast ? '#F1EFE8' : '#E1F5EE',
                               color: isPast ? '#5F5E5A' : '#085041',
                             }}>
@@ -1711,7 +1711,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                   {formatDateTimePST(slot.start_time)}
                 </p>
               </div>
-              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, lineHeight: 1, background: '#F1EFE8', color: '#5F5E5A' }}>
                 {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Los_Angeles' })}
               </span>
             </div>
@@ -1740,7 +1740,7 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
                           key={t}
                           onClick={() => setReportsMeetingType(t)}
                           style={{
-                            fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                            fontSize: 11, padding: '3px 10px', borderRadius: 20, lineHeight: 1,
                             background: reportsMeetingType === t ? '#582C83' : '#ffffff',
                             color: reportsMeetingType === t ? '#ffffff' : '#5F5E5A',
                             border: `0.5px solid ${reportsMeetingType === t ? '#582C83' : '#D3D1C7'}`,
@@ -1940,7 +1940,7 @@ const exportHeaders = await getAuthHeader()
                         onClick={() => setDemographicsCategories(pendingDemographicsCategories)}
                         disabled={[...pendingDemographicsCategories].sort().join(',') === [...demographicsCategories].sort().join(',')}
                         style={{
-                          fontSize: 11, padding: '3px 12px', borderRadius: 20, background: '#582C83', color: '#ffffff', border: 'none',
+                          fontSize: 11, padding: '3px 12px', borderRadius: 20, lineHeight: 1, background: '#582C83', color: '#ffffff', border: 'none',
                           opacity: [...pendingDemographicsCategories].sort().join(',') === [...demographicsCategories].sort().join(',') ? 0.5 : 1,
                           flexShrink: 0, whiteSpace: 'nowrap',
                         }}
@@ -2047,7 +2047,7 @@ const exportHeaders = await getAuthHeader()
                   ) : (
                     <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                       {mentors.filter(m => m.is_active && m.is_in_person_available).map(m => (
-                        <span key={m.id} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                        <span key={m.id} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, lineHeight: 1, background: '#E1F5EE', color: '#085041' }}>
                           {m.full_name}
                         </span>
                       ))}
@@ -2068,7 +2068,7 @@ const exportHeaders = await getAuthHeader()
                         <div key={entry.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
                           <p style={{ fontSize: 13, margin: 0 }}>{entry.mentor_profiles?.full_name ?? 'Unknown mentor'}</p>
                           <span style={{
-                            fontSize: 12, padding: '2px 8px', borderRadius: 20,
+                            fontSize: 12, padding: '2px 8px', borderRadius: 20, lineHeight: 1,
                             background: entry.is_available ? '#E1F5EE' : '#F1EFE8',
                             color:      entry.is_available ? '#085041' : '#5F5E5A',
                           }}>
@@ -2161,17 +2161,17 @@ const exportHeaders = await getAuthHeader()
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <p style={{ fontWeight: 500, fontSize: 13, margin: 0 }}>{entry.student_name}</p>
                             {entry.status === 'helped' && (
-                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#E1F5EE', color: '#085041' }}>
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#E1F5EE', color: '#085041' }}>
                                 Helped by {entry.mentor_profiles?.full_name?.split(' ')[0] ?? 'a mentor'}
                               </span>
                             )}
                             {entry.status === 'walked_out' && (
-                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#F1EFE8', color: '#5F5E5A' }}>
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#F1EFE8', color: '#5F5E5A' }}>
                                 Walked out
                               </span>
                             )}
                             {entry.status === 'waiting' && (
-                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, background: '#EEEDFE', color: '#3C3489' }}>
+                              <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#EEEDFE', color: '#3C3489' }}>
                                 Waiting
                               </span>
                             )}
