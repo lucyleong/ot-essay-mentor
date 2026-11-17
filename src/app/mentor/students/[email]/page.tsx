@@ -11,6 +11,7 @@ type BookingWithAnswers = {
   student_email: string
   student_phone: string | null
   booked_at: string
+  cancelled_at: string | null
   appointment_slots: {
     start_time: string
     end_time: string
@@ -140,8 +141,8 @@ const email = decodeURIComponent(emailParam)
     .sort((a, b) => new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime())
 
   const now = new Date()
-  const upcomingBookings = bookings.filter(b => b.appointment_slots?.start_time && new Date(b.appointment_slots.start_time) >= now)
-  const pastBookings     = bookings.filter(b => !b.appointment_slots?.start_time || new Date(b.appointment_slots.start_time) < now)
+  const upcomingBookings = bookings.filter(b => !b.cancelled_at && b.appointment_slots?.start_time && new Date(b.appointment_slots.start_time) >= now)
+  const pastBookings     = bookings.filter(b => b.cancelled_at || !b.appointment_slots?.start_time || new Date(b.appointment_slots.start_time) < now)
 
   function renderBookingRow(booking: any) {
     const helpWith = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I Want Help With')?.answer_text
@@ -151,14 +152,19 @@ const email = decodeURIComponent(emailParam)
 
     return (
       <div key={booking.id} style={{ padding: '10px 0', borderBottom: '0.5px solid #e8e6de' }}>
-        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px' }}>
-          {booking.appointment_slots?.start_time 
+        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          {booking.appointment_slots?.start_time
             ? format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')
             : format(parseISO(booking.booked_at), 'MMMM d, yyyy')}
+          {booking.cancelled_at && (
+            <span style={{ fontSize: 11, fontWeight: 500, padding: '1px 8px', borderRadius: 20, lineHeight: 1.6, background: '#F1EFE8', color: '#5F5E5A' }}>
+              Canceled {format(parseISO(booking.cancelled_at), 'MMM d')}
+            </span>
+          )}
         </p>
         <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>
           {mentorName ? `With ${mentorName} · ` : ''}
-          {booking.appointment_slots?.start_time 
+          {booking.appointment_slots?.start_time
             ? `${format(parseISO(booking.appointment_slots.start_time), 'h:mm a')} – ${format(parseISO(booking.appointment_slots.end_time), 'h:mm a')} · `
             : ''}
           {isInPerson ? 'In person (walk-in)' : 'Virtual'}

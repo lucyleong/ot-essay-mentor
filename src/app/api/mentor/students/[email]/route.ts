@@ -33,7 +33,7 @@ export async function GET(
     .from('student_bookings')
     .select(`
     id, student_name, student_email, student_phone,
-      booked_at, confirmation_code, meeting_type,
+      booked_at, confirmation_code, meeting_type, cancelled_at,
       appointment_slots (
         start_time, end_time, meeting_type, google_meet_link,
         mentor_profiles ( full_name )
@@ -48,7 +48,6 @@ export async function GET(
       )
     `)
     .eq('student_email', studentEmail)
-    .is('cancelled_at', null)
     .order('booked_at', { ascending: false })
 
   const { data: bookings, error: bookingsError } = await bookingsQuery
