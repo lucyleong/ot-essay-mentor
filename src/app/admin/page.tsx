@@ -2181,10 +2181,6 @@ const exportHeaders = await getAuthHeader()
                   <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 4px' }}>
                     Currently available for walk-ins
                   </h2>
-                  <p style={{ fontSize: 12, color: '#888780', margin: '0 0 10px' }}>
-                    Live status, right now — not just who toggled it today (a mentor who left it
-                    on from a previous day won't show up in the toggle log below).
-                  </p>
                   {mentors.filter(m => m.is_active && m.is_in_person_available).length === 0 ? (
                     <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
                       <p style={{ color: '#888780', margin: 0, fontSize: 13 }}>No mentors currently marked available for walk-ins.</p>
