@@ -51,6 +51,21 @@ function shortenLabel(label: string) {
   return label.split(' (')[0]
 }
 
+const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
+
+function PieLegend({ entries }: { entries: [string, number][] }) {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', marginTop: 10 }}>
+      {entries.map(([label, count], i) => (
+        <span key={label} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, lineHeight: 1, color: '#5F5E5A' }}>
+          <span style={{ width: 9, height: 9, borderRadius: 2, background: pieColors[i % pieColors.length], flexShrink: 0 }} />
+          {label} ({count})
+        </span>
+      ))}
+    </div>
+  )
+}
+
 export default function AdminPage() {
 const [activePanel, setActivePanel] = useState('reports')
 const [chartsReady, setChartsReady] = useState(false)
@@ -235,12 +250,11 @@ const [savingResources, setSavingResources] = useState(false)
   }, [activePanel, reports, chartsReady])
   useEffect(() => {
     if (activePanel === 'reports' && reports?.demographics && chartsReady) {
-const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378ADD', '#E8A838', '#9B59B6', '#16A085', '#C0392B', '#2C7BB6', '#F4A261']
-    function renderPie(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
+    function renderPie(canvasId: string, entries: [string, number][], showLegend = true, attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
         if (!canvas) {
           if (attemptsLeft > 0) {
-            setTimeout(() => renderPie(canvasId, entries, attemptsLeft - 1), 150)
+            setTimeout(() => renderPie(canvasId, entries, showLegend, attemptsLeft - 1), 150)
           }
           return
         }
@@ -261,7 +275,7 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
               responsive: true,
               maintainAspectRatio: false,
               plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
+                legend: { display: showLegend, position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
                 datalabels: {
                   color: '#ffffff',
                   font: { weight: 500, size: 12 },
@@ -275,12 +289,15 @@ const pieColors = ['#582C83', '#1D9E75', '#D85A30', '#D4537E', '#888780', '#378A
         }
       }
       renderPie('pie-lgbtq', reports.demographics.lgbtq)
-      renderPie('pie-mentor-activity', reports.mentorActivity)
+      // Mentor/teacher lists can grow long, so their legend is a custom HTML
+      // list below the chart instead (see PieLegend) — keeps the pie itself
+      // a fixed, consistent size instead of chart.js stretching or shrinking
+      // it to make room for an unpredictable number of legend rows.
+      renderPie('pie-mentor-activity', reports.mentorActivity, false)
+      renderPie('pie-teachers', reports.demographics.teachers, false)
       renderPie('pie-first-gen', reports.demographics.firstGen)
       renderPie('pie-private-counselor', reports.demographics.privateCounselor)
-      renderPie('pie-lgbtq', reports.demographics.lgbtq)
       renderPie('pie-immigrants', reports.demographics.immigrants)
-      renderPie('pie-teachers', reports.demographics.teachers)
 
       function renderHorizontalBar(canvasId: string, entries: [string, number][], attemptsLeft = 40) {
         const canvas = document.getElementById(canvasId) as HTMLCanvasElement
@@ -1727,14 +1744,14 @@ headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
 {/* REPORTS */}
             {activePanel === 'reports' && (
               <div data-panel="reports">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 20 }}>
                   <div>
                     <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Reports</h1>
                     <p style={{ fontSize: 13, color: '#888780', margin: 0 }}>Program statistics and demographics</p>
                   </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
                     {/* Filters everything below: bookings, surveys, and demographics */}
-                    <div style={{ display: 'flex', gap: 6 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {(['all', 'virtual', 'in_person'] as const).map(t => (
                         <button
                           key={t}
@@ -1953,16 +1970,22 @@ const exportHeaders = await getAuthHeader()
                  {/* Mentor activity */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Mentor appointments</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: Math.max((reports.mentorActivity?.length ?? 0) * 22 + 180, 240) }}>
-                          <canvas id="pie-mentor-activity" role="img" aria-label="Pie chart of appointments per mentor"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-mentor-activity" role="img" aria-label="Pie chart of appointments per mentor"></canvas>
+                          </div>
+                          <PieLegend entries={reports.mentorActivity ?? []} />
                         </div>
                       </div>
 
                  {/* Teacher distribution */}
                       <div>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 10px' }}>Senior English teacher</p>
-                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', position: 'relative', height: Math.max((reports.demographics.teachers?.length ?? 0) * 22 + 160, 220) }}>
-                          <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
+                        <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
+                          <div style={{ position: 'relative', height: 200 }}>
+                            <canvas id="pie-teachers" role="img" aria-label="Pie chart of senior English and advisory teacher distribution"></canvas>
+                          </div>
+                          <PieLegend entries={reports.demographics.teachers ?? []} />
                         </div>
                       </div>
 
