@@ -42,6 +42,9 @@ export async function GET(
         answer_text,
         intake_questions ( question_text, sort_order )
       ),
+      survey_responses (
+        additional_answers
+      ),
       student_essays (
         id, essay_type, google_doc_url, file_name, file_path,
         note_to_mentor, uploaded_at

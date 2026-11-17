@@ -25,6 +25,9 @@ type BookingWithAnswers = {
       sort_order: number
     }
   }[]
+  survey_responses: {
+    additional_answers: Record<string, string> | null
+  }[]
   student_essays: {
     id: string
     essay_type: string
@@ -149,16 +152,34 @@ const email = decodeURIComponent(emailParam)
     const privateCounselor = booking.booking_question_answers?.find((a: any) => a.intake_questions.question_text === 'I am also working with a private counselor hired by my family')?.answer_text
     const mentorName = booking.appointment_slots?.mentor_profiles?.full_name
     const isInPerson = !booking.appointment_slots || booking.meeting_type === 'in_person'
+    const isNoShow = booking.survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes')
+    const meetIssueDidNotMeet = booking.survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - did not meet')
+    const meetIssueStillMet = booking.survey_responses?.some((s: any) => s.additional_answers?.meet_issue === 'Yes - still met' || s.additional_answers?.meet_issue === 'Yes')
 
     return (
       <div key={booking.id} style={{ padding: '10px 0', borderBottom: '0.5px solid #e8e6de' }}>
-        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {booking.appointment_slots?.start_time
             ? format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')
             : format(parseISO(booking.booked_at), 'MMMM d, yyyy')}
           {booking.cancelled_at && (
             <span style={{ fontSize: 11, fontWeight: 500, padding: '1px 8px', borderRadius: 20, lineHeight: 1.6, background: '#FCEBEB', color: '#791F1F' }}>
               {isInPerson ? 'Walked out' : 'Canceled'} {format(parseISO(booking.cancelled_at), 'MMM d')}
+            </span>
+          )}
+          {isNoShow && (
+            <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 20, lineHeight: 1.6, background: '#E24B4A', color: '#ffffff' }}>
+              No-show
+            </span>
+          )}
+          {meetIssueDidNotMeet && (
+            <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 20, lineHeight: 1.6, background: '#E24B4A', color: '#ffffff' }}>
+              Connection issue - did not meet
+            </span>
+          )}
+          {meetIssueStillMet && (
+            <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 20, lineHeight: 1.6, background: '#C9851A', color: '#ffffff' }}>
+              Connection issue
             </span>
           )}
         </p>
