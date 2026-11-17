@@ -157,7 +157,7 @@ const email = decodeURIComponent(emailParam)
             ? format(parseISO(booking.appointment_slots.start_time), 'MMMM d, yyyy')
             : format(parseISO(booking.booked_at), 'MMMM d, yyyy')}
           {booking.cancelled_at && (
-            <span style={{ fontSize: 11, fontWeight: 500, padding: '1px 8px', borderRadius: 20, lineHeight: 1.6, background: '#F1EFE8', color: '#5F5E5A' }}>
+            <span style={{ fontSize: 11, fontWeight: 500, padding: '1px 8px', borderRadius: 20, lineHeight: 1.6, background: '#FCEBEB', color: '#791F1F' }}>
               Canceled {format(parseISO(booking.cancelled_at), 'MMM d')}
             </span>
           )}
