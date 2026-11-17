@@ -2174,7 +2174,7 @@ const exportHeaders = await getAuthHeader()
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 4px' }}>Walk-in Queue</h1>
                 <p style={{ fontSize: 13, color: '#888780', margin: '0 0 20px' }}>
-                  Today's in-person walk-in students
+                  {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' })}
                 </p>
 
                 <div style={{ marginBottom: 24 }}>
