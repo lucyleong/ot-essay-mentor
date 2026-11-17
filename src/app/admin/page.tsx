@@ -194,6 +194,9 @@ const [rescheduleTime, setRescheduleTime] = useState('')
 const [rescheduling, setRescheduling] = useState(false)
 const [transferMentorId, setTransferMentorId] = useState('')
 const [transferring, setTransferring] = useState(false)
+const [changingMentorId, setChangingMentorId] = useState<string | null>(null)
+const [changeMentorId, setChangeMentorId] = useState('')
+const [changingMentor, setChangingMentor] = useState(false)
 const [shadowingId, setShadowingId] = useState<string | null>(null)
 const [shadowMentorId, setShadowMentorId] = useState('')
 const [savingShadow, setSavingShadow] = useState(false)
@@ -1525,6 +1528,65 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
                           >
                             Mark as walked out instead
+                          </button>
+                        )
+                      )}
+
+                      {/* Change mentor — in-person, already helped (corrects
+                          which mentor the student actually saw), any date */}
+                      {!booking.cancelled_at && booking.meeting_type === 'in_person' && (booking as any).appointment_slots && (
+                        changingMentorId === booking.id ? (
+                          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+                            <select
+                              value={changeMentorId}
+                              onChange={e => setChangeMentorId(e.target.value)}
+                              style={{ fontSize: 12, padding: '4px 8px', borderRadius: 6 }}
+                            >
+                              <option value="">Select mentor</option>
+                              {mentors
+                                .filter(m => m.is_active && m.id !== (booking.appointment_slots as any)?.mentor_profiles?.id)
+                                .map(m => (
+                                  <option key={m.id} value={m.id}>{m.full_name}</option>
+                                ))
+                              }
+                            </select>
+                            <button
+                              onClick={async () => {
+                                if (!changeMentorId) return
+                                setChangingMentor(true)
+                                const res = await fetch('/api/admin/bookings/change-mentor-in-person', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json', ...await getAuthHeader() },
+                                  body: JSON.stringify({ bookingId: booking.id, newMentorId: changeMentorId }),
+                                })
+                                const data = await res.json().catch(() => ({}))
+                                setChangingMentor(false)
+                                setChangingMentorId(null)
+                                setChangeMentorId('')
+                                if (!res.ok) {
+                                  alert(data.error ?? 'Failed to change mentor')
+                                  return
+                                }
+                                loadData()
+                              }}
+                              disabled={!changeMentorId || changingMentor}
+                              style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#ffffff', border: 'none' }}
+                            >
+                              {changingMentor ? 'Saving...' : 'Confirm'}
+                            </button>
+                            <button
+                              onClick={() => { setChangingMentorId(null); setChangeMentorId('') }}
+                              style={{ fontSize: 12, padding: '4px 10px' }}
+                            >
+                              Never mind
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setChangingMentorId(booking.id)}
+                            style={{ fontSize: 12, padding: '4px 10px', color: '#582C83', borderColor: '#C9C5F7' }}
+                          >
+                            Change mentor
                           </button>
                         )
                       )}
