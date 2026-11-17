@@ -66,6 +66,47 @@ function PieLegend({ entries }: { entries: [string, number][] }) {
   )
 }
 
+function surveyBarColor(label: string) {
+  return label === 'Yes' ? '#1D9E75' : label === 'No' ? '#E24B4A' : '#E8A838'
+}
+
+function SurveyBar({ question, entries }: { question: string; entries: [string, number][] }) {
+  const shown = entries.filter(([, count]) => count > 0)
+  const total = shown.reduce((sum, [, count]) => sum + count, 0)
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+        <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>{question}</p>
+        <span style={{ fontSize: 12, color: '#888780' }}>{total} response{total !== 1 ? 's' : ''}</span>
+      </div>
+      {total > 0 ? (
+        <>
+          <div style={{ display: 'flex', height: 18, borderRadius: 6, overflow: 'hidden', background: '#F1EFE8' }}>
+            {shown.map(([label, count]) => {
+              const pct = count / total
+              return (
+                <div key={label} style={{ width: `${pct * 100}%`, background: surveyBarColor(label), display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 6 }}>
+                  {pct >= 0.12 && <span style={{ fontSize: 10, color: '#ffffff', fontWeight: 600, lineHeight: 1 }}>{Math.round(pct * 100)}%</span>}
+                </div>
+              )
+            })}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', marginTop: 6 }}>
+            {shown.map(([label, count]) => (
+              <span key={label} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, lineHeight: 1, color: '#5F5E5A' }}>
+                <span style={{ width: 9, height: 9, borderRadius: 2, background: surveyBarColor(label), flexShrink: 0 }} />
+                {label} ({count})
+              </span>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p style={{ fontSize: 12, color: '#888780', margin: 0 }}>No responses yet</p>
+      )}
+    </div>
+  )
+}
+
 export default function AdminPage() {
 const [activePanel, setActivePanel] = useState('reports')
 const [chartsReady, setChartsReady] = useState(false)
@@ -1848,10 +1889,10 @@ const exportHeaders = await getAuthHeader()
                         </div>
                       )}
 
-                      <div style={{ display: 'grid', gridTemplateColumns: reportsMeetingType === 'in_person' ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 20, alignItems: 'flex-start' }}>
                           {/* Avg ease of connecting — not asked of in-person students */}
                           {reportsMeetingType !== 'in_person' && reports.surveys.avgRating !== null && (
-                          <div>
+                          <div style={{ flex: '0 0 160px' }}>
                             <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Ease of connecting (avg)</p>
                             <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
                               <p style={{ fontSize: 28, fontWeight: 500, margin: 0, color: '#582C83' }}>{reports.surveys.avgRating}<span style={{ fontSize: 14, color: '#888780' }}>/5</span></p>
@@ -1859,45 +1900,13 @@ const exportHeaders = await getAuthHeader()
                           </div>
                           )}
 
-                          {/* Mentor on time — not asked of in-person students */}
-                          {reportsMeetingType !== 'in_person' && (
-                          <div>
-                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Mentor on time</p>
-                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                              {reports.surveys.mentorOnTime.map(([label, count]: [string, number]) => (
-                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          )}
-
-                          {/* Next steps */}
-                          <div>
-                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Gave next steps</p>
-                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                              {reports.surveys.nextSteps.map(([label, count]: [string, number]) => (
-                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Work with mentor again */}
-                          <div>
-                            <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>Would work with mentor again</p>
-                            <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem' }}>
-                              {reports.surveys.workAgain.map(([label, count]: [string, number]) => (
-                                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #e8e6de' }}>
-                                  <p style={{ margin: 0, fontSize: 13 }}>{label}</p>
-                                  <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>{count}</p>
-                                </div>
-                              ))}
-                            </div>
+                          <div style={{ flex: '1 1 360px', background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1rem', display: 'flex', flexDirection: 'column', gap: 18 }}>
+                            {/* Mentor on time — not asked of in-person students */}
+                            {reportsMeetingType !== 'in_person' && (
+                              <SurveyBar question="Mentor on time" entries={reports.surveys.mentorOnTime} />
+                            )}
+                            <SurveyBar question="Gave next steps" entries={reports.surveys.nextSteps} />
+                            <SurveyBar question="Would work with mentor again" entries={reports.surveys.workAgain} />
                           </div>
                       </div>
 
