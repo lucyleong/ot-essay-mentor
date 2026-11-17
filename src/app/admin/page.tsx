@@ -2281,6 +2281,9 @@ const exportHeaders = await getAuthHeader()
                   </div>
                 )}
 
+                <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 10px' }}>
+                  Today's walk-in students
+                </h2>
                 {walkinQueue.length === 0 ? (
                   <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '2rem', textAlign: 'center' }}>
                     <p style={{ color: '#888780', margin: 0 }}>No walk-in students today.</p>
