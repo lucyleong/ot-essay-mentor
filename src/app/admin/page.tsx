@@ -1394,7 +1394,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                           >
                             {restoringId === booking.id
                               ? 'Restoring...'
-                              : (booking.meeting_type === 'in_person' ? 'Mark as helped instead' : 'Undo cancellation')}
+                              : (booking.meeting_type === 'in_person' ? 'Mark as helped' : 'Undo cancellation')}
                           </button>
                         ) : (
                           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginTop: 4 }}>
@@ -1427,7 +1427,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                               }}
                               style={{ fontSize: 12, padding: '4px 10px', background: '#582C83', color: '#ffffff', border: 'none' }}
                             >
-                              {restoringId === booking.id ? 'Restoring...' : 'Mark as helped instead'}
+                              {restoringId === booking.id ? 'Restoring...' : 'Mark as helped'}
                             </button>
                           </div>
                         )
@@ -1527,7 +1527,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             onClick={() => setCancellingId(booking.id)}
                             style={{ fontSize: 12, padding: '4px 10px', color: '#791F1F', borderColor: '#F09595' }}
                           >
-                            Mark as walked out instead
+                            Mark as walked out
                           </button>
                         )
                       )}
@@ -2384,7 +2384,7 @@ const exportHeaders = await getAuthHeader()
                                 }}
                                 style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, color: '#791F1F', borderColor: '#F09595' }}
                               >
-                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as walked out instead'}
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as walked out'}
                               </button>
                             </div>
                           )}
@@ -2405,7 +2405,7 @@ const exportHeaders = await getAuthHeader()
                                 onClick={() => markWalkinHelped(entry.id)}
                                 style={{ fontSize: 12, padding: '5px 14px', flexShrink: 0, background: '#582C83', color: '#ffffff', border: 'none' }}
                               >
-                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as helped instead'}
+                                {resolvingWalkinId === entry.id ? 'Marking...' : 'Mark as helped'}
                               </button>
                             </div>
                           )}
