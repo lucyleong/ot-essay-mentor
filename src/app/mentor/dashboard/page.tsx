@@ -130,7 +130,7 @@ const timeOptions = generateTimeOptions()
   const urlPattern = /(https?:\/\/[^\s]+)/g
   return text.split(urlPattern).map((part, i) =>
     /^https?:\/\//.test(part) ? (
-      <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
+      <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#582C83' }}>
         {part}
       </a>
     ) : (

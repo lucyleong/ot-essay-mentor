@@ -52,7 +52,7 @@ export default function CancelPage({
         <p style={{ fontSize: 13, color: '#791F1F', margin: '0 0 16px' }}>
             Your appointment has been canceled.<br />We hope to see you again soon!
           </p>
-          <a href="/book" style={{ color: '#534AB7', fontSize: 14 }}>Book a new appointment →</a>
+          <a href="/book" style={{ color: '#582C83', fontSize: 14 }}>Book a new appointment →</a>
         </div>
       </main>
     )

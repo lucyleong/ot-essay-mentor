@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       html: `
         <p>Hi ${booking.student_name.split(' ')[0]},</p>
         <p>Your appointment with ${mentor?.full_name ?? 'your mentor'} has been moved from ${oldApptDate} to <strong>${newApptDate}</strong>.</p>
-        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#534AB7;">Join Google Meet</a></p>` : ''}
+        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#582C83;">Join Google Meet</a></p>` : ''}
         <p>If you have any questions, contact us at <a href="mailto:admin@otessaymentors.org">admin@otessaymentors.org</a>.</p>
       `,
       notificationType: 'booking_reschedule',
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         html: `
           <p>Hi ${mentor.full_name.split(' ')[0]},</p>
           <p>Your appointment with <strong>${booking.student_name}</strong> has been moved from ${oldApptDate} to <strong>${newApptDate}</strong>.</p>
-          ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#534AB7;">Join Google Meet</a></p>` : ''}
+          ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#582C83;">Join Google Meet</a></p>` : ''}
         `,
         notificationType: 'booking_reschedule',
         recipientType:    'mentor',

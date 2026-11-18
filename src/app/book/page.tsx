@@ -302,7 +302,7 @@ Your appointment with {selectedSlot?.mentor_profiles?.full_name?.split(' ')[0]} 
   return (
   <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Purple header */}
-<div style={{ background: '#534AB7', marginBottom: 32 }}>
+<div style={{ background: '#582C83', marginBottom: 32 }}>
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 1rem', display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 50, height: 50, objectFit: 'contain', flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -371,7 +371,7 @@ days.filter(dateKey => (slots[dateKey] ?? []).length > 0).map(dateKey => (
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 12px', marginBottom: 6, cursor: 'pointer',
-                    border: `0.5px solid ${selectedSlot?.id === slot.id ? '#534AB7' : '#e8e6de'}`,
+                    border: `0.5px solid ${selectedSlot?.id === slot.id ? '#582C83' : '#e8e6de'}`,
                     background: selectedSlot?.id === slot.id ? '#EEEDFE' : '#ffffff',
                     borderRadius: 10,
                   }}
@@ -389,7 +389,7 @@ days.filter(dateKey => (slots[dateKey] ?? []).length > 0).map(dateKey => (
                   </div>
                   <button
                     onClick={e => { e.stopPropagation(); selectSlot(slot) }}
-                    style={{ fontSize: 12, padding: '5px 14px', background: '#534AB7', color: '#ffffff', border: 'none' }}
+                    style={{ fontSize: 12, padding: '5px 14px', background: '#582C83', color: '#ffffff', border: 'none' }}
                   >
                     Book
                   </button>
@@ -403,7 +403,7 @@ days.filter(dateKey => (slots[dateKey] ?? []).length > 0).map(dateKey => (
       {selectedSlot && (
         <div ref={formRef} style={{
           marginTop: 24,
-          border: '0.5px solid #534AB7',
+          border: '0.5px solid #582C83',
           borderRadius: 12,
           padding: '1.25rem',
           background: '#ffffff',
@@ -531,7 +531,7 @@ placeholder="(510)555-5555"
                   />
                   <span>
                     By signing up, you agree to receive SMS messages from the Oakland Tech College Essay Mentor Program. Message frequency varies. Message and data rates may apply. Reply HELP for help or STOP to opt-out. See our{' '}
-                    <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#534AB7' }}>
+                    <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#582C83' }}>
                       Terms, Conditions & Privacy Policy
                     </a>.
                   </span>
@@ -634,7 +634,7 @@ const isOptional = !q.is_required
                                   padding: '4px 10px',
                                   borderRadius: 20,
                                   background: selected ? '#EEEDFE' : '#F1EFE8',
-                                  border: `0.5px solid ${selected ? '#534AB7' : '#D3D1C7'}`,
+                                  border: `0.5px solid ${selected ? '#582C83' : '#D3D1C7'}`,
                                   color: selected ? '#3C3489' : '#5F5E5A',
                                 }}
                               >
@@ -725,7 +725,7 @@ const isOptional = !q.is_required
               style={{ marginBottom: 12 }}
             />
            <p id="turnstile-error" style={{ display: 'none', fontSize: 12, color: '#791F1F', marginBottom: 8 }}>
-              Security check failed. <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }} style={{ color: '#534AB7' }}>Click here to refresh the page and try again.</a>
+              Security check failed. <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }} style={{ color: '#582C83' }}>Click here to refresh the page and try again.</a>
             </p>
             <p style={{ fontSize: 11, color: '#B4B2A9', marginBottom: 8 }}>
               If the security check gets stuck, please wait 5 seconds for it to refresh automatically.
@@ -735,7 +735,7 @@ const isOptional = !q.is_required
               <button
                 type="submit"
                 disabled={submitting || !!emailError || !!phoneError || !email || !firstName || !lastName || !phone || !aiStatementSignature.trim()}
-style={{ flex: 1, background: '#534AB7', color: '#ffffff', border: 'none' }}
+style={{ flex: 1, background: '#582C83', color: '#ffffff', border: 'none' }}
               >                {submitting ? 'Booking...' : 'Confirm booking'}
               </button>
               <button

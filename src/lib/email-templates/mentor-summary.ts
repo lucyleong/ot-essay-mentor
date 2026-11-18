@@ -41,7 +41,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
       </div>
       <div style="background:#EEEDFE;border-radius:8px;padding:10px 16px;flex:1;min-width:80px;text-align:center;">
         <div style="font-size:22px;font-weight:500;color:#3C3489;">${count}</div>
-        <div style="font-size:12px;color:#534AB7;margin-top:2px;">Total today</div>
+        <div style="font-size:12px;color:#582C83;margin-top:2px;">Total today</div>
       </div>
     </div>`
 
@@ -81,7 +81,7 @@ export function mentorMorningSummaryEmail(d: SummaryData) {
         <table width="100%" cellpadding="0" cellspacing="0">
           ${a.studentPhone ? detailRow('Phone', a.studentPhone) : detailRow('Phone', 'Not provided')}
           ${a.meetLink
-            ? detailRow('Meet link', `<a href="${a.meetLink}" style="color:#534AB7;">${a.meetLink}</a>`)
+            ? detailRow('Meet link', `<a href="${a.meetLink}" style="color:#582C83;">${a.meetLink}</a>`)
             : detailRow('Meet link', 'No link available')}
         </table>
       </div>`
@@ -104,7 +104,7 @@ Hello, ${d.mentorName.split(' ')[0]}!
 
     ${divider()}
 
-   <a href="${d.dashboardUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;margin-right:10px;">
+   <a href="${d.dashboardUrl}" style="display:inline-block;background:#582C83;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;margin-right:10px;">
       Open mentor dashboard
     </a>
 

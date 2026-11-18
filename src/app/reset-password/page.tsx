@@ -179,7 +179,7 @@ if (!ready) {
           disabled={loading}
           style={{
             width: '100%', padding: '10px', fontSize: 14, fontWeight: 500,
-            background: password && confirmPassword ? '#534AB7' : undefined,
+            background: password && confirmPassword ? '#582C83' : undefined,
             color: password && confirmPassword ? '#ffffff' : undefined,
             border: password && confirmPassword ? 'none' : undefined,
           }}

@@ -109,9 +109,9 @@ const [howHeard,      setHowHeard]      = useState('')
             style={{
               width: 44, height: 44, borderRadius: 8, fontSize: 15,
               fontWeight: value === n ? 600 : 400,
-              background: value === n ? '#534AB7' : '#ffffff',
+              background: value === n ? '#582C83' : '#ffffff',
               color:      value === n ? '#ffffff' : '#2C2C2A',
-              border:     `0.5px solid ${value === n ? '#534AB7' : '#D3D1C7'}`,
+              border:     `0.5px solid ${value === n ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}
           >
@@ -158,9 +158,9 @@ const [howHeard,      setHowHeard]      = useState('')
             <button key={opt} onClick={() => setMentorOnTime(opt)} style={{
               flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
               fontWeight: mentorOnTime === opt ? 600 : 400,
-              background: mentorOnTime === opt ? '#534AB7' : '#ffffff',
+              background: mentorOnTime === opt ? '#582C83' : '#ffffff',
               color: mentorOnTime === opt ? '#ffffff' : '#2C2C2A',
-              border: `0.5px solid ${mentorOnTime === opt ? '#534AB7' : '#D3D1C7'}`,
+              border: `0.5px solid ${mentorOnTime === opt ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}>{opt}</button>
           ))}
@@ -178,9 +178,9 @@ const [howHeard,      setHowHeard]      = useState('')
             <button key={opt} onClick={() => setNextSteps(opt)} style={{
               flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
               fontWeight: nextSteps === opt ? 600 : 400,
-              background: nextSteps === opt ? '#534AB7' : '#ffffff',
+              background: nextSteps === opt ? '#582C83' : '#ffffff',
               color: nextSteps === opt ? '#ffffff' : '#2C2C2A',
-              border: `0.5px solid ${nextSteps === opt ? '#534AB7' : '#D3D1C7'}`,
+              border: `0.5px solid ${nextSteps === opt ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}>{opt}</button>
           ))}
@@ -197,9 +197,9 @@ const [howHeard,      setHowHeard]      = useState('')
             <button key={opt} onClick={() => setWorkAgain(opt)} style={{
               flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
               fontWeight: workAgain === opt ? 600 : 400,
-              background: workAgain === opt ? '#534AB7' : '#ffffff',
+              background: workAgain === opt ? '#582C83' : '#ffffff',
               color: workAgain === opt ? '#ffffff' : '#2C2C2A',
-              border: `0.5px solid ${workAgain === opt ? '#534AB7' : '#D3D1C7'}`,
+              border: `0.5px solid ${workAgain === opt ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}>{opt}</button>
           ))}
@@ -225,7 +225,7 @@ const [howHeard,      setHowHeard]      = useState('')
       <button
         onClick={handleSubmit}
         disabled={(!isInPerson && (!sessionEase || !mentorOnTime)) || !nextSteps || !workAgain || submitting}
-        style={{ width: '100%', fontSize: 14, background: '#534AB7', color: '#ffffff', border: 'none' }}
+        style={{ width: '100%', fontSize: 14, background: '#582C83', color: '#ffffff', border: 'none' }}
       >
         {submitting ? 'Submitting...' : 'Submit feedback'}
       </button>

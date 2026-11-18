@@ -68,7 +68,7 @@ export default function CCCPage() {
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{
-        background: '#534AB7', padding: '16px 24px',
+        background: '#582C83', padding: '16px 24px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>

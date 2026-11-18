@@ -40,7 +40,7 @@ const end   = formatTimePST(d.endTime)
         ${detailRow('Time',    `${start} – ${end}`)}
         ${detailRow('Mentor',  d.mentorName)}
         ${d.meetLink
-          ? detailRow('Meeting link', `<a href="${d.meetLink}" style="color:#534AB7;">${d.meetLink}</a>`)
+          ? detailRow('Meeting link', `<a href="${d.meetLink}" style="color:#582C83;">${d.meetLink}</a>`)
           : detailRow('Meeting link', 'A Google Meet link will be added to your calendar invitation once your appointment is confirmed.')}
       </table>
     </div>
@@ -59,7 +59,7 @@ const end   = formatTimePST(d.endTime)
       The day before your appointment, please share your college essay. If there are multiple essays in your document, please indicate which essay you plan to discuss during your meeting: 1 long essay or up to 3 PIQs.
     </p>
 
-    <a href="${d.essayUploadUrl}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;margin-bottom:20px;">
+    <a href="${d.essayUploadUrl}" style="display:inline-block;background:#582C83;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 28px;border-radius:8px;margin-bottom:20px;">
       Upload your essay →
     </a>
 

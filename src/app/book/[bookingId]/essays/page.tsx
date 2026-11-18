@@ -101,7 +101,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
          ⚠️ Make sure to set sharing to <strong>"Anyone with the link can comment"</strong> so your mentor can leave feedback directly in your doc.
           {mentorEmail && (
             <> If you'd rather keep this private, you can add your mentor with 'Commenter' access instead:
-            <br />{mentorName ? ` ${mentorName}` : ''} | <a href={`mailto:${mentorEmail}`} style={{ color: '#534AB7' }}>{mentorEmail}</a>.</>
+            <br />{mentorName ? ` ${mentorName}` : ''} | <a href={`mailto:${mentorEmail}`} style={{ color: '#582C83' }}>{mentorEmail}</a>.</>
           )}
         </p>
       </div>
@@ -170,7 +170,7 @@ const res = await fetch(`/api/bookings/${bookingId}/essays`, {
           disabled={submitting || !gdocUrl}
           style={{
             width: '100%',
-            background: gdocUrl ? '#534AB7' : undefined,
+            background: gdocUrl ? '#582C83' : undefined,
             color: gdocUrl ? '#ffffff' : undefined,
             border: gdocUrl ? 'none' : undefined,
           }}

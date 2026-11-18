@@ -229,7 +229,7 @@ const email = decodeURIComponent(emailParam)
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
           }}
-        style={{ fontSize: 12, color: copied ? '#085041' : '#534AB7', background: copied ? '#E1F5EE' : 'none', border: `0.5px solid ${copied ? '#5DCAA5' : '#C9C5F7'}`, borderRadius: 8, cursor: 'pointer', padding: '5px 12px', transition: 'all 0.2s' }}
+        style={{ fontSize: 12, color: copied ? '#085041' : '#582C83', background: copied ? '#E1F5EE' : 'none', border: `0.5px solid ${copied ? '#5DCAA5' : '#C9C5F7'}`, borderRadius: 8, cursor: 'pointer', padding: '5px 12px', transition: 'all 0.2s' }}
         >
           {copied ? '✓ Copied!' : 'Copy profile link'}
         </button>
@@ -344,7 +344,7 @@ const email = decodeURIComponent(emailParam)
                   href={essay.essay_type === 'google_doc' ? essay.google_doc_url ?? '' : essay.signed_url ?? ''}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontSize: 12, color: '#534AB7', textDecoration: 'none' }}
+                  style={{ fontSize: 12, color: '#582C83', textDecoration: 'none' }}
                 >
                   Open
                 </a>
@@ -439,7 +439,7 @@ const email = decodeURIComponent(emailParam)
               disabled={saving || !newNote.trim()}
               style={{
                 fontSize: 12,
-                background: newNote.trim() ? '#534AB7' : undefined,
+                background: newNote.trim() ? '#582C83' : undefined,
                 color: newNote.trim() ? '#ffffff' : undefined,
                 border: newNote.trim() ? 'none' : undefined,
               }}

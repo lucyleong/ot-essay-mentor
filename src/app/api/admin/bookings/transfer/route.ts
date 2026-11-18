@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         <p>Hi ${booking.student_name.split(' ')[0]},</p>
         <p>Your appointment on ${apptDate} has been reassigned to a new mentor: <strong>${newMentor.full_name}</strong>.</p>
         <p>Your appointment time and Google Meet link remain the same — no action needed on your part.</p>
-        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#534AB7;">Join Google Meet</a></p>` : ''}
+        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#582C83;">Join Google Meet</a></p>` : ''}
         <p>If you have any questions, contact us at <a href="mailto:admin@otessaymentors.org">admin@otessaymentors.org</a>.</p>
       `,
       notificationType: 'mentor_transfer',
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
       html: `
         <p>Hi ${newMentor.full_name.split(' ')[0]},</p>
         <p><strong>${booking.student_name}</strong> has been assigned to you for an appointment on ${apptDate}.</p>
-<p>You can view their profile and any essays they've shared on their <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/students/${encodeURIComponent(booking.student_email)}">student profile</a>.</p>        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#534AB7;">Join Google Meet</a></p>` : ''}
+<p>You can view their profile and any essays they've shared on their <a href="${process.env.NEXT_PUBLIC_APP_URL}/mentor/students/${encodeURIComponent(booking.student_email)}">student profile</a>.</p>        ${oldSlot.google_meet_link ? `<p><a href="${oldSlot.google_meet_link}" style="color:#582C83;">Join Google Meet</a></p>` : ''}
         <p>If you have any questions, contact us at <a href="mailto:admin@otessaymentors.org">admin@otessaymentors.org</a>.</p>
       `,
       notificationType: 'mentor_transfer',

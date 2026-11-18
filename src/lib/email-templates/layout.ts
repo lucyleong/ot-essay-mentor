@@ -14,7 +14,7 @@ export function emailLayout(content: string, previewText: string = '') {
 
         <!-- Header -->
         <tr>
-          <td style="background:#534AB7;border-radius:12px 12px 0 0;padding:24px 32px;">
+          <td style="background:#582C83;border-radius:12px 12px 0 0;padding:24px 32px;">
             <p style="margin:0;color:#EEEDFE;font-size:13px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;">
               Oakland Tech College Essay Mentor Program
             </p>
@@ -33,7 +33,7 @@ export function emailLayout(content: string, previewText: string = '') {
           <td style="background:#f5f4f0;border:1px solid #e8e6de;border-top:none;border-radius:0 0 12px 12px;padding:20px 32px;">
             <p style="margin:0;font-size:12px;color:#888780;line-height:1.6;">
               This email was sent by the Oakland Tech College Essay Mentor Program.
-              If you have questions, please contact <a href="mailto:admin@otessaymentors.org" style="color:#534AB7;">admin@otessaymentors.org</a>.
+              If you have questions, please contact <a href="mailto:admin@otessaymentors.org" style="color:#582C83;">admin@otessaymentors.org</a>.
             </p>
           </td>
         </tr>
@@ -58,7 +58,7 @@ export function divider() {
 
 export function primaryButton(text: string, href: string) {
   return `
-    <a href="${href}" style="display:inline-block;background:#534AB7;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;margin-top:8px;">
+    <a href="${href}" style="display:inline-block;background:#582C83;color:#EEEDFE;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;margin-top:8px;">
       ${text}
     </a>`
 }

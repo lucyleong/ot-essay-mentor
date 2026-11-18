@@ -186,7 +186,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
             </p>
             <a href={`/book/${bookingId}/essays`} style={{
               display: 'inline-block',
-              background: '#534AB7',
+              background: '#582C83',
               color: '#ffffff',
               textDecoration: 'none',
               fontSize: 13,
@@ -211,7 +211,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
           </p>
           <a href="/verify" style={{
             display: 'inline-block',
-            background: '#534AB7',
+            background: '#582C83',
             color: '#ffffff',
             textDecoration: 'none',
             fontSize: 13,
@@ -228,7 +228,7 @@ if (mentorPrevQuestion && questionId === mentorPrevQuestion.id) {
 return (
     <main style={{ background: '#f5f4f0', minHeight: '100vh' }}>
       {/* Purple header */}
-      <div style={{ background: '#534AB7', marginBottom: 32 }}>
+      <div style={{ background: '#582C83', marginBottom: 32 }}>
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 1rem', display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/bulldog.png" alt="Oakland Tech Bulldog" style={{ width: 50, height: 50, objectFit: 'contain', flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -371,7 +371,7 @@ placeholder="you@example.com"
                         display: 'flex', alignItems: 'center', gap: 6, fontSize: 13,
                         cursor: 'pointer', padding: '4px 10px', borderRadius: 20,
                         background: selected ? '#EEEDFE' : '#F1EFE8',
-                        border: `0.5px solid ${selected ? '#534AB7' : '#D3D1C7'}`,
+                        border: `0.5px solid ${selected ? '#582C83' : '#D3D1C7'}`,
                         color: selected ? '#3C3489' : '#5F5E5A',
                       }}>
                        <input
@@ -429,7 +429,7 @@ placeholder="you@example.com"
        <button
           type="submit"
           disabled={submitting || !!emailError || !email || !firstName || !lastName || !aiStatementSignature.trim()}
-          style={{ width: '100%', background: '#534AB7', color: '#ffffff', border: 'none' }}
+          style={{ width: '100%', background: '#582C83', color: '#ffffff', border: 'none' }}
         >
           {submitting ? 'Checking in...' : 'Check in'}
         </button>

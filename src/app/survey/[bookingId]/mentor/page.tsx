@@ -90,9 +90,9 @@ export default function MentorSurveyPage({
             style={{
               flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14,
               fontWeight: value === opt ? 600 : 400,
-              background: value === opt ? '#534AB7' : '#ffffff',
+              background: value === opt ? '#582C83' : '#ffffff',
               color:      value === opt ? '#ffffff' : '#2C2C2A',
-              border:     `0.5px solid ${value === opt ? '#534AB7' : '#D3D1C7'}`,
+              border:     `0.5px solid ${value === opt ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}
           >
@@ -114,9 +114,9 @@ export default function MentorSurveyPage({
             style={{
               width: '100%', padding: '10px 14px', borderRadius: 8, fontSize: 14, textAlign: 'left',
               fontWeight: value === opt ? 600 : 400,
-              background: value === opt ? '#534AB7' : '#ffffff',
+              background: value === opt ? '#582C83' : '#ffffff',
               color:      value === opt ? '#ffffff' : '#2C2C2A',
-              border:     `0.5px solid ${value === opt ? '#534AB7' : '#D3D1C7'}`,
+              border:     `0.5px solid ${value === opt ? '#582C83' : '#D3D1C7'}`,
               cursor: 'pointer',
             }}
           >
