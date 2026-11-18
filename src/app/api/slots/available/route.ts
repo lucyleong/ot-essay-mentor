@@ -11,23 +11,34 @@ export async function GET(request: NextRequest) {
   // We calculate the cutoff as 10pm PST today
   const nowPST = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const cutoffHour = 22 // 10pm
-  
+
   // If it's after 10pm PST, start from day after tomorrow; otherwise start from tomorrow
   const daysToAdd = nowPST.getHours() >= cutoffHour ? 2 : 1
-  
-  // Window start: beginning of tomorrow (or day after tomorrow if past 10pm)
-  const windowStart = new Date(nowPST)
-  windowStart.setDate(windowStart.getDate() + daysToAdd)
-  windowStart.setHours(0, 0, 0, 0)
-  
-// Window end: 7 days after window start (so total = 8 days including start day)
-  const windowEnd = new Date(windowStart)
-  windowEnd.setDate(windowEnd.getDate() + 7)
-  windowEnd.setHours(23, 59, 59, 999)
 
-  // Convert back to UTC for database query
-  const windowStartUTC = new Date(windowStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
-  const windowEndUTC = new Date(windowEnd.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
+  // The 8 PST calendar days we actually want to show, as 'en-CA' (YYYY-MM-DD)
+  // keys — computed the same way the slots get bucketed below, so "total"
+  // can never drift from what actually gets displayed for these days.
+  const targetDayKeys = new Set(
+    Array.from({ length: 8 }, (_, i) => {
+      const d = new Date(nowPST)
+      d.setDate(d.getDate() + daysToAdd + i)
+      return d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+    })
+  )
+
+  // Query a generously padded UTC range around those days — converting a PST
+  // wall-clock date back into a precise UTC instant via string round-tripping
+  // is unreliable (that's what caused this bug in the first place), so
+  // instead of trying to get the boundary exact, we over-fetch by a day on
+  // each side and then filter down to targetDayKeys below, where the
+  // precise, already-correct per-slot PST conversion does the real work.
+  const paddedStart = new Date(nowPST)
+  paddedStart.setDate(paddedStart.getDate() + daysToAdd - 1)
+  paddedStart.setHours(0, 0, 0, 0)
+
+  const paddedEnd = new Date(nowPST)
+  paddedEnd.setDate(paddedEnd.getDate() + daysToAdd + 8)
+  paddedEnd.setHours(23, 59, 59, 999)
 
   let query = supabase
     .from('appointment_slots')
@@ -50,8 +61,8 @@ mentor_profiles!appointment_slots_mentor_id_fkey!inner (
     .eq('is_cancelled', false)
     .is('program_session_id', null)
     .eq('mentor_profiles.is_virtual_available', true)
-   .gte('start_time', windowStart.toISOString())
-    .lte('start_time', windowEnd.toISOString())
+   .gte('start_time', paddedStart.toISOString())
+    .lte('start_time', paddedEnd.toISOString())
     .order('start_time', { ascending: true })
 
   const { data, error } = await query
@@ -60,16 +71,20 @@ mentor_profiles!appointment_slots_mentor_id_fkey!inner (
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  // Group slots by date
+  // Group slots by date, keeping only the 8 target days — this is what
+  // guarantees "total" always matches what actually gets shown.
   const grouped: Record<string, typeof data> = {}
+  let total = 0
   for (const slot of data ?? []) {
     const dateKey = new Date(slot.start_time).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' })
+    if (!targetDayKeys.has(dateKey)) continue
     if (!grouped[dateKey]) grouped[dateKey] = []
     grouped[dateKey].push(slot)
+    total++
   }
 
   return NextResponse.json({
     slots: grouped,
-    total: data?.length ?? 0,
+    total,
   })
 }
