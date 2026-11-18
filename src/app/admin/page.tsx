@@ -1338,7 +1338,7 @@ if (bookingMeetingType === 'in_person' && booking.meeting_type !== 'in_person') 
                             </span>
                           )}
                           {(booking as any).survey_responses?.some((s: any) => s.additional_answers?.no_show === 'Yes') && (
-                            <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 20, lineHeight: 1, background: '#FCEBEB', color: '#791F1F' }}>
+                            <span style={{ fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 20, lineHeight: 1.6, background: '#E24B4A', color: '#ffffff' }}>
                               No-show
                             </span>
                           )}
