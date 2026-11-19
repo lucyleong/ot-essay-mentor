@@ -209,13 +209,13 @@ const [howHeard,      setHowHeard]      = useState('')
       {/* Q5 */}
       <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '1.25rem', marginBottom: 20 }}>
         <p style={{ fontWeight: 500, fontSize: 14, margin: '0 0 8px' }}>
-          How did you hear about this program? Any other comments?
+          Any feedback on the program?
         </p>
         <p style={{ fontSize: 12, color: '#888780', margin: '0 0 8px' }}>Optional</p>
         <textarea
           value={howHeard}
           onChange={e => setHowHeard(e.target.value)}
-          placeholder="e.g. My teacher told me, I saw a flyer..."
+          placeholder="e.g. What worked well, what could be better..."
           rows={3}
           style={{ width: '100%', boxSizing: 'border-box', fontSize: 13, padding: '8px', borderRadius: 6, border: '0.5px solid #D3D1C7', resize: 'vertical' }}
         />
