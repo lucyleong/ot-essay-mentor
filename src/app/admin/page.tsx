@@ -2015,7 +2015,7 @@ const exportHeaders = await getAuthHeader()
                       {reports.surveys.howHeard?.length > 0 && (
                         <div style={{ gridColumn: '1 / -1' }}>
                           <p style={{ fontSize: 13, fontWeight: 500, margin: '0 0 8px' }}>
-                            Program feedback ({reports.surveys.howHeard.length})
+                            How they heard / comments ({reports.surveys.howHeard.length})
                           </p>
                           <div style={{ background: '#ffffff', border: '0.5px solid #e8e6de', borderRadius: 12, padding: '.75rem 1rem', maxHeight: showAllComments ? 'none' : 200, overflow: 'hidden' }}>
                             {reports.surveys.howHeard.map((answer: string, i: number) => (
