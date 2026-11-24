@@ -46,22 +46,24 @@ export async function POST(
     )
   }
 
- // Free up the slot only if before 10pm PST for next-day appointments
+ // Free up the slot only if there's still time for someone else to book it.
+  // A day's own slots come off the sign-up sheet at 1pm PST the day of (see
+  // /api/slots/available), so the only case where reinstating is pointless
+  // is: the cancelled slot is today, and it's already past 1pm today.
   const slotStart = new Date((booking as any).appointment_slots?.start_time)
   const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const slotDatePST = new Date(slotStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
 
-  // Is the slot specifically tomorrow in PST?
-  const tomorrow = new Date(nowPST)
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setHours(0, 0, 0, 0)
-  const dayAfterTomorrow = new Date(tomorrow)
-  dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1)
-  const isTomorrow = slotDatePST >= tomorrow && slotDatePST < dayAfterTomorrow
+  // Is the slot today, in PST?
+  const todayStart = new Date(nowPST)
+  todayStart.setHours(0, 0, 0, 0)
+  const tomorrowStart = new Date(todayStart)
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1)
+  const isToday = slotDatePST >= todayStart && slotDatePST < tomorrowStart
 
-  // Only block reinstatement if it's past 10pm PST AND the appointment is tomorrow
-  const isPast10pm = nowPST.getHours() >= 22
-  const shouldReinstate = !(isTomorrow && isPast10pm)
+  // Only block reinstatement if it's past 1pm PST AND the appointment is today
+  const isPast1pm = nowPST.getHours() >= 13
+  const shouldReinstate = !(isToday && isPast1pm)
 
   if (shouldReinstate) {
     await supabase

@@ -110,8 +110,8 @@ const verified = localStorage.getItem('booking_verified') === process.env.NEXT_P
   }, [typeFilter])
 
  const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
-  const isPast10pm = nowPST.getHours() >= 22
-  const daysToAdd = isPast10pm ? 2 : 1
+  const isPast1pm = nowPST.getHours() >= 13
+  const daysToAdd = isPast1pm ? 1 : 0
 
   const days = Array.from({ length: 8 }, (_, i) => {
     const d = new Date(nowPST)

@@ -7,13 +7,14 @@ export async function GET(request: NextRequest) {
 
   const now = new Date()
 
-  // 10pm PST cutoff — after 10pm, "tomorrow" becomes unavailable
-  // We calculate the cutoff as 10pm PST today
+  // 1pm PST cutoff — a day's own slots stay bookable (same-day) until 1pm;
+  // after that they come off the sign-up sheet and the earliest bookable
+  // day becomes tomorrow.
   const nowPST = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
-  const cutoffHour = 22 // 10pm
+  const cutoffHour = 13 // 1pm
 
-  // If it's after 10pm PST, start from day after tomorrow; otherwise start from tomorrow
-  const daysToAdd = nowPST.getHours() >= cutoffHour ? 2 : 1
+  // Before 1pm PST, today itself is still offered; at/after 1pm, start from tomorrow
+  const daysToAdd = nowPST.getHours() >= cutoffHour ? 1 : 0
 
   // The 8 PST calendar days we actually want to show, as 'en-CA' (YYYY-MM-DD)
   // keys — computed the same way the slots get bucketed below, so "total"
@@ -63,6 +64,10 @@ mentor_profiles!appointment_slots_mentor_id_fkey!inner (
     .eq('mentor_profiles.is_virtual_available', true)
    .gte('start_time', paddedStart.toISOString())
     .lte('start_time', paddedEnd.toISOString())
+    // Same-day slots can now be in the window, so explicitly exclude ones
+    // that have already started — previously every day in the window was
+    // strictly in the future so this was never needed.
+    .gt('start_time', now.toISOString())
     .order('start_time', { ascending: true })
 
   const { data, error } = await query
