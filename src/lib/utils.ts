@@ -6,6 +6,17 @@ export function toPST(dateString: string): Date {
   return new Date(new Date(dateString).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
 }
 
+// TEMPORARY: college applications are due 2026-11-30, so same-day virtual
+// booking (normally the earliest bookable day is tomorrow) is enabled
+// through that date. Used by /api/slots/available, book/page.tsx, and
+// /api/bookings/[bookingId]/cancel — remove this and those call sites once
+// the window has passed.
+const SAME_DAY_BOOKING_WINDOW_END = '2026-11-30'
+
+export function isSameDayBookingWindowActive(nowPST: Date): boolean {
+  return nowPST.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }) <= SAME_DAY_BOOKING_WINDOW_END
+}
+
 /**
  * Formats a UTC date string as a readable date in Pacific time
  * e.g. "Monday, July 5"

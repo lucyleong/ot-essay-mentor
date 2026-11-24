@@ -1,20 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { isSameDayBookingWindowActive } from '@/lib/utils'
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const type     = request.nextUrl.searchParams.get('type')
 
   const now = new Date()
-
-  // 1pm PST cutoff — a day's own slots stay bookable (same-day) until 1pm;
-  // after that they come off the sign-up sheet and the earliest bookable
-  // day becomes tomorrow.
   const nowPST = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
-  const cutoffHour = 13 // 1pm
 
-  // Before 1pm PST, today itself is still offered; at/after 1pm, start from tomorrow
-  const daysToAdd = nowPST.getHours() >= cutoffHour ? 1 : 0
+  // Normally the earliest bookable day is always tomorrow, with a 10pm PST
+  // cutoff shifting that to the day after if it's already late. Through the
+  // temporary same-day booking window (applications due 11/30), today's own
+  // slots stay bookable until 1pm PST instead.
+  const sameDayWindowActive = isSameDayBookingWindowActive(nowPST)
+  const cutoffHour = sameDayWindowActive ? 13 : 22
+  const daysToAdd = nowPST.getHours() >= cutoffHour
+    ? (sameDayWindowActive ? 1 : 2)
+    : (sameDayWindowActive ? 0 : 1)
 
   // The 8 PST calendar days we actually want to show, as 'en-CA' (YYYY-MM-DD)
   // keys — computed the same way the slots get bucketed below, so "total"

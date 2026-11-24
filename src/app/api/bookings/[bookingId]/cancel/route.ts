@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getFreshAccessToken } from '@/lib/google-auth'
 import { sendEmail } from '@/lib/email'
-import { formatDateTimePST } from '@/lib/utils'
+import { formatDateTimePST, isSameDayBookingWindowActive } from '@/lib/utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -47,23 +47,29 @@ export async function POST(
   }
 
  // Free up the slot only if there's still time for someone else to book it.
-  // A day's own slots come off the sign-up sheet at 1pm PST the day of (see
-  // /api/slots/available), so the only case where reinstating is pointless
-  // is: the cancelled slot is today, and it's already past 1pm today.
+  // Normally that's "tomorrow, past 10pm PST" (see /api/slots/available).
+  // Through the temporary same-day booking window (applications due
+  // 11/30), a day's own slots come off the sheet at 1pm the day of instead,
+  // so the relevant day shifts from tomorrow to today and the cutoff from
+  // 10pm to 1pm.
   const slotStart = new Date((booking as any).appointment_slots?.start_time)
   const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
   const slotDatePST = new Date(slotStart.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
 
-  // Is the slot today, in PST?
-  const todayStart = new Date(nowPST)
-  todayStart.setHours(0, 0, 0, 0)
-  const tomorrowStart = new Date(todayStart)
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1)
-  const isToday = slotDatePST >= todayStart && slotDatePST < tomorrowStart
+  const sameDayWindowActive = isSameDayBookingWindowActive(nowPST)
+  const cutoffHour = sameDayWindowActive ? 13 : 22
 
-  // Only block reinstatement if it's past 1pm PST AND the appointment is today
-  const isPast1pm = nowPST.getHours() >= 13
-  const shouldReinstate = !(isToday && isPast1pm)
+  // Start of the "relevant day" — today under the same-day window, else tomorrow
+  const relevantDayStart = new Date(nowPST)
+  relevantDayStart.setHours(0, 0, 0, 0)
+  relevantDayStart.setDate(relevantDayStart.getDate() + (sameDayWindowActive ? 0 : 1))
+  const relevantDayEnd = new Date(relevantDayStart)
+  relevantDayEnd.setDate(relevantDayEnd.getDate() + 1)
+  const isRelevantDay = slotDatePST >= relevantDayStart && slotDatePST < relevantDayEnd
+
+  // Only block reinstatement if it's past the cutoff AND the appointment is the relevant day
+  const isPastCutoff = nowPST.getHours() >= cutoffHour
+  const shouldReinstate = !(isRelevantDay && isPastCutoff)
 
   if (shouldReinstate) {
     await supabase

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import Script from 'next/script'
-import { formatTimePST } from '@/lib/utils'
+import { formatTimePST, isSameDayBookingWindowActive } from '@/lib/utils'
 
 type Slot = {
   id: string
@@ -110,8 +110,11 @@ const verified = localStorage.getItem('booking_verified') === process.env.NEXT_P
   }, [typeFilter])
 
  const nowPST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }))
-  const isPast1pm = nowPST.getHours() >= 13
-  const daysToAdd = isPast1pm ? 1 : 0
+  const sameDayWindowActive = isSameDayBookingWindowActive(nowPST)
+  const cutoffHour = sameDayWindowActive ? 13 : 22
+  const daysToAdd = nowPST.getHours() >= cutoffHour
+    ? (sameDayWindowActive ? 1 : 2)
+    : (sameDayWindowActive ? 0 : 1)
 
   const days = Array.from({ length: 8 }, (_, i) => {
     const d = new Date(nowPST)
